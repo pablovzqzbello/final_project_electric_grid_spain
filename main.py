@@ -5,6 +5,7 @@ import requests
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+from functions.extraction_data import *
 
 def main ():
 
@@ -28,9 +29,9 @@ def main ():
     end_year = st.number_input("End Year", min_value=2000, max_value=2024, value=2023)
 
     if st.button("Extracción y guardado de los datos"):
-        data = fetch_data_from_api(lang, category, widget, start_year, end_year)
-        csv_path = 'sources/extracted_data.csv'
-        process_data_to_csv(data, csv_path)
+        data = extract_data_demanda(lang, category, widget, start_year, end_year)
+        filename = 'sources/extracted_data.csv'
+        save_csv_demanda(data, filename)
         st.success("¡Extracción completada!")
 
 

@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import os
-
+## NO ME CONVENCE EL CÓDIGO, HAY QUE IMPLEMENTAR UN SELECTOR, PUESTO QUE DIFERENTES ENDPOINT DIFERENTES TABLAS##
 def extract_data_demanda(start_year=2020, end_year=2023, lang="es", category="demanda", wodget="evolucion"):
     all_data = []
 
