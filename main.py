@@ -19,5 +19,20 @@ def main ():
 
 
 
+    st.text ("Extractor de datos de la app")
+
+    lang = st.selectbox("Select Language", ["es", "en"])
+    category = st.text_input("Category", value="demanda")
+    widget = st.text_input("Widget", value="evolucion")
+    start_year = st.number_input("Start Year", min_value=2000, max_value=2024, value=2020)
+    end_year = st.number_input("End Year", min_value=2000, max_value=2024, value=2023)
+
+    if st.button("Extracción y guardado de los datos"):
+        data = fetch_data_from_api(lang, category, widget, start_year, end_year)
+        csv_path = 'sources/extracted_data.csv'
+        process_data_to_csv(data, csv_path)
+        st.success("¡Extracción completada!")
+
+
 if __name__ == "__main__":
     main()
