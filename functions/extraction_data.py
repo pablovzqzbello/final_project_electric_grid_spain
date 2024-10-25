@@ -50,60 +50,18 @@ def extract_ren_noren(start_year=2011, end_year=2025, time_trunc='day'):
         ['datetime', 'value', 'percentage', 'title', 'description', 'technology_type']]
     return df_generation_ren_noren
 
-<<<<<<< HEAD
-import requests
-import pandas as pd
-import numpy as np
-=======
 ###############################
->>>>>>> 7c7f75e451157bc1dacfd1e6eacf7f17f0bb6064
 
 def extract_co2(start_year=2011, end_year=2025, time_trunc='day'):
     all_gen_df_co2 = []
 
-<<<<<<< HEAD
-lang = "es"
-category = "balance"
-widget = "balance-electrico"
-=======
     for year in range(start_year, end_year):
         url = 'https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2'
->>>>>>> 7c7f75e451157bc1dacfd1e6eacf7f17f0bb6064
 
         params = {'start_date': f'{year}-01-01T00:00',
                   'end_date': f'{year}-12-31T23:59',
                   'time_trunc': time_trunc}
 
-<<<<<<< HEAD
-datos = []
-start_year = 2022
-end_year = 2023
-
-for year in range(start_year, end_year + 1):
-    # Construir la URL
-    url = f"https://apidatos.ree.es/{lang}/datos/{category}/{widget}"
-    
-    # Ajustar los parámetros para cada año
-    params = {'start_date': f'{year}-01-01T00:00',
-              'end_date': f'{year}-12-31T23:59',
-              'time_trunc': 'month'}
-
-    headers = {'Accept': 'application/json',
-               'Content-Type': 'application/json',
-               'Host': 'apidatos.ree.es'}
-
-    response = requests.get(url, params=params, headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        datos.append(data)
-    else:
-        print(f"Error fetching data for year {year}: {response.status_code}")
-
-print(datos)
-
-df_datos = pd.DataFrame(datos)
-=======
         response = requests.get(url, params=params)
 
         if response.status_code != 200:
@@ -352,4 +310,3 @@ df_co2_pivot.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col
 df_prueba_2_pivot.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in df_prueba_2_pivot.columns]
 
 ##################################################################
->>>>>>> 7c7f75e451157bc1dacfd1e6eacf7f17f0bb6064
