@@ -48,7 +48,6 @@ def extract_ren_noren(start_year=2011, end_year=2025, time_trunc='day'):
     # Reorganizar las columnas restantes
     df_generation_ren_noren = df_generation_ren_noren[
         ['datetime', 'value', 'percentage', 'title', 'description', 'technology_type']]
-
     return df_generation_ren_noren
 
 
