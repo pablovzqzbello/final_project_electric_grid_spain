@@ -1,6 +1,8 @@
 import requests
 import pandas as pd
 
+# funcion para balance
+
 def extract_balance(start_year=2011, end_year=2025, time_trunc='day'):
     all_data = []
 
@@ -43,6 +45,7 @@ def extract_balance(start_year=2011, end_year=2025, time_trunc='day'):
     df_balance['fecha'] = pd.to_datetime(df_balance['fecha'])
     return df_balance
 
+#funcion para demanda
 
 def extract_demand(category='demanda', widget='evolucion', start_year=2011, end_year=2025):
     all_data = []
@@ -88,6 +91,7 @@ def extract_demand(category='demanda', widget='evolucion', start_year=2011, end_
     df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
     return df_demanda
 
+#funcion para intercambios
 
 def extract_exchange(start_year=2011, end_year=2025, time_trunc='day', widget='todas-fronteras-fisicos'):
     all_lines = []
@@ -137,6 +141,7 @@ def extract_exchange(start_year=2011, end_year=2025, time_trunc='day', widget='t
     df_exchanges['fecha'] = pd.to_datetime(df_exchanges['fecha'])
     return df_exchanges
 
+#funcion para generacion energética
 
 def extract_generation(start_year=2011, end_year=2025, time_trunc='day'):
     all_gen_df = []
@@ -191,3 +196,5 @@ def extract_generation(start_year=2011, end_year=2025, time_trunc='day'):
     df_generation['fecha'] = df_generation['fecha'].str.split('T').str[0]
     df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
     return df_generation
+
+#### A PARTIR DE AQUI O EN OTRO PY FUNCIONES DE SQL POPULACIÓN Y BAJADA DE DATOS ####
