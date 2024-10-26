@@ -101,3 +101,35 @@ connection.close()
 
 ### PARA LA CONEXION DE PYTHON CON BBDD SQL EL NOTEBOOK 13 Pandas###
 
+# HAY UNA SERIE DE MANERAS DE PODER CONECTAR CON PYTHON UNA TABLA DE SQL, OS PONGO UN ESQUEMA QUE PUEDE AYUDAR MUCHO
+
+# ESTA ES LA MANERA DE HACER LA CONEXION DE BAJADA
+
+user =
+password =
+database =
+
+# Crear la conexión
+engine = create_engine(f"mysql+pymysql://{user}:{password}@localhost/{database}")
+
+# Abrir una conección
+connection = engine.connect()
+
+# Cerrar la conección
+connection.close()
+
+#PARA HACER CONSULTAS TENEMOS EL SIGUIENTE CÓDIGO
+
+df = pd.read_sql_table(table_name = "NOMBRE DE LA TABLA", con = engine)
+
+#OTRA MANERA DE HACER CONSULTAS
+
+query = "SELECT * FROM loquesea WHERE first_name = 'quiensea'"
+
+df = pd.read_sql(sql = query, con = engine)
+
+#### LOS ANTERIORES SON LOS CÓDIGOS QUE UTILIZAREMOS PARA CREAR LAS VISUALIZACIONES PERTINENTES O BIEN PARA DESCARGAR LA
+#### INFO DESDE SQL. LO APLICAREMOS O BIEN EN UN PY NUEVO O BIEN EN EXTRACTION_DATA.PY
+
+
+
