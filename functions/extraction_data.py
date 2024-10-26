@@ -1,8 +1,11 @@
-def extract_ren_noren(start_year=2011, end_year=2025, time_trunc='day'):
-    all_gen_df_ren_noren = []
+import requests
+import pandas as pd
+
+def extract_balance(start_year=2011, end_year=2025, time_trunc='day'):
+    all_data = []
 
     for year in range(start_year, end_year):
-        url = 'https://apidatos.ree.es/es/datos/generacion/evolucion-renovable-no-renovable'
+        url = 'https://apidatos.ree.es/es/datos/balance/balance-electrico'
 
         params = {'start_date': f'{year}-01-01T00:00',
                   'end_date': f'{year}-12-31T23:59',
@@ -14,155 +17,34 @@ def extract_ren_noren(start_year=2011, end_year=2025, time_trunc='day'):
             print(f"Error fetching data for year {year}: {response.status_code}")
             continue
 
-        generation_data_ren_noren = response.json()
+        balance_data = response.json()
+        content_data = balance_data.get('included', [])[0].get('attributes', {}).get('content', [])
 
-        gen_df_ren_noren = []
+        data_list = []
 
-        for included_data in generation_data_ren_noren.get('included', []):
-            values = included_data.get('attributes', {}).get('values', [])
+        for item in content_data:
+            type_name = item['type']
+            values = item.get('attributes', {}).get('values', [])
 
-            df_gen = pd.DataFrame(values)
+            for value in values:
+                value['type'] = type_name
+                data_list.append(value)
 
-            df_gen['type'] = included_data.get('type')
-            df_gen['id'] = included_data.get('id')
-            df_gen['groupId'] = included_data.get('groupId')
-            df_gen['title'] = included_data.get('attributes', {}).get('title')
-            df_gen['description'] = included_data.get('attributes', {}).get('description')
-            df_gen['color'] = included_data.get('attributes', {}).get('color')
-            df_gen['technology_type'] = included_data.get('attributes', {}).get('type')
+        all_data.extend(data_list)
 
-            gen_df_ren_noren.append(df_gen)
+    df_balance = pd.DataFrame(all_data)
+    df_balance['fecha_extraccion'] = pd.Timestamp.now()
+    df_balance["fecha_extraccion"] = df_balance["fecha_extraccion"].dt.floor("s")
+    df_balance.rename(
+        columns={'datetime': 'fecha', 'value': 'valor_balance_GW', 'percentage': 'porcentaje', 'type': 'energia'},
+        inplace=True)
+    df_balance.drop(['porcentaje'], axis=1, inplace=True)
+    df_balance['fecha'] = df_balance['fecha'].str.split('T').str[0]
+    df_balance['fecha'] = pd.to_datetime(df_balance['fecha'])
+    return df_balance
 
-        all_gen_df_ren_noren.extend(gen_df_ren_noren)
 
-    df_generation_ren_noren = pd.concat(all_gen_df_ren_noren, ignore_index=True)
-
-    #########################################################################
-
-    # Eliminar columnas no deseadas
-    df_generation_ren_noren.drop(['id', 'groupId', 'color', 'type'], axis=1, inplace=True)
-
-    # Convertir la columna de fecha al formato estándar
-    df_generation_ren_noren['datetime'] = pd.to_datetime(df_generation_ren_noren['datetime'])
-
-    # Reorganizar las columnas restantes
-    df_generation_ren_noren = df_generation_ren_noren[
-        ['datetime', 'value', 'percentage', 'title', 'description', 'technology_type']]
-    return df_generation_ren_noren
-
-###############################
-
-def extract_co2(start_year=2011, end_year=2025, time_trunc='day'):
-    all_gen_df_co2 = []
-
-    for year in range(start_year, end_year):
-        url = 'https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2'
-
-        params = {'start_date': f'{year}-01-01T00:00',
-                  'end_date': f'{year}-12-31T23:59',
-                  'time_trunc': time_trunc}
-
-        response = requests.get(url, params=params)
-
-        if response.status_code != 200:
-            print(f"Error fetching data for year {year}: {response.status_code}")
-            continue
-
-        generation_data_co2 = response.json()
-
-        gen_df_co2 = []
-
-        for included_data in generation_data_co2.get('included', []):
-            values = included_data.get('attributes', {}).get('values', [])
-
-            df_gen = pd.DataFrame(values)
-
-            df_gen['type'] = included_data.get('type')
-            df_gen['id'] = included_data.get('id')
-            df_gen['groupId'] = included_data.get('groupId')
-            df_gen['title'] = included_data.get('attributes', {}).get('title')
-            df_gen['description'] = included_data.get('attributes', {}).get('description')
-            df_gen['color'] = included_data.get('attributes', {}).get('color')
-            df_gen['technology_type'] = included_data.get('attributes', {}).get('type')
-
-            gen_df_co2.append(df_gen)
-
-        all_gen_df_co2.extend(gen_df_co2)
-
-    df_generation_co2 = pd.concat(all_gen_df_co2, ignore_index=True)
-
-    ############################################################################
-
-    # Eliminar columnas no deseadas
-    df_generation_co2.drop(['id', 'groupId', 'color', 'type'], axis=1, inplace=True)
-
-    # Convertir la columna de fecha al formato estándar
-    df_generation_co2['datetime'] = pd.to_datetime(df_generation_co2['datetime'])
-
-    # Reorganizar las columnas restantes
-    df_generation_co2 = df_generation_co2[
-        ['datetime', 'value', 'percentage', 'title', 'description', 'technology_type']]
-
-    return df_generation_co2
-
-#########################################################################
-
-def extract_co2(start_year=2011, end_year=2025, time_trunc='day'):
-    all_gen_df_co2 = []
-
-    for year in range(start_year, end_year):
-        url = 'https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2'
-
-        params = {'start_date': f'{year}-01-01T00:00',
-                  'end_date': f'{year}-12-31T23:59',
-                  'time_trunc': time_trunc}
-
-        response = requests.get(url, params=params)
-
-        if response.status_code != 200:
-            print(f"Error fetching data for year {year}: {response.status_code}")
-            continue
-
-        generation_data_co2 = response.json()
-
-        gen_df_co2 = []
-
-        for included_data in generation_data_co2.get('included', []):
-            values = included_data.get('attributes', {}).get('values', [])
-
-            df_gen = pd.DataFrame(values)
-
-            df_gen['type'] = included_data.get('type')
-            df_gen['id'] = included_data.get('id')
-            df_gen['groupId'] = included_data.get('groupId')
-            df_gen['title'] = included_data.get('attributes', {}).get('title')
-            df_gen['description'] = included_data.get('attributes', {}).get('description')
-            df_gen['color'] = included_data.get('attributes', {}).get('color')
-            df_gen['technology_type'] = included_data.get('attributes', {}).get('type')
-
-            gen_df_co2.append(df_gen)
-
-        all_gen_df_co2.extend(gen_df_co2)
-
-    df_generation_co2 = pd.concat(all_gen_df_co2, ignore_index=True)
-
-    ############################################################################
-
-    # Eliminar columnas no deseadas
-    df_generation_co2.drop(['id', 'groupId', 'color', 'type'], axis=1, inplace=True)
-
-    # Convertir la columna de fecha al formato estándar
-    df_generation_co2['datetime'] = pd.to_datetime(df_generation_co2['datetime'])
-
-    # Reorganizar las columnas restantes
-    df_generation_co2 = df_generation_co2[
-        ['datetime', 'value', 'percentage', 'title', 'description', 'technology_type']]
-
-    return df_generation_co2
-
-###################################################################
-
-def extract_prueba_demanda(category='demanda', widget='evolucion', start_year=2011, end_year=2025):
+def extract_demand(category='demanda', widget='evolucion', start_year=2011, end_year=2025):
     all_data = []
 
     for year in range(start_year, end_year):
@@ -197,116 +79,115 @@ def extract_prueba_demanda(category='demanda', widget='evolucion', start_year=20
                 demanda.append(relevant)
 
     df_demanda = pd.DataFrame(demanda)
-
-    ##############################################
-
-    # Convertir la columna de fecha al formato de fecha estándar
-
-    df_demanda['datetime'] = pd.to_datetime(df_demanda['datetime'])
-
-    # Eliminar posibles duplicados
-    df_demanda.drop_duplicates(inplace=True)
-
-    # (Opcional) Eliminar columna 'percentage' si no es necesaria (En principio LO ES)
-    # df_demanda.drop('percentage', axis=1, inplace=True)
-
+    df_demanda['fecha_extraccion'] = pd.Timestamp.now()
+    df_demanda["fecha_extraccion"] = df_demanda["fecha_extraccion"].dt.floor("s")
+    df_demanda.rename(columns={'datetime': 'fecha', 'demand_value': 'valor_demanda_MW', 'percentage': 'porcentaje'},
+                      inplace=True)
+    df_demanda.drop(['porcentaje'], axis=1, inplace=True)
+    df_demanda['fecha'] = df_demanda['fecha'].str.split('T').str[0]
+    df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
     return df_demanda
 
-#########################################################3
 
-# Bloque de Limpieza General
+def extract_exchange(start_year=2011, end_year=2025, time_trunc='day', widget='todas-fronteras-fisicos'):
+    all_lines = []
 
-# NO EJECUTAR TODAVÍA, CONSULTAR AL GRUPO
+    for year in range(start_year, end_year):
+        url = f'https://apidatos.ree.es/es/datos/intercambios/{widget}'
 
-df_ren_noren = extract_ren_noren()
-df_co2 = extract_co2()
-df_prueba_2 = extract_prueba_2()
-df_demanda = extract_prueba_demanda()
+        params = {'start_date': f'{year}-01-01T00:00',
+                  'end_date': f'{year}-12-31T23:59',
+                  'time_trunc': time_trunc}
 
-# Conversión de fechas al formato estándar
-df_ren_noren['datetime'] = pd.to_datetime(df_ren_noren['datetime'])
-df_co2['datetime'] = pd.to_datetime(df_co2['datetime'])
-df_prueba_2['datetime'] = pd.to_datetime(df_prueba_2['datetime'])
-df_demanda['datetime'] = pd.to_datetime(df_demanda['datetime'])
+        response = requests.get(url, params=params)
 
-# Eliminar duplicados (aplicado para asegurar que no haya datos redundantes)
-df_ren_noren.drop_duplicates(inplace=True)
-df_co2.drop_duplicates(inplace=True)
-df_prueba_2.drop_duplicates(inplace=True)
-df_demanda.drop_duplicates(inplace=True)
+        if response.status_code != 200:
+            print(f"Error fetching data for year {year}: {response.status_code}")
+            continue
+        exchange_data = response.json()
 
-# Renombrar columnas para 'consistencia y claridad'
-df_ren_noren.rename(columns={'value': 'generation_value', 'percentage': 'generation_percentage'}, inplace=True)
-df_co2.rename(columns={'value': 'co2_emission_value'}, inplace=True)
-df_demanda.rename(columns={'demand_value': 'energy_demand_value'}, inplace=True)
+        lines = []
 
-# Valores numéricos a FLOAT
-df_ren_noren['generation_value'] = df_ren_noren['generation_value'].astype(float)
-df_co2['co2_emission_value'] = df_co2['co2_emission_value'].astype(float)
-df_demanda['energy_demand_value'] = df_demanda['energy_demand_value'].astype(float)
+        for country in exchange_data.get('included', []):
+            country_name = country.get('id')
 
-# Reorganizar las columnas para consistencia en la estructura (opcional)
-df_ren_noren = df_ren_noren[['datetime', 'generation_value', 'generation_percentage', 'technology_type', 'title', 'description']]
-df_co2 = df_co2[['datetime', 'co2_emission_value', 'title', 'description', 'technology_type']]
-df_prueba_2 = df_prueba_2[['datetime', 'value', 'percentage', 'technology_type', 'title', 'description']]
-df_demanda = df_demanda[['datetime', 'energy_demand_value']]
+            if 'content' in country.get('attributes', {}):
+                for content in country['attributes']['content']:
+                    trade_type = content.get('attributes', {}).get('title')
+                    values = content.get('attributes', {}).get('values', [])
 
-# Filtrar datos irrelevantes si es necesario (opcional, ejemplo de filtro de fechas)
-df_ren_noren = df_ren_noren[df_ren_noren['datetime'] >= '2015-01-01']
-df_co2 = df_co2[df_co2['datetime'] >= '2015-01-01']
-df_prueba_2 = df_prueba_2[df_prueba_2['datetime'] >= '2015-01-01']
-df_demanda = df_demanda[df_demanda['datetime'] >= '2015-01-01']
+                    for item in values:
+                        line = {'country': country_name,
+                                'type': trade_type,
+                                'value': item.get('value'),
+                                'percentage': item.get('percentage'),
+                                'datetime': item.get('datetime')}
+                        lines.append(line)
 
-# Unificar categorías en minúsculas para evitar discrepancias en el uso de texto
-df_ren_noren['technology_type'] = df_ren_noren['technology_type'].str.lower()
-df_co2['technology_type'] = df_co2['technology_type'].str.lower()
-df_prueba_2['technology_type'] = df_prueba_2['technology_type'].str.lower()
+        all_lines.extend(lines)
 
-# Imprimir un resumen de los DataFrames para verificar antes de la carga a SQL
-print("Renovable y No Renovable - Primeras Filas")
-print(df_ren_noren.head())
-print("Emisiones de CO2 - Primeras Filas")
-print(df_co2.head())
-print("Estructura de Generación - Primeras Filas")
-print(df_prueba_2.head())
-print("Demanda de Energía - Primeras Filas")
-print(df_demanda.head())
+    df_exchanges = pd.DataFrame(all_lines)
+    df_exchanges['fecha_extraccion'] = pd.Timestamp.now()
+    df_exchanges["fecha_extraccion"] = df_exchanges["fecha_extraccion"].dt.floor("s")
+    df_exchanges.rename(
+        columns={'datetime': 'fecha', 'value': 'valor_GW', 'percentage': 'porcentaje', 'type': 'tipo_transaccion',
+                 'country': 'pais'}, inplace=True)
+    df_exchanges.drop(['porcentaje'], axis=1, inplace=True)
+    df_exchanges['fecha'] = df_exchanges['fecha'].str.split('T').str[0]
+    df_exchanges['fecha'] = pd.to_datetime(df_exchanges['fecha'])
+    return df_exchanges
 
-# Si todo es correcto, los DataFrames están listos para ser cargados a la base de datos SQL
 
-# Modelado con Pivot Table
+def extract_generation(start_year=2011, end_year=2025, time_trunc='day'):
+    all_gen_df = []
 
-# Modelado con Pivot Table para df_ren_noren
-df_ren_noren_pivot = df_ren_noren.pivot_table(
-    index=['datetime'], columns='technology_type', values='generation_value', aggfunc='sum'
-).reset_index()
+    for year in range(start_year, end_year):
+        url = 'https://apidatos.ree.es/es/datos/generacion/estructura-generacion'
 
-# Modelado con Pivot Table para df_co2
-df_co2_pivot = df_co2.pivot_table(
-    index=['datetime'], columns='technology_type', values='co2_emission_value', aggfunc='sum'
-).reset_index()
+        params = {
+            'start_date': f'{year}-01-01T00:00',
+            'end_date': f'{year}-12-31T23:59',
+            'time_trunc': time_trunc
+        }
 
-# Modelado con Pivot Table para df_prueba_2
-df_prueba_2_pivot = df_prueba_2.pivot_table(
-    index=['datetime'], columns='technology_type', values='value', aggfunc='sum'
-).reset_index()
+        response = requests.get(url, params=params)
 
-# Resumen de la Demanda Energética Diaria
-df_demanda_summary = df_demanda.groupby('datetime').agg({'energy_demand_value': 'sum'}).reset_index()
+        if response.status_code != 200:
+            print(f"Error fetching data for year {year}: {response.status_code}")
+            continue
 
-print("Pivot - Generación Renovable y No Renovable:")
-print(df_ren_noren_pivot.head())
-print("\nPivot - Emisiones de CO2:")
-print(df_co2_pivot.head())
-print("\nPivot - Estructura de Generación:")
-print(df_prueba_2_pivot.head())
-print("\nResumen - Demanda Energética Diaria:")
-print(df_demanda_summary.head())
+        generation_data = response.json()
 
-df_ren_noren_pivot.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in df_ren_noren_pivot.columns]
+        gen_df = []
 
-df_co2_pivot.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in df_co2_pivot.columns]
+        for included_data in generation_data.get('included', []):
+            values = included_data.get('attributes', {}).get('values', [])
 
-df_prueba_2_pivot.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in df_prueba_2_pivot.columns]
+            df_gen = pd.DataFrame(values)
 
-##################################################################
+            df_gen['type'] = included_data.get('type')
+            df_gen['id'] = included_data.get('id')
+            df_gen['groupId'] = included_data.get('groupId')
+            df_gen['title'] = included_data.get('attributes', {}).get('title')
+            df_gen['description'] = included_data.get('attributes', {}).get('description')
+            df_gen['color'] = included_data.get('attributes', {}).get('color')
+            df_gen['technology_type'] = included_data.get('attributes', {}).get('type')
+
+            gen_df.append(df_gen)
+
+        all_gen_df.extend(gen_df)
+
+    df_generation = pd.concat(all_gen_df, ignore_index=True)
+
+    df_generation = df_generation[
+        ['datetime', 'value', 'percentage', 'type', 'id', 'groupId', 'title', 'description', 'color',
+         'technology_type']]
+    df_generation['fecha_extraccion'] = pd.Timestamp.now()
+    df_generation["fecha_extraccion"] = df_generation["fecha_extraccion"].dt.floor("s")
+    df_generation.rename(
+        columns={'datetime': 'fecha', 'value': 'valor_generacion_GW', 'percentage': 'porcentaje', 'type': 'energia',
+                 'technology_type': 'tipo_tecnología'}, inplace=True)
+    df_generation.drop(['porcentaje', 'title', 'groupId', 'id', 'description', 'color'], axis=1, inplace=True)
+    df_generation['fecha'] = df_generation['fecha'].str.split('T').str[0]
+    df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+    return df_generation
