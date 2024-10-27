@@ -197,4 +197,57 @@ def extract_generation(start_year=2011, end_year=2025, time_trunc='day'):
     df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
     return df_generation
 
+#funcion para CO2
+
+def extract_co2(start_year=2011, end_year=2025, time_trunc='day'):
+    all_gen_df_co2 = []
+
+    for year in range(start_year, end_year):
+        url = 'https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2'
+
+        params = {'start_date': f'{year}-01-01T00:00',
+                  'end_date': f'{year}-12-31T23:59',
+                  'time_trunc': time_trunc}
+
+        response = requests.get(url, params=params)
+
+        if response.status_code != 200:
+            print(f"Error fetching data for year {year}: {response.status_code}")
+            continue
+
+        generation_data_co2 = response.json()
+
+        gen_df_co2 = []
+
+        for included_data in generation_data_co2.get('included', []):
+            values = included_data.get('attributes', {}).get('values', [])
+
+            df_gen = pd.DataFrame(values)
+
+            df_gen['type'] = included_data.get('type')
+            df_gen['id'] = included_data.get('id')
+            df_gen['groupId'] = included_data.get('groupId')
+            df_gen['title'] = included_data.get('attributes', {}).get('title')
+            df_gen['description'] = included_data.get('attributes', {}).get('description')
+            df_gen['color'] = included_data.get('attributes', {}).get('color')
+            df_gen['technology_type'] = included_data.get('attributes', {}).get('type')
+
+            gen_df_co2.append(df_gen)
+
+        all_gen_df_co2.extend(gen_df_co2)
+
+    df_generation_co2 = pd.concat(all_gen_df_co2, ignore_index=True)
+
+    df_generation_co2 = df_generation_co2[
+        ['datetime', 'value', 'percentage', 'type', 'id', 'groupId', 'title', 'description', 'color',
+         'technology_type']]
+    df_generation_co2.drop(['id', 'groupId', 'title', 'description', 'percentage', 'color', 'technology_type'], axis=1,
+                           inplace=True)
+    df_generation_co2['fecha_extraccion'] = pd.Timestamp.now()
+    df_generation_co2["fecha_extraccion"] = df_generation_co2["fecha_extraccion"].dt.floor("s")
+    df_generation_co2.rename(columns={'datetime': 'fecha', 'value': 'valor', 'percentage': 'porcentaje', 'type': 'energia'}, inplace=True)
+    df_generation_co2['fecha'] = df_generation_co2['fecha'].str.split('T').str[0]
+    df_generation_co2['fecha'] = pd.to_datetime(df_generation_co2['fecha'])
+    return df_generation_co2
+
 #### A PARTIR DE AQUI O EN OTRO PY FUNCIONES DE SQL POPULACIÓN Y BAJADA DE DATOS ####
