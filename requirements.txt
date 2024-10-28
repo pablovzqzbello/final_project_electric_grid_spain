@@ -6,6 +6,7 @@ matplotlib
 seaborn
 plotly
 python-dotenv
+mysqlclient
 mysql-connector-python
 sqlalchemy
 

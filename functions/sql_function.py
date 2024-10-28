@@ -3,6 +3,7 @@ import os
 from sqlalchemy import create_engine, engine
 from sqlalchemy.exc import SQLAlchemyError
 import mysql.connector
+import mysql
 from functions.extraction_data import *
 
 df_demanda=extract_demand()
