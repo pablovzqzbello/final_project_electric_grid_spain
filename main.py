@@ -36,7 +36,7 @@ def main ():
     if choice == "Vista general":
 
         #### A PARTIR DE AQUÍ SE COLOCAN LAS VISUALIZACIONES GENERALES. ACORDAROS QUE COMO MÍNIMO SON 5. PODEMOS
-        #### AÑADIR TABLAS DE SQL
+        #### AÑADIR TABLAS DE SQL. VAMOS BIEN. PONER UN BOTÓN AQUÍ QUE ACTIVE LA EXTRACCIÓN O LIMPIE???
 
         st.subheader("Demanda del mercado")
         #Filtros
