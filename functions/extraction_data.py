@@ -2,6 +2,9 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 import os
+from sqlalchemy import create_engine, engine
+from sqlalchemy.exc import SQLAlchemyError
+import mysql.connector
 # funcion para balance
 
 def extract_balance(start_year=2011, end_year=2025, time_trunc='day'):

@@ -5,3 +5,8 @@ requests
 matplotlib
 seaborn
 plotly
+python-dotenv
+mysql-connector-python
+sqlalchemy
+
+
