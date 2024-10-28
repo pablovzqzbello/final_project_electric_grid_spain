@@ -2,21 +2,67 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import requests
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
-from functions.extraction_data import *
 
 def main ():
+    ### ALGUNA IMAGEN?????
+    st.title("Red Eléctroca de España. Análisis de mercado, sostenibilidad y rendimiento")
 
-    st.title("Red Eléctrica de España. Investigación de mercado, sostenibilidad y rendimiento")
+    st.header("¿Qué es Redeia, S.A.")
+    st.text("Redeia Corporación, S.A. es un grupo empresarial mutinacional de origen español fundado el 29 de enero de"
+            "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico"
+            "Cuenta con una financiación público privada, en la que el Gobierno de España cubre el 20% de las invesiones,"
+            "mientras que el 80% lo cubre capital privado.")
 
-    st.text("Este proyecto tiene como objetivo al consolidación de una aplicación innovadora en el mercado que nos"
-            "permita obtener datos a tiempo real del mercado eléctrico español. En primer lugar, de la demanda energética." 
-            "En segundo lugar, la generación de energía dispuesta entre energías renovables y no renovables. En tercer lugar,"
-            "un balance de producción general, en el que podamos ver la evolución del consumo energético español."
-            "En cuarto lugar, un estudio sobre la importación y exportación de energía entre España y sus partners."
-            "Agradecemos a Redeia Corporación S.A. la disposición de un API accesible para la consulta de su base de datos")
+    st.header("¿De dónde se obtiene la información?")
+    st.text("La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
+            "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar"
+            "libremente los datos que Redeia genera a tiempo real."
+            "Para más consultas: https://www.ree.es/es/datos/apidatos")
+
+    st.header("Objetivos")
+    st.text("Con los daos obtenidos se pretende realizar un análisis integral de la corporación enfocándose a la "
+            "estructura de nogocio desta empresa desde cuatro pilares funamentales:"
+            "- Generación de energía"
+            "- Balance estructural energético"
+            "- Demanda energética del mercado español"
+            "- Transacciones Internacionales"
+            "Como punto clave este estudio se situa sobre la sostenibilidad incidiendo en el precio y el impacto de la"
+            "de la huella de carbono a través del crecimiento de la demanda y l ageneración de energía")
+
+    choices=["Vista general", "Vista específica"]
+    choice=st.sidebar.selectbox(label="Menú", options=choices,index=0)
+
+    if choice == "Vista general":
+
+        #### A PARTIR DE AQUÍ SE COLOCAN LAS VISUALIZACIONES GENERALES. ACORDAROS QUE COMO MÍNIMO SON 5. PODEMOS
+        #### AÑADIR TABLAS DE SQL
+
+        st.subheader("Demanda del mercado")
+        #Filtros
+        #Visualizaciones
+        st.subheader("Balance energético")
+        #Filtros
+        #Visualizaciones
+        st.subheader("Transacciones energéticas")
+        #Filtros
+        #Visualizaciones
+        st.subheader("Generación energética")
+        #Filtros
+        #Visualizaciones
+        st.subheader("Emisión CO2")
+        #Filtros
+        #Visualizaciones
+
+    else:
+        ### TEXTO EXPLICATIVO???
+        st.subheader("Predicción de demanda")
+        st.subheader("Predicción de balance")
+        st.subheader("Predicción de generación energía")
+        st.subheader("Predicción de importaciones")
+        st.subheader("Predicción de exportaciones")
+        st.subheader("Prediccion de saldo")
+
 
 
 
