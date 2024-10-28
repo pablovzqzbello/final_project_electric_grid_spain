@@ -82,23 +82,6 @@
 
 # PONER TODO ESTO EN UN ARCHIVO SECRETO NO PUEDE ESTAR A LIBRE DISPOSICIÓN DE ROBO NO EJECUTAR
 
-user =
-password =
-database =
-
-# CREAR CONEXION
-
-engine = create_engine(f"mysql+pymysql://{user}:{password}@localhost/{database}")
-
-connection = engine.connect()
-
-df_demanda.to_sql('demanda', engine, if_exists = 'append', index=False)
-df_balance.to_sql('balance', engine, if_exists='append', index=False)
-df_exchanges.to_sql('intercambios', engine, if_exists='append', index=False)
-df_generation.to_sql('generacion_energia', engine, if_exists='append', index=False)
-
-connection.close()
-
 ### PARA LA CONEXION DE PYTHON CON BBDD SQL EL NOTEBOOK 13 Pandas###
 
 # HAY UNA SERIE DE MANERAS DE PODER CONECTAR CON PYTHON UNA TABLA DE SQL, OS PONGO UN ESQUEMA QUE PUEDE AYUDAR MUCHO
