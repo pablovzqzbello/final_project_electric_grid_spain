@@ -2,6 +2,10 @@ streamlit
 numpy
 pandas
 requests
-matplotlib
-seaborn
 plotly
+python-dotenv
+mysqlclient
+mysql-connector-python
+sqlalchemy
+
+
