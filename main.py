@@ -6,7 +6,7 @@ import plotly.express as px
 
 def main ():
     ### ALGUNA IMAGEN?????
-    st.title("Red Eléctroca de España. Análisis de mercado, sostenibilidad y rendimiento")
+    st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
 
     st.header("¿Qué es Redeia, S.A.")
     st.text("Redeia Corporación, S.A. es un grupo empresarial mutinacional de origen español fundado el 29 de enero de"
@@ -48,9 +48,6 @@ def main ():
         #Filtros
         #Visualizaciones
         st.subheader("Generación energética")
-        #Filtros
-        #Visualizaciones
-        st.subheader("Emisión CO2")
         #Filtros
         #Visualizaciones
 
