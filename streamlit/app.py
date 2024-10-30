@@ -1,14 +1,34 @@
 import streamlit as st
 import pandas as pd
-from extraction_data import *
+from functions.extraction_data import *
+from auxiliary.db_connection import *
+from functions.sql_function import *
 from config import configure_page
 from PIL import Image
 from dotenv import load_dotenv
 import os
-from auxiliary import *
-from functions.extraction_data import extract_balance, extract_demand, extract_exchange
 
 configure_page()
+
+load_dotenv()
+
+extract_demand()
+extract_exchange()
+extract_generation()
+extract_balance()
+
+create_db()
+create_tables()
+
+df_demanda=extract_demand()
+df_exchanges=extract_exchange()
+df_generation=extract_generation()
+df_balance=extract_balance()
+
+get_engine()
+insert_data()
+
+extract_data()
 
 def main():
 
@@ -40,13 +60,6 @@ def main():
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
     if choice == "Vista general":
-
-        st.button(label="Extraer datos", key="submit1"):
-            extract_demand()
-            extract_balance()
-            extract_generation()
-            extract_exchange()
-
             #### A PARTIR DE AQUÍ SE COLOCAN LAS VISUALIZACIONES GENERALES. ACORDAROS QUE COMO MÍNIMO SON 5. PODEMOS
             #### AÑADIR TABLAS DE SQL. VAMOS BIEN. PONER UN BOTÓN AQUÍ QUE ACTIVE LA EXTRACCIÓN O LIMPIE???
 
