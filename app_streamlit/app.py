@@ -1,32 +1,18 @@
-import plotly as px
-from dotenv import load_dotenv
+import plotly.express as px
 import streamlit as st
-from auxiliary.db_connection import *
 from config import configure_page
 from functions.sql_function import *
-from functions.extraction_data import extract_balance, extract_demand, extract_exchange, extract_generation, estandarizar_texto
+from functions.extraction_data import extract_balance, extract_demand, extract_exchange, extract_generation
 
 configure_page()
 
-estandarizar_texto()
-extract_demand()
-extract_exchange()
-extract_generation()
-extract_balance()
-
 df_demanda=extract_demand()
-df_exchanges=extract_exchange()
-df_generation=extract_generation()
 df_balance=extract_balance()
+df_exchange=extract_exchange()
+df_generation=extract_generation()
 
-create_db()
-create_tables()
+insert_data('df_demanda', 'df_balance', 'df_exchanges', 'df_generation')
 
-get_engine()
-insert_data()
-extract_data()
-
-@st.cache
 def main():
 
     st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
@@ -60,22 +46,27 @@ def main():
             #### A PARTIR DE AQUÍ SE COLOCAN LAS VISUALIZACIONES GENERALES. ACORDAROS QUE COMO MÍNIMO SON 5. PODEMOS
             #### AÑADIR TABLAS DE SQL. VAMOS BIEN. PONER UN BOTÓN AQUÍ QUE ACTIVE LA EXTRACCIÓN O LIMPIE???
 
+
+
+
         st.subheader("Demanda del mercado")
             # Filtros
-        df_demanda_app=extract_data("SELECT * FROM demanda_energia")
+
+        df_demanda_app=extract_data('SELECT * FROM demanda_energia')
             # Visualizaciones
-        px.line(df_demanda_app, x='fecha', y='valor_demanda_MW')
+        fig=px.line(df_demanda_app, x='fecha', y='valor_demanda_MW')
+        st.plotly_chart(fig)
         st.subheader("Balance energético")
             # Filtros
-        df_balance_app=extract_data("SELECT * FROM balance_energia")
+
             # Visualizaciones
         st.subheader("Transacciones energéticas")
             # Filtros
-        df_transacciones_app=extract_data("SELECT * FROM transacciones_energia")
+
             # Visualizaciones
         st.subheader("Generación energética")
             # Filtros
-        df_generacion_app=extract_data("SELECT * FROM generacion_energia")
+
             # Visualizaciones
 
     elif choice == "Vista específica":
