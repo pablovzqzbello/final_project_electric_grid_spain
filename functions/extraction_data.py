@@ -1,5 +1,23 @@
 import requests
 import pandas as pd
+import unicodedata
+
+###FUNCIÓN ESTANDARIZACIÓN DE TEXTO
+
+def estandarizar_texto(valor):
+    
+    if isinstance(valor, str):  
+        
+        valor = valor.lower()
+        
+        valor = ''.join(
+            (c for c in unicodedata.normalize('NFD', valor) if unicodedata.category(c) != 'Mn')
+        )
+        
+        valor = valor.strip()
+        
+        valor = valor.replace(" ","_")
+    return valor
 
 # funcion para balance
 
@@ -43,6 +61,7 @@ def extract_balance(start_year=2011, end_year=2025, time_trunc='day'):
     df_balance.drop(['porcentaje'], axis=1, inplace=True)
     df_balance['fecha'] = df_balance['fecha'].str.split('T').str[0]
     df_balance['fecha'] = pd.to_datetime(df_balance['fecha'])
+    df_balance = df_balance.map(estandarizar_texto)
     return df_balance
 
 #funcion para demanda
@@ -89,6 +108,7 @@ def extract_demand(category='demanda', widget='evolucion', start_year=2011, end_
     df_demanda.drop(['porcentaje'], axis=1, inplace=True)
     df_demanda['fecha'] = df_demanda['fecha'].str.split('T').str[0]
     df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
+    df_demanda = df_demanda.map(estandarizar_texto)
     return df_demanda
 
 #funcion para intercambios
@@ -139,6 +159,7 @@ def extract_exchange(start_year=2011, end_year=2025, time_trunc='day', widget='t
     df_exchanges.drop(['porcentaje'], axis=1, inplace=True)
     df_exchanges['fecha'] = df_exchanges['fecha'].str.split('T').str[0]
     df_exchanges['fecha'] = pd.to_datetime(df_exchanges['fecha'])
+    df_exchanges = df_exchanges.map(estandarizar_texto)
     return df_exchanges
 
 #funcion para generacion energética
@@ -195,6 +216,7 @@ def extract_generation(start_year=2011, end_year=2025, time_trunc='day'):
     df_generation.drop(['porcentaje', 'title', 'groupId', 'id', 'description', 'color'], axis=1, inplace=True)
     df_generation['fecha'] = df_generation['fecha'].str.split('T').str[0]
     df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+    df_generation = df_generation.map(estandarizar_texto)
     return df_generation
 
 #funcion para CO2
@@ -248,9 +270,5 @@ def extract_co2(start_year=2011, end_year=2025, time_trunc='day'):
     df_generation_co2.rename(columns={'datetime': 'fecha', 'value': 'valor', 'percentage': 'porcentaje', 'type': 'energia'}, inplace=True)
     df_generation_co2['fecha'] = df_generation_co2['fecha'].str.split('T').str[0]
     df_generation_co2['fecha'] = pd.to_datetime(df_generation_co2['fecha'])
+    df_generation_co2 = df_generation_co2.map(estandarizar_texto)
     return df_generation_co2
-
-#### A PARTIR DE AQUI O EN OTRO PY FUNCIONES DE SQL POPULACIÓN Y BAJADA DE DATOS ####
-
-# Función INSERTAR DATOS BBDD
-
