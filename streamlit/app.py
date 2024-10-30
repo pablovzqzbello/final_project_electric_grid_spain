@@ -1,6 +1,6 @@
 import streamlit as st
-from extraction_data import estandarizar_texto, extract_demand, extract_exchange, extract_generation, extract_balance
 from auxiliary.db_connection import *
+from functions.extraction_data import *
 from functions.sql_function import *
 from config import configure_page
 from dotenv import load_dotenv
@@ -12,6 +12,11 @@ configure_page()
 load_dotenv()
 
 estandarizar_texto()
+extract_demand()
+extract_exchange()
+extract_generation()
+extract_balance()
+
 df_demanda=extract_demand()
 df_exchanges=extract_exchange()
 df_generation=extract_generation()
