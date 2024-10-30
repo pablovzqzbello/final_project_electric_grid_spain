@@ -1,17 +1,18 @@
 import streamlit as st
-import pandas as pd
 from functions.extraction_data import *
 from auxiliary.db_connection import *
 from functions.sql_function import *
 from config import configure_page
 from PIL import Image
 from dotenv import load_dotenv
+import plotly as px
 import os
 
 configure_page()
 
 load_dotenv()
 
+estandarizar_texto()
 extract_demand()
 extract_exchange()
 extract_generation()
@@ -27,8 +28,8 @@ df_balance=extract_balance()
 
 get_engine()
 insert_data()
-
 extract_data()
+
 
 def main():
 
@@ -65,18 +66,23 @@ def main():
 
         st.subheader("Demanda del mercado")
             # Filtros
+        df_demanda_app=extract_data("SELECT * FROM demanda_energia")
             # Visualizaciones
+        px.line(df_demanda_app, x='fecha', y='valor_demanda_MW')
         st.subheader("Balance energético")
             # Filtros
+        df_balance_app=extract_data("SELECT * FROM balance_energia")
             # Visualizaciones
         st.subheader("Transacciones energéticas")
             # Filtros
+        df_transacciones_app=extract_data("SELECT * FROM transacciones_energia")
             # Visualizaciones
         st.subheader("Generación energética")
             # Filtros
+        df_generacion_app=extract_data("SELECT * FROM generacion_energia")
             # Visualizaciones
 
-    else:
+    elif choice == "Vista específica":
             ### TEXTO EXPLICATIVO???
         st.subheader("Predicción de demanda")
         st.subheader("Predicción de balance")
