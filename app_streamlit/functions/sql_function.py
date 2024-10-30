@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 from sqlalchemy import *
 from sqlalchemy.exc import SQLAlchemyError
-from streamlit.functions.extraction_data import *
+from functions.extraction_data import *
 
 #INVOCAMOS LAS FUNCIONES DE EXTRACCIÓN PARA LA OBTENCIÓN DE DATOS
 

@@ -4,11 +4,9 @@ import streamlit as st
 from auxiliary.db_connection import *
 from config import configure_page
 from functions.sql_function import *
-from functions.extraction_data import *
+from functions.extraction_data import extract_balance, extract_demand, extract_exchange, extract_generation, estandarizar_texto
 
 configure_page()
-
-load_dotenv()
 
 estandarizar_texto()
 extract_demand()
