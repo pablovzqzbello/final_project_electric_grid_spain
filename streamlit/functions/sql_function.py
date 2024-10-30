@@ -96,16 +96,16 @@ def insert_data(df_demanda, df_balance, df_exchanges, df_generation):
             
             print("Conexión exitosa a la base de datos")
     
-            df_demanda.to_sql('demanda_energia', con=engine, if_exists='append', index=False)
+            df_demanda.to_sql('demanda_energia', con=engine, if_exists='replace', index=False)
             print("Datos de demanda insertados correctamente.")
                 
-            df_balance.to_sql('balance_energia', con=engine, if_exists='append', index=False)
+            df_balance.to_sql('balance_energia', con=engine, if_exists='replace', index=False)
             print("Datos de balance insertados correctamente.")
     
-            df_exchanges.to_sql('transacciones_energia', con=engine, if_exists='append', index=False)
+            df_exchanges.to_sql('transacciones_energia', con=engine, if_exists='replace', index=False)
             print("Datos de intercambios insertados correctamente.")
     
-            df_generation.to_sql('generacion_energia', con=engine, if_exists='append', index=False)
+            df_generation.to_sql('generacion_energia', con=engine, if_exists='replace', index=False)
             print("Datos de generación insertados correctamente.")
 
     except SQLAlchemyError as e:

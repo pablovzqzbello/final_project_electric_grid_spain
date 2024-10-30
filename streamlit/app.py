@@ -1,9 +1,8 @@
 import streamlit as st
-from functions.extraction_data import *
+from extraction_data import estandarizar_texto, extract_demand, extract_exchange, extract_generation, extract_balance
 from auxiliary.db_connection import *
 from functions.sql_function import *
 from config import configure_page
-from PIL import Image
 from dotenv import load_dotenv
 import plotly as px
 import os
@@ -13,18 +12,13 @@ configure_page()
 load_dotenv()
 
 estandarizar_texto()
-extract_demand()
-extract_exchange()
-extract_generation()
-extract_balance()
-
-create_db()
-create_tables()
-
 df_demanda=extract_demand()
 df_exchanges=extract_exchange()
 df_generation=extract_generation()
 df_balance=extract_balance()
+
+create_db()
+create_tables()
 
 get_engine()
 insert_data()
