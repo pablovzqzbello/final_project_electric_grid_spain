@@ -1,13 +1,17 @@
 import streamlit as st
 import pandas as pd
+from extraction_data import *
 from config import configure_page
+from PIL import Image
 from dotenv import load_dotenv
 import os
 from auxiliary import *
+from functions.extraction_data import extract_balance, extract_demand, extract_exchange
+
 configure_page()
 
 def main():
-    st.image("Red_Eléctrica_de_España_(logo).svg.png", caption="Logo Red Eléctrica España")
+
     st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
 
     st.subheader("¿Qué es Redeia, S.A.?")
@@ -30,12 +34,18 @@ def main():
                 "- Demanda energética del mercado español"
                 "- Transacciones Internacionales"
                 "Como punto clave este estudio se situa sobre la sostenibilidad incidiendo en el precio y el impacto de la"
-                "de la huella de carbono a través del crecimiento de la demanda y l ageneración de energía")
+                "de la huella de carbono a través del crecimiento de la demanda y la generación de energía")
 
     choices = ["Vista general", "Vista específica"]
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
     if choice == "Vista general":
+
+        st.button(label="Extraer datos", key="submit1"):
+            extract_demand()
+            extract_balance()
+            extract_generation()
+            extract_exchange()
 
             #### A PARTIR DE AQUÍ SE COLOCAN LAS VISUALIZACIONES GENERALES. ACORDAROS QUE COMO MÍNIMO SON 5. PODEMOS
             #### AÑADIR TABLAS DE SQL. VAMOS BIEN. PONER UN BOTÓN AQUÍ QUE ACTIVE LA EXTRACCIÓN O LIMPIE???
