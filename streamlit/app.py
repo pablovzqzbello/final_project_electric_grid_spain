@@ -1,11 +1,10 @@
+import plotly as px
+from dotenv import load_dotenv
 import streamlit as st
 from auxiliary.db_connection import *
-from functions.extraction_data import *
-from functions.sql_function import *
 from config import configure_page
-from dotenv import load_dotenv
-import plotly as px
-import os
+from functions.sql_function import *
+from functions.extraction_data import *
 
 configure_page()
 
@@ -29,7 +28,7 @@ get_engine()
 insert_data()
 extract_data()
 
-
+@st.cache
 def main():
 
     st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
