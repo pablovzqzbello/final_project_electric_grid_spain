@@ -9,13 +9,11 @@ from functions.sql_function import extract_data
 st.set_page_config(
     page_title="PFB: Red Eléctrica Española",
     page_icon=":bulb:",
-    layout="wide"
-)
+    layout="wide")
 
 def main ():
-    st.title("Red Eléctroca de España. Análisis de mercado, sostenibilidad y rendimiento")
+    st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
 
-    st.title("Red Eléctrica de España. Investigación de mercado, sostenibilidad y rendimiento")
     st.header("¿Qué es Redeia, S.A.?")
     st.markdown("Redeia Corporación, S.A. es un grupo empresarial mutinacional de origen español fundado el 29 de enero de"
             "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico"
@@ -44,12 +42,18 @@ def main ():
         #Filtros
         df_demanda=extract_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
         #Visualizaciones
+        #start_date=st.date_input("Fecha de inicio", value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max())
+        #end_date = st.date_input("Fecha de fin", value=df_demanda["fecha"].max(), min_value=df_demanda["fecha"].min(),
+                                 #max_value=df_demanda["fecha"].max())
+        #start_date=pd.Timestamp(start_date)
+        #end_date=pd.Timestamp(end_date)
+        #filtered_df_demanda=df_demanda[(df_demanda['fecha']>=pd.to_datetime(start_date)) & (df_demanda['fecha']<=pd.to_datetime(end_date))]
         fig1=px.line(df_demanda, x='fecha', y='valor_demanda_MW')
         st.plotly_chart(fig1)
         st.subheader("Balance energético")
         #Filtros
         df_balance=extract_data("SELECT fecha, valor_balance_GW FROM balance_energia")
-        fig2 = px.pie(df_balance[~(df_balance['energia']=='Generación renovable')], values='valor_balance_GW', names='energia')
+        fig2 = px.pie(df_balance[~(df_balance['energia']=='Generación renovable')],x='fecha', y='valor_balance_GW')
         st.plotly_chart(fig2)
         #Visualizaciones
         st.subheader("Transacciones energéticas")
