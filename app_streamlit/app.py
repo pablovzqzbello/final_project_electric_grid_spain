@@ -44,19 +44,28 @@ def main ():
         #Filtros
         df_demanda=extract_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
         #Visualizaciones
-        fig=px.line(df_demanda, x='fecha', y='valor_demanda_MW')
-        st.plotly_chart(fig)
+        fig1=px.line(df_demanda, x='fecha', y='valor_demanda_MW')
+        st.plotly_chart(fig1)
         st.subheader("Balance energético")
         #Filtros
+        df_balance=extract_data("SELECT fecha, valor_balance_GW FROM balance_energia")
+        fig2 = px.pie(df_balance[~(df_balance['energia']=='Generación renovable')], values='valor_balance_GW', names='energia')
+        st.plotly_chart(fig2)
         #Visualizaciones
         st.subheader("Transacciones energéticas")
         #Filtros
+        df_exchanges=extract_data("SELECT * FROM transacciones_energia")
+        fig3=px.histogram(df_exchanges[~(df_exchanges['tipo_transaccion'] == 'saldo')], x='fecha', y='valor_GW',
+                     color='pais')
+        st.plotly_chart(fig3)
         #Visualizaciones
         st.subheader("Generación energética")
-        #Filtros
-        #Visualizaciones
+        df_generation=extract_data("SELECT * FROM generacion_energia")
+        fig4=px.histogram(df_generation[~(df_generation['energia']=='Generación total')], x='fecha', y='valor_generacion_GW', color='energia')
+        st.plotly_chart(fig4)
+        fig5=px.pie(df_generation[~(df_generation['energia']=='Generación total')], values='valor_generacion_GW', names='energia')
+        st.plotly_chart(fig5)
     else:
-        ### TEXTO EXPLICATIVO???
         st.subheader("Predicción de demanda")
         st.subheader("Predicción de balance")
         st.subheader("Predicción de generación energía")
