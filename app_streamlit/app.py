@@ -52,7 +52,7 @@ def main ():
         st.plotly_chart(fig1)
         st.subheader("Balance energético")
         #Filtros
-        df_balance=extract_data("SELECT fecha, valor_balance_GW FROM balance_energia")
+        df_balance=extract_data("SELECT * FROM balance_energia")
         fig2 = px.line(df_balance[~(df_balance['energia']=='Generación renovable')],x='fecha', y='valor_balance_GW')
         st.plotly_chart(fig2)
         #Visualizaciones
