@@ -276,12 +276,12 @@ def main():
         filtered_df_balance = date_filter(filtered_df_balance, period_demanda)
 
         # Visualización de Balance Energético
-        fig2 = px.line(filtered_df_balance, x='fecha', y='valor_balance_GW', color='energia',
-                       title="Balance Energético en GW")
+        fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_GW', color='energia',
+                       title="Balance Generación Energías Renovables en GW")
         st.plotly_chart(fig2)
 
         # Gráfico de área apilado para balance energético
-        fig_balance_energia = px.area(filtered_df_balance, x='fecha', y='valor_balance_GW', color='energia',
+        fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_GW', color='energia',
                                       title="Balance Energético por Tipo de Energía en GW")
         st.plotly_chart(fig_balance_energia)
 
@@ -298,6 +298,20 @@ def main():
 
         filtered_df_exchanges = df_exchanges[(df_exchanges['pais'].isin(pais_filter)) & (df_exchanges['tipo_transaccion'].isin(transaccion_type))]
         filtered_df_exchanges = date_filter(filtered_df_exchanges, period_demanda)
+
+        # Gráfico de evolución de transacciones energéticas general
+        fig_evolucion_transacciones=px.histogram(filtered_df_exchanges[~(filtered_df_exchanges['tipo_transaccion']=='saldo')],
+                                                 x='fecha', y='valor_GW', color='tipo_transaccion',
+                                                 title="Evolución General de Transacciones Energéticas en GW")
+        st.plotly_chart(fig_evolucion_transacciones)
+
+        # Gráfico de evolución de transacciones energéticas por país
+
+        fig_evolucion_transacciones_pais = px.histogram(
+            filtered_df_exchanges[~(filtered_df_exchanges['tipo_transaccion'] == 'saldo')],
+            x='fecha', y='valor_GW', color='pais',
+            title="Evolución por país de Transacciones Energéticas en GW")
+        st.plotly_chart(fig_evolucion_transacciones_pais)
 
         # Gráfico de flujo de transacciones energéticas por país
         transacciones_pais = filtered_df_exchanges.groupby(['pais', 'tipo_transaccion'])['valor_GW'].sum().reset_index()
@@ -325,8 +339,8 @@ def main():
         filtered_df_generation = date_filter(filtered_df_generation, period_demanda)
 
         # Gráfico de líneas para generación de energía
-        fig_generacion_energia = px.line(filtered_df_generation, x='fecha', y='valor_generacion_GW', color='energia',
-                                         title="Generación de Energía por Tipo en GW")
+        fig_generacion_energia = px.area(filtered_df_generation, x='fecha', y='valor_generacion_GW', color='energia',
+                                         title="Estructura de generación energética en GW")
         st.plotly_chart(fig_generacion_energia)
 
         # Visualización de Generación Energética
