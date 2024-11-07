@@ -187,6 +187,9 @@ def main():
         st.subheader("Demanda del mercado")
         df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
 
+        df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
+        df_demanda['year'] = df_demanda['fecha'].dt.year
+
         # Filtros en el Sidebar para Demanda
         with st.sidebar.expander("¡Filtros Personalizados!"):
             st.markdown("#### Filtro por Fecha")
@@ -222,6 +225,40 @@ def main():
         fig_demanda_mensual = px.bar(demanda_mensual, x='mes', y='valor_demanda_MW',
                                      title="Demanda Promedio Mensual en MW")
         st.plotly_chart(fig_demanda_mensual)
+
+
+# Filtros en el Sidebar para la comparación de años de Pablo
+        st.sidebar.subheader("Comparación de Años")
+        available_years = df_demanda['year'].unique()
+        selected_years = st.sidebar.multiselect("Selecciona los años a comparar", options=available_years,
+                                                default=[2022, 2023])
+
+        if selected_years:
+            # Filtrar los datos para incluir solo los años seleccionados
+            df_demanda_comparador = df_demanda[df_demanda['year'].isin(selected_years)]
+
+            # Crear la gráfica de comparación
+            fig_comparador = px.line(df_demanda_comparador, x='fecha', y='valor_demanda_MW', color='year',
+                                     title=f"Comparación de Demanda en MW entre los años {', '.join(map(str, selected_years))}")
+
+            # Calcular métricas para líneas de referencia
+            metricas = df_demanda_comparador.groupby('year')['valor_demanda_MW'].agg(['mean', 'median', 'min', 'max'])
+
+            # Añadir líneas de referencia a la gráfica
+            for year in metricas.index:
+                fig_comparador.add_hline(y=metricas.loc[year, 'mean'], line_color='yellow', line_dash="dash",
+                                         annotation_text=f"Media {year}", annotation_position="top left")
+                fig_comparador.add_hline(y=metricas.loc[year, 'median'], line_color='blue', line_dash="dot",
+                                         annotation_text=f"Mediana {year}", annotation_position="top left")
+                fig_comparador.add_hline(y=metricas.loc[year, 'min'], line_color='red', line_dash="dot",
+                                         annotation_text=f"Mínimo {year}", annotation_position="top left")
+                fig_comparador.add_hline(y=metricas.loc[year, 'max'], line_color='green', line_dash="dot",
+                                         annotation_text=f"Máximo {year}", annotation_position="top left")
+
+            # Mostrar la gráfica comparativa
+            st.plotly_chart(fig_comparador)
+
+################ BALANCE
 
         # Sección Balance Energético
         st.subheader("Balance energético")
