@@ -345,6 +345,16 @@ def main():
                                       title="Balance Energético por Tipo de Energía en GW")
         st.plotly_chart(fig_balance_energia)
 
+        st.markdown("El gráfico que se presenta muestra la evolución temporal de la generación de energía eléctrica "
+                    "a partir de diversas fuentes renovables entre 2011 y 2024. Cada línea representa una fuente "
+                    "específica (eólica, hidráulica, solar fotovoltaica, etc.) y su altura en un punto dado indica "
+                    "la cantidad de energía generada en ese momento.  Revela una transformación profunda en el sector "
+                    "energético, con un claro protagonismo de las energías renovables.  El auge de las energías "
+                    "renovables abre nuevas oportunidades en el sector de los servicios energéticos, como la gestión de "
+                    "la energía, la eficiencia energética y la comercialización de electricidad. Este hecho ha incentivado"
+                    "la construcción de parques eólicos, plantas solares y otras infraestructuras relacionadas con "
+                    "las energías renovables, especialmente a partir del año 2020 fruto de una fuerte transición energética"
+                    "que cumple con los objetivos de la agenda climática de Horizon 2020 y Horizon 2030")
 
         # Sección Transacciones Energéticas
         st.subheader("Transacciones energéticas")
