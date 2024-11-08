@@ -219,6 +219,12 @@ def main():
         fig1 = px.line(filtered_df_demanda, x='fecha', y='valor_demanda_MW', title="Demanda Energética en MW")
         st.plotly_chart(fig1)
 
+        st.markdown("La gráfica muestra la evolución de la demanda energética en España desde 2011 hasta 2024. "
+                    "Se observa una marcada reducción en la demanda durante el periodo de confinamiento por la pandemia de COVID-19, comenzando el 14 de marzo de 2020. "
+                    "El punto más bajo ocurre en esta fase y la recuperación gradual inicia en junio del mismo año con la reapertura económica y la flexibilización de las restricciones."
+                    "Aunque podría esperarse un aumento en la demanda debido al incremento del consumo doméstico, esta disminución refleja el impacto del cierre temporal de muchas actividades industriales y comerciales, que son los principales consumidores de energía. "
+                    "Las variaciones en la demanda a lo largo del año responden a patrones diarios, semanales y estacionales: el consumo es mayor durante el día que en la noche, más alto entre semana que los fines de semana, y tiende a incrementarse en invierno y en verano, especialmente durante los picos de frío y calor.")
+
         # Gráfico de barras mensual de demanda promedio
         filtered_df_demanda['mes'] = filtered_df_demanda['fecha'].dt.to_period('M').dt.to_timestamp()
         demanda_mensual = filtered_df_demanda.groupby('mes')['valor_demanda_MW'].mean().reset_index()
@@ -257,7 +263,6 @@ def main():
 
             # Mostrar la gráfica comparativa
             st.plotly_chart(fig_comparador)
-
 ################ BALANCE
 
         # Sección Balance Energético
@@ -304,6 +309,18 @@ def main():
                                                  x='fecha', y='valor_GW', color='tipo_transaccion',
                                                  title="Evolución General de Transacciones Energéticas en GW")
         st.plotly_chart(fig_evolucion_transacciones)
+        st.markdown("La evolución de las transacciones comerciales entre Redeia S.A. y sus socios internacionales "
+                    "muestra una notable reducción en la dependencia de las importaciones hacia el año 2022. "
+                    "Este cambio responde, en gran medida, al impulso en la generación de energías renovables, "
+                    "especialmente en el sector solar fotovoltaico, que ha permitido a España aumentar gradualmente "
+                    "su capacidad de exportación. La transición energética y el crecimiento sostenido del sector "
+                    "renovable han favorecido un modelo más autosuficiente, donde las importaciones se utilizan "
+                    "de manera estratégica para cubrir picos de demanda, pero ya no constituyen el eje central del "
+                    "abastecimiento.Además, una ligera reducción en el consumo energético ha permitido un mayor margen "
+                    "para las exportaciones, consolidando a España como un exportador neto en el contexto europeo. "
+                    "Así, la combinación de una menor dependencia de combustibles fósiles y el incremento de "
+                    "la capacidad renovable posiciona a Redeia S.A. en una posición de liderazgo en el comercio "
+                    "energético, apuntalando el camino hacia un sistema más sostenible y eficiente.")
 
         # Gráfico de evolución de transacciones energéticas por país
 
@@ -312,6 +329,15 @@ def main():
             x='fecha', y='valor_GW', color='pais',
             title="Evolución por país de Transacciones Energéticas en GW")
         st.plotly_chart(fig_evolucion_transacciones_pais)
+        st.markdown("Esta gráfica muestra la evolución histórica de las importaciones y exportaciones de energía "
+                    "de España, desglosada por países clave (Francia, Portugal, Marruecos y Andorra). "
+                    "Los valores positivos representan exportaciones, mientras que los valores negativos corresponden "
+                    "a importaciones.Al interactuar con los filtros, se observa que Francia ha sido tradicionalmente "
+                    "el principal proveedor energético de España. Sin embargo, a partir de 2020-2021, se nota una "
+                    "tendencia hacia un aumento de las exportaciones, lo que podría estar vinculado al crecimiento en "
+                    "la producción de energía renovable en el país. Esta transición resalta el cambio de España de "
+                    "importador a exportador energético, reflejando una mayor autosuficiencia y un compromiso con "
+                    "fuentes de energía sostenibles.")
 
         # Gráfico de flujo de transacciones energéticas por país
         transacciones_pais = filtered_df_exchanges.groupby(['pais', 'tipo_transaccion'])['valor_GW'].sum().reset_index()
@@ -347,6 +373,21 @@ def main():
         fig4 = px.histogram(filtered_df_generation, x='fecha', y='valor_generacion_GW', color='energia',
                             title="Generación en GW")
         st.plotly_chart(fig4)
+        st.markdown("Este gráfico ilustra la evolución de la generación de energía en Redeia S.A., mostrando tanto "
+                    "fuentes renovables como no renovables entre 2012 y 2024. En tan solo 12 años, se observan dos "
+                    "fenómenos clave que reflejan una transición energética en España.En primer lugar, destaca "
+                    "la reducción de la dependencia de los combustibles fósiles, especialmente el carbón, que muestra "
+                    "una caída drástica en 2019 como fuente principal de energía. Este cambio es un paso importante "
+                    "hacia la descarbonización del sector energético.En segundo lugar, se observa un notable crecimiento "
+                    "en las energías renovables, con la energía eólica y la solar fotovoltaica liderando este cambio, "
+                    "especialmente a partir de 2020. También destacan el incremento de la energía solar térmica y "
+                    "la generación hidroeléctrica mediante turbinación de bombeo, cuyo crecimiento ha sido evidente desde 2012."
+                    "Respecto a las energías no renovables, la energía nuclear ha mantenido una presencia constante "
+                    "como fuente complementaria, necesaria para cubrir la demanda energética actual. Sin embargo, "
+                    "se observa una tendencia general a la reducción de otras fuentes no renovables, como los motores "
+                    "diésel, turbinas de gas, turbinas de vapor, cogeneración (energía eléctrica y térmica) y residuos "
+                    "no renovables. Esta transición hacia fuentes de energía más limpias subraya el compromiso de Redeia "
+                    "S.A. con la sostenibilidad y la adaptación al cambio en el panorama energético.")
 
         # Distribución de Generación Energética
         fig5 = px.pie(
@@ -358,6 +399,14 @@ def main():
             height=700
         )
         st.plotly_chart(fig5)
+        st.markdown("La estructura de generación energética de esta empresa española se apoya en cinco fuentes "
+                    "principales. La energía nuclear constituye el 20.6% del total, subrayando su importancia "
+                    "como fuente constante en el mix energético. La energía eólica ocupa el segundo lugar con un 19.9%, "
+                    "reflejando el impulso hacia fuentes limpias. La generación mediante ciclo combinado representa "
+                    "un 15.1%, seguida de la energía hidráulica con un 10.9%, que continúa siendo una fuente relevante. "
+                    "Aunque el carbón, con un 10.5%, aún forma parte de la producción, se encuentra en clara disminución. "
+                    "Esta distribución muestra la transición hacia un modelo energético más sostenible, con un incremento "
+                    "notable en fuentes renovables y una reducción gradual de los combustibles fósiles.")
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
