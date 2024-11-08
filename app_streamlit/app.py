@@ -475,6 +475,34 @@ def main():
                     "Esta distribución muestra la transición hacia un modelo energético más sostenible, con un incremento "
                     "notable en fuentes renovables y una reducción gradual de los combustibles fósiles.")
 
+
+        # Seccion de CO2
+
+        st.subheader("Emisiones de CO2")
+        df_co2=load_data("SELECT fecha, valor, energia FROM emisiones_co2")
+
+        #Filtros
+
+        with st.sidebar.expander("Filtros para Emisión CO2"):
+            st.markdown("#### Filtro por Tipo de Energía")
+            energia_co2_filter = st.multiselect("Tipo de Energía (Generación)", options=df_co2['energia'].unique(), default=df_co2['energia'].unique())
+
+        filtered_df_co2 = df_co2[df_co2['energia'].isin(energia_co2_filter)]
+
+        filtered_df_co2 = filtered_df_co2[~(filtered_df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
+
+        filtered_df_co2 = date_filter(filtered_df_co2, period_demanda)
+
+        filtered_df_co2_grouped = filtered_df_co2.groupby('fecha', as_index=False)['valor'].sum()
+
+        #Gráfico de la evolución de las emisiones de co2
+
+        fig_co2_evolucion=px.line(filtered_df_co2_grouped, x='fecha', y='valor', title="Evolución de las emisiones CO2")
+        st.plotly_chart(fig_co2_evolucion)
+        #Gráfico por generación de las emisiones de co2
+        fig_co2_energia=px.histogram(filtered_df_co2, x='fecha', y='valor', color='energia', title="Emisiones de CO2 según su generación")
+        st.plotly_chart(fig_co2_energia)
+
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
 
