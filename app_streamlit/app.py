@@ -232,7 +232,19 @@ def main():
         fig_demanda_mensual = px.bar(demanda_mensual, x='mes', y='valor_demanda_MW',
                                      title="Demanda Promedio Mensual en MW")
         st.plotly_chart(fig_demanda_mensual)
-
+        st.markdown ("La gráfica muestra la demanda promedio mensual de energía en MW durante un período prolongado, "
+                     "cubriendo aproximadamente desde 2011 hasta 2024. A lo largo del tiempo, la demanda promedio "
+                     "mensual parece mantenerse relativamente estable, aunque con algunas fluctuaciones. Se observan "
+                     "ciertos picos de demanda en distintos años, especialmente alrededor de 2012 y 2017-2018, "
+                     "que podrían estar relacionados con factores estacionales, cambios en el consumo, o eventos "
+                     "específicos que incrementaron la demanda. Asimismo, hay momentos con disminuciones, que podrían "
+                     "deberse a condiciones económicas, climáticas o cambios en la eficiencia energética. Aunque el "
+                     "gráfico no especifica los meses exactos, es posible que haya patrones de demanda estacionales, "
+                     "como aumentos durante periodos de clima extremo, en los que se usa más energía para calefacción "
+                     "o refrigeración. En los últimos años (aproximadamente desde 2023), parece haber una leve disminución "
+                     "en la demanda promedio mensual, lo cual podría indicar un cambio en el consumo de energía, "
+                     "posiblemente debido a iniciativas de eficiencia energética, cambios en el comportamiento de consumo, "
+                     "un aumento de los precios de la energía o una desaceleración económica.")
 
 # Filtros en el Sidebar para la comparación de años de Pablo
 
@@ -281,6 +293,9 @@ def main():
 
             # Mostrar la gráfica comparativa
             st.plotly_chart(fig_comparador)
+        st.markdown("Este gráfico dinámico permite comparar la demanda anual de manera visual e intuitiva. A través de "
+                    "él, podemos observar las diferencias en la demanda entre los distintos años registrados en nuestra "
+                    "base de datos, con indicadores claros del máximo, mediana, media y mínimo de demanda para cada año.")
 
 ################ BALANCE
 
@@ -304,10 +319,32 @@ def main():
                        title="Balance Generación Energías Renovables en GW")
         st.plotly_chart(fig2)
 
+        st.markdown("La gráfica muestra el balance de generación de energías renovables en GW a lo largo del tiempo, "
+                    "desde aproximadamente 2011 hasta 2024. A lo largo del período, se observan fuertes fluctuaciones en "
+                    "la generación de energía renovable, lo cual es característico de este tipo de fuentes debido a su "
+                    "dependencia de condiciones naturales como el viento, la luz solar y la lluvia para la energía "
+                    "hidroeléctrica. La generación no es constante y muestra picos y caídas de forma regular. Aunque "
+                    "la variabilidad es alta, se nota una tendencia general al alza en la capacidad de generación "
+                    "renovable. Desde 2020 en adelante, parece que los picos máximos son más altos que en años "
+                    "anteriores, lo que podría indicar un aumento en la capacidad instalada o una mayor integración "
+                    "de energías renovables en el sistema eléctrico. Es probable que existan patrones estacionales en "
+                    "la generación, ya que el gráfico muestra ciclos repetitivos. Esto puede deberse a estaciones del "
+                    "año donde ciertas fuentes renovables, como la eólica y la hidroeléctrica, tienen una mayor "
+                    "o menor disponibilidad. En los últimos años (desde 2022), parece que la generación ha alcanzado "
+                    "picos más altos y también presenta una mayor estabilidad en algunos períodos. Esto puede estar "
+                    "relacionado con avances tecnológicos o mejoras en la eficiencia de generación renovable, así como "
+                    "un mejor manejo de la variabilidad a través de almacenamiento de energía o estrategias de gestión "
+                    "de la red. La gráfica muestra una dependencia significativa de factores naturales que influencian "
+                    "la generación renovable, pero con una tendencia general positiva en cuanto a la capacidad y "
+                    "contribución de las energías renovables en el sistema eléctrico. Esto sugiere que se están "
+                    "logrando avances en la integración de estas energías, aunque aún existen desafíos en la gestión de "
+                    "su variabilidad.")
+
         # Gráfico de área apilado para balance energético
         fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_GW', color='energia',
                                       title="Balance Energético por Tipo de Energía en GW")
         st.plotly_chart(fig_balance_energia)
+
 
         # Sección Transacciones Energéticas
         st.subheader("Transacciones energéticas")
