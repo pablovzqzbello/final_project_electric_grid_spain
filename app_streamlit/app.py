@@ -129,7 +129,8 @@ def show_help():
 
             **Secciones principales**:
             - 🔌 **Demanda del mercado**: Visualización y análisis de la demanda energética en MW.
-            - ⚡ **Balance energético**: Información sobre el balance de distintos tipos de energía generada.
+            - ⚡ **Balance energético**: Información sobre el balance de distintos tipos de energía renovable generada.
+            - ✨ **Estructura de generación**: Información sobre la generación energética según cada tecnología utilizada por Redeia S.A.
             - 🌍 **Transacciones energéticas**: Análisis de las transacciones de energía entre países.
 
             **Filtros disponibles**:
