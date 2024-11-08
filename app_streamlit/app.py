@@ -478,5 +478,8 @@ def main():
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
 
+
+
+
 if __name__ == "__main__":
     main()
