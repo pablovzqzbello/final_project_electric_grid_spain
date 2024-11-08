@@ -27,7 +27,7 @@ def load_exchanges_data():
     return extract_data(query)
 
 def mostrar_mapa_coro():
-    st.title("Intercambio de Energía de España con Otros Países")
+    st.title("Intercambio de Energía de Redeia S.A. con Otros Países")
 
     df_exchanges = load_exchanges_data()
     st.write("Datos Cargados:", df_exchanges)
@@ -61,6 +61,7 @@ def mostrar_mapa_coro():
             locations="pais",
             locationmode="country names",
             color="valor_GW",
+            projection="mercator",
             color_continuous_scale=color_scale,
             range_color = (0, max_value),
             title=f"Intercambio de energía ({tipo_transaccion}) de España con otros países",
