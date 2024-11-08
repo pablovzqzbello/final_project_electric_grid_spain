@@ -107,6 +107,7 @@ def mostrar_mapa_coro():
 
 # Función para aplicar filtro de fecha con periodos predefinidos
 def date_filter(df, period, start_date=None, end_date=None):
+    df['fecha'] = pd.to_datetime(df['fecha'])
     if period == "Personalizado" and start_date and end_date:
         return df[(df['fecha'] >= pd.to_datetime(start_date)) & (df['fecha'] <= pd.to_datetime(end_date))]
     else:
