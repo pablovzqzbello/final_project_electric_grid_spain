@@ -269,27 +269,6 @@ def emisiones_co2(start_year=2011, end_year=2025, time_trunc='day'):
 # In[69]:
 
 
-def estandarizar_texto(valor):
-    
-    if isinstance(valor, str):  
-        
-        valor = valor.lower()
-        
-        valor = ''.join(
-            (c for c in unicodedata.normalize('NFD', valor) if unicodedata.category(c) != 'Mn')
-        )
-        
-        valor = valor.strip()
-        
-        valor = valor.replace(" ","_")
-    return valor
-
-
-
-
-
-# In[ ]:
-
 
 
 
