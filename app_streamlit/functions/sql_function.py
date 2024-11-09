@@ -11,7 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import mysql.connector
 import mysql
 from mysql.connector import Error
-from extraction_data import *
+from functions.extraction_data import *
 import unicodedata
 import pandas as pd
 

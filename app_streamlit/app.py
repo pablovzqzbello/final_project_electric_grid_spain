@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 from datetime import timedelta
-from functions import extract_data
+from functions.sql_function import extract_data
 
 # Configuración de la página
 st.set_page_config(
