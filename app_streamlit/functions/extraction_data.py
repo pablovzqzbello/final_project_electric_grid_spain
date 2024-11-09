@@ -12,7 +12,7 @@ import pandas as pd
 # In[34]:
 
 
-def extract_demand(category='demanda', widget='evolucion', start_year=2011, end_year=2024):
+def extract_demand(category='demanda', widget='evolucion', start_year=2011, end_year=2025):
     all_data = []
 
     for year in range(start_year, end_year):
