@@ -3,7 +3,6 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta
 from functions.sql_function import extract_data
-from functions.extraction_data import *
 # Configuración de la página
 st.set_page_config(
     page_title="PFB: Red Eléctrica Española",
