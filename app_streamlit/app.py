@@ -3,6 +3,10 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta
 from functions.sql_function import extract_data
+import pickle
+import numpy as np
+
+
 # Configuración de la página
 st.set_page_config(
     page_title="PFB: Red Eléctrica Española",
@@ -10,11 +14,49 @@ st.set_page_config(
     layout="wide"
 )
 
+# Funciones para cargar el escalador y los modelos
+@st.cache_resource
+def load_scaler(file_path):
+    with open(file_path, 'rb') as f:
+        scaler = pickle.load(f)
+    return scaler
+
+@st.cache_resource
+def load_model(model_path):
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    return model
+
+# Cargar el escalador y los modelos preentrenados
+scaler_global = load_scaler("models/scaler.pkl")
+model_rnn = load_model("models/rnn_model.pkl")
+model_lstm = load_model("models/lstm_model.pkl")
+
+# Cargar datos reciente
+def load_recent_data(feature="valor_demanda_MW", n=50):
+    query = f"SELECT {feature} FROM demanda_energia ORDER BY fecha DESC LIMIT {n}"
+    data = extract_data(query)
+    data = data[feature].values[::-1]  # Invertir para mantener el orden cronológico
+    return data.reshape(-1, 1)
+
+
 # Función para cargar datos con caché
 @st.cache_data
 def load_data(query):
     return extract_data(query)
 
+# Función para realizar predicciones con el modelo seleccionado
+def generate_predictions(model, recent_data, scaler, steps=30):
+    predictions = []
+    current_input = scaler.transform(recent_data).reshape(1, recent_data.shape[0], 1)
+
+    for _ in range(steps):
+        pred = model.predict(current_input)
+        pred_rescaled = scaler.inverse_transform(pred)
+        predictions.append(pred_rescaled[0][0])
+        current_input = np.append(current_input[:, 1:, :], pred.reshape(1, 1, 1), axis=1)
+
+    return predictions
 ######################
 
 def load_exchanges_data():
@@ -30,7 +72,6 @@ def mostrar_mapa_coro():
 
     df_exchanges = load_exchanges_data()
     st.write("Datos Cargados:", df_exchanges)
-
 
 
     tipo_transaccion = st.selectbox("Seleccionar tipo de transacción", options=["Importación", "Exportación"])
@@ -502,6 +543,65 @@ def main():
         #Gráfico por generación de las emisiones de co2
         fig_co2_energia=px.histogram(filtered_df_co2, x='fecha', y='valor', color='energia', title="Emisiones de CO2 según su generación")
         st.plotly_chart(fig_co2_energia)
+
+
+    elif choice == "Vista específica":
+
+        st.title("Predicciones de Demanda Energética")
+
+        model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)"])
+
+        if st.button("Realizar Predicción"):
+
+
+            recent_data = load_recent_data()
+
+
+            if model_choice == "Demanda (RNN)":
+
+                model = model_rnn
+
+            else:
+
+                model = model_lstm
+
+
+            # Generar predicciones
+
+            predictions = generate_predictions(model, recent_data, scaler=scaler_global, steps=30)
+
+
+            fechas = pd.date_range(start=pd.Timestamp.today(), periods=30, freq='D')
+
+            df_predicciones = pd.DataFrame({"Fecha": fechas, "Predicción": predictions})
+
+
+            st.subheader("Predicciones para el próximo mes")
+
+            fig_pred = px.line(df_predicciones, x="Fecha", y="Predicción",
+
+                               title="Predicción de Demanda Energética para el Próximo Mes")
+
+            st.plotly_chart(fig_pred)
+
+
+            df_real = extract_data("SELECT fecha, valor_demanda_MW FROM demanda_energia ORDER BY fecha DESC LIMIT 30")
+
+            df_real = df_real[::-1]
+
+            st.subheader("Datos reales del último mes")
+
+            fig_real = px.line(df_real, x="fecha", y="valor_demanda_MW", title="Demanda Energética Real del Último Mes")
+
+            st.plotly_chart(fig_real)
+
+
+
+
+
+
+
+
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
