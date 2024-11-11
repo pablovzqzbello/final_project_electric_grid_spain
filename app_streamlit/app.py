@@ -32,13 +32,6 @@ scaler_global = load_scaler("models/scaler.pkl")
 model_rnn = load_model("models/rnn_model.pkl")
 model_lstm = load_model("models/lstm_model.pkl")
 
-# Cargar datos reciente
-def load_recent_data(feature="valor_demanda_MW", n=50):
-    query = f"SELECT {feature} FROM demanda_energia ORDER BY fecha DESC LIMIT {n}"
-    data = extract_data(query)
-    data = data[feature].values[::-1]  # Invertir para mantener el orden cronológico
-    return data.reshape(-1, 1)
-
 
 # Función para cargar datos con caché
 @st.cache_data
@@ -185,40 +178,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 
 # Función principal
 def main():
-    # Mostrar la imagen de Redeia con un tamaño controlado
-    image_path = 'auxiliary/redeia_marca1_2.png'
-    st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
 
-    # Encabezados y descripción
-    st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
-
-    st.header("¿Qué es Redeia, S.A.?")
-    st.markdown(
-        "Redeia Corporación, S.A. es un grupo empresarial multinacional de origen español fundado el 29 de enero de "
-        "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico. "
-        "Cuenta con una financiación público-privada, en la que el Gobierno de España cubre el 20% de las inversiones, "
-        "mientras que el 80% lo cubre capital privado."
-    )
-
-    st.header("¿De dónde se obtiene la información?")
-    st.markdown(
-        "La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
-        "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar "
-        "libremente los datos que Redeia genera a tiempo real. "
-        "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)"
-    )
-
-    st.header("Objetivos")
-    st.markdown(
-        "Con los datos obtenidos se pretende realizar un análisis integral de la corporación enfocándose en la "
-        "estructura de negocio de esta empresa desde cuatro pilares fundamentales:"
-        "\n- Generación de energía"
-        "\n- Balance estructural energético"
-        "\n- Demanda energética del mercado español"
-        "\n- Transacciones Internacionales"
-        "\n\nComo punto clave, este estudio se centra en la sostenibilidad, con especial atención al precio y al "
-        "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía."
-    )
 
     # Menú de selección en el sidebar
     choices = ["Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético"]
@@ -226,6 +186,42 @@ def main():
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
     if choice == "Vista general":
+
+        # Mostrar la imagen de Redeia con un tamaño controlado
+        image_path = 'auxiliary/redeia_marca1_2.png'
+        st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
+
+        # Encabezados y descripción
+        st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
+
+        st.header("¿Qué es Redeia, S.A.?")
+        st.markdown(
+            "Redeia Corporación, S.A. es un grupo empresarial multinacional de origen español fundado el 29 de enero de "
+            "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico. "
+            "Cuenta con una financiación público-privada, en la que el Gobierno de España cubre el 20% de las inversiones, "
+            "mientras que el 80% lo cubre capital privado."
+        )
+
+        st.header("¿De dónde se obtiene la información?")
+        st.markdown(
+            "La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
+            "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar "
+            "libremente los datos que Redeia genera a tiempo real. "
+            "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)"
+        )
+
+        st.header("Objetivos")
+        st.markdown(
+            "Con los datos obtenidos se pretende realizar un análisis integral de la corporación enfocándose en la "
+            "estructura de negocio de esta empresa desde cuatro pilares fundamentales:"
+            "\n- Generación de energía"
+            "\n- Balance estructural energético"
+            "\n- Demanda energética del mercado español"
+            "\n- Transacciones Internacionales"
+            "\n\nComo punto clave, este estudio se centra en la sostenibilidad, con especial atención al precio y al "
+            "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía."
+        )
+
         # Sección Demanda del mercado
         st.subheader("Demanda del mercado")
         df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
@@ -547,60 +543,17 @@ def main():
 
     elif choice == "Vista específica":
 
-        st.title("Predicciones de Demanda Energética")
+        #st.title("Predicciones de Demanda Energética")
 
         model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)"])
 
-        if st.button("Realizar Predicción"):
+        #if st.button("Realizar Predicción"):
 
-
-            recent_data = load_recent_data()
-
-
-            if model_choice == "Demanda (RNN)":
-
-                model = model_rnn
-
-            else:
-
-                model = model_lstm
-
-
-            # Generar predicciones
-
-            predictions = generate_predictions(model, recent_data, scaler=scaler_global, steps=30)
-
-
-            fechas = pd.date_range(start=pd.Timestamp.today(), periods=30, freq='D')
-
-            df_predicciones = pd.DataFrame({"Fecha": fechas, "Predicción": predictions})
-
-
-            st.subheader("Predicciones para el próximo mes")
-
-            fig_pred = px.line(df_predicciones, x="Fecha", y="Predicción",
-
-                               title="Predicción de Demanda Energética para el Próximo Mes")
-
-            st.plotly_chart(fig_pred)
-
-
-            df_real = extract_data("SELECT fecha, valor_demanda_MW FROM demanda_energia ORDER BY fecha DESC LIMIT 30")
-
-            df_real = df_real[::-1]
-
-            st.subheader("Datos reales del último mes")
-
-            fig_real = px.line(df_real, x="fecha", y="valor_demanda_MW", title="Demanda Energética Real del Último Mes")
-
-            st.plotly_chart(fig_real)
+            #if model_choice == "Demanda (RNN)":
 
 
 
-
-
-
-
+            #else:
 
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
