@@ -3,8 +3,7 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta
 from functions.sql_function import extract_data
-import pickle
-import numpy as np
+from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_RNN,modelo_neuronal_lstm
 
 
 # Configuración de la página
@@ -14,42 +13,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# Funciones para cargar el escalador y los modelos
-@st.cache_resource
-def load_scaler(file_path):
-    with open(file_path, 'rb') as f:
-        scaler = pickle.load(f)
-    return scaler
-
-@st.cache_resource
-def load_model(model_path):
-    with open(model_path, 'rb') as f:
-        model = pickle.load(f)
-    return model
-
-# Cargar el escalador y los modelos preentrenados
-scaler_global = load_scaler("models/scaler.pkl")
-model_rnn = load_model("models/rnn_model.pkl")
-model_lstm = load_model("models/lstm_model.pkl")
-
-
 # Función para cargar datos con caché
 @st.cache_data
 def load_data(query):
     return extract_data(query)
 
-# Función para realizar predicciones con el modelo seleccionado
-def generate_predictions(model, recent_data, scaler, steps=30):
-    predictions = []
-    current_input = scaler.transform(recent_data).reshape(1, recent_data.shape[0], 1)
-
-    for _ in range(steps):
-        pred = model.predict(current_input)
-        pred_rescaled = scaler.inverse_transform(pred)
-        predictions.append(pred_rescaled[0][0])
-        current_input = np.append(current_input[:, 1:, :], pred.reshape(1, 1, 1), axis=1)
-
-    return predictions
 ######################
 
 def load_exchanges_data():
@@ -543,24 +511,42 @@ def main():
 
     elif choice == "Vista específica":
 
-        #st.title("Predicciones de Demanda Energética")
+        st.title("Predicciones de Demanda Energética")
+
+
+
 
         model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)"])
 
-        #if st.button("Realizar Predicción"):
+        if st.button("Realizar Predicción"):
 
-            #if model_choice == "Demanda (RNN)":
+            if model_choice == "Demanda (RNN)":
+                
+                df_demanda = load_data("SELECT * FROM demanda_energia")
+                df_generation = load_data("SELECT * FROM generacion_energia")
+                df_exchanges = load_data("SELECT * FROM transacciones_energia")
+                df = preprocess_data(df_demanda, df_exchanges, df_generation)
+                valores_escalados, objetivo_escalado = escalador(df, target_column="valor_demanda_MW",
+                                                                 scaler_filename="models/scaler.pkl")
+                X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
+                                                                         train_ratio=0.8)
+                modelo_neuronal_RNN(X_test, y_test, scaler_filename="models/scaler.pkl",
+                                    model_filename="models/rnn_model.pkl")
 
-
-
-            #else:
-
+            else:
+                df_demanda = load_data("SELECT * FROM demanda_energia")
+                df_generation = load_data("SELECT * FROM generacion_energia")
+                df_exchanges = load_data("SELECT * FROM transacciones_energia")
+                df = preprocess_data(df_demanda, df_exchanges, df_generation)
+                valores_escalados, objetivo_escalado = escalador(df, target_column="valor_demanda_MW",
+                                                                 scaler_filename="models/scaler.pkl")
+                X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
+                                                                         train_ratio=0.8)
+                modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl",
+                                    model_filename="models/lstm_model.pkl")
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
-
-
-
 
 if __name__ == "__main__":
     main()
