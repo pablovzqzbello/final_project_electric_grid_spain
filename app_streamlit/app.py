@@ -3,7 +3,7 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta
 from functions.sql_function import extract_data
-from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_RNN,modelo_neuronal_lstm
+from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn,modelo_neuronal_lstm
 
 
 # Configuración de la página
@@ -521,7 +521,7 @@ def main():
         if st.button("Realizar Predicción"):
 
             if model_choice == "Demanda (RNN)":
-                
+
                 df_demanda = load_data("SELECT * FROM demanda_energia")
                 df_generation = load_data("SELECT * FROM generacion_energia")
                 df_exchanges = load_data("SELECT * FROM transacciones_energia")
@@ -530,8 +530,7 @@ def main():
                                                                  scaler_filename="models/scaler.pkl")
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
-                modelo_neuronal_RNN(X_test, y_test, scaler_filename="models/scaler.pkl",
-                                    model_filename="models/rnn_model.pkl")
+                modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl")
 
             else:
                 df_demanda = load_data("SELECT * FROM demanda_energia")
@@ -542,8 +541,7 @@ def main():
                                                                  scaler_filename="models/scaler.pkl")
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
-                modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl",
-                                    model_filename="models/lstm_model.pkl")
+                modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl")
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()

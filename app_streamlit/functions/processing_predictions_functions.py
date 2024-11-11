@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
@@ -71,7 +70,7 @@ def train_test_split_data(valores_escalados, objetivo_escalado, train_ratio=0.8)
     return X_train, X_test, y_train, y_test
 
 
-def modelo_neuronal_RNN(X_test, y_test, scaler_filename, model_filename="rnn_model.pkl"):
+def modelo_neuronal_rnn(X_test, y_test, scaler_filename, model_filename="models/rnn_model.pkl"):
 
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
@@ -98,7 +97,7 @@ def modelo_neuronal_RNN(X_test, y_test, scaler_filename, model_filename="rnn_mod
     return predictions
 
 
-def modelo_neuronal_lstm(X_test, y_test, scaler_filename, model_filename="lstm_model.pkl"):
+def modelo_neuronal_lstm(X_test, y_test, scaler_filename, model_filename="models/lstm_model.pkl"):
 
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
