@@ -3,7 +3,7 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta
 from functions.sql_function import extract_data
-from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn,modelo_neuronal_lstm
+from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm
 
 
 # Configuración de la página
@@ -540,8 +540,7 @@ def main():
                 valores_escalados, objetivo_escalado = escalador(df)
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
-                fig_lstm=modelo_neuronal_lstm(X_test, y_test)
-                st.pyplot(fig_lstm)
+                modelo_neuronal_lstm(X_test, y_test)
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()

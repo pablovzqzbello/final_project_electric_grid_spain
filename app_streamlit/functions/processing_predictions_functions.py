@@ -1,7 +1,9 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 import pickle
+import plotly.express as px
 
 def preprocess_data(df_demanda, df_exchanges, df_generation):
     # Eliminar columnas innecesarias
@@ -75,14 +77,14 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", mod
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
 
-    # Cargar el modelo preentrenado desde el archivo pickle
+    # Cargar el modelo LSTM preentrenado desde el archivo pickle
     with open(model_filename, "rb") as f:
-        model = pickle.load(f)
+        model_rnn = pickle.load(f)
 
     # Realizar predicciones
-    predictions_scaled = model.predict(X_test)
+    predictions_scaled = model_rnn.predict(X_test)
 
-    # Reformatear si es necesario para la transformación inversa
+    # Asegurar que el escalador reciba datos en el formato correcto para la transformación inversa
     predictions = scaler.inverse_transform(predictions_scaled.reshape(-1, 1))
     expected = scaler.inverse_transform(y_test.reshape(-1, 1))
 
@@ -90,14 +92,17 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", mod
     for i in range(len(y_test)):
         print(f"Real: {expected[i]} | Predicción: {predictions[i]}")
 
-    # Graficar resultados
-    plt.figure(figsize=(16,8))
-    plt.plot(expected, color="blue", alpha=0.7, label="Objetivo")
-    plt.plot(predictions, color="green", alpha=0.7, label="Predicción")
-    plt.legend()
-    st.pyplot(plt)  # Mostrar en Streamlit
+    # Crear un DataFrame para las gráficas
+    df = pd.DataFrame({
+        'Fecha': range(len(expected)),  # Asumiendo que cada índice es una fecha secuencial
+        'Real': expected.flatten(),
+        'Predicción': predictions.flatten()
+    })
 
-    return predictions
+    # Graficar con plotly
+    fig_rnn = px.line(df, x='Fecha', y=['Real', 'Predicción'], labels={'Fecha': 'Tiempo', 'value': 'Valor'},
+                       title="Predicciones vs Valores Reales")
+    return st.plotly_chart(fig_rnn)
 
 
 def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model.pkl"):
@@ -116,15 +121,18 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
     predictions = scaler.inverse_transform(predictions_scaled.reshape(-1, 1))
     expected = scaler.inverse_transform(y_test.reshape(-1, 1))
 
-    # Mostrar predicciones y graficar resultados
+    # Mostrar predicciones
     for i in range(len(y_test)):
         print(f"Real: {expected[i]} | Predicción: {predictions[i]}")
 
-    # Graficar resultados
-    plt.figure(figsize=(16,8))
-    plt.plot(expected, color="blue", alpha=0.7, label="Objetivo")
-    plt.plot(predictions, color="green", alpha=0.7, label="Predicción")
-    plt.legend()
-    st.pyplot(plt)  # Mostrar en Streamlit
+    # Crear un DataFrame para las gráficas
+    df = pd.DataFrame({
+        'Fecha': range(len(expected)),  # Asumiendo que cada índice es una fecha secuencial
+        'Real': expected.flatten(),
+        'Predicción': predictions.flatten()
+    })
 
-    return predictions
+    # Graficar con plotly
+    fig_lstm = px.line(df, x='Fecha', y=['Real', 'Predicción'], labels={'Fecha': 'Tiempo', 'value': 'Valor'},
+                  title="Predicciones vs Valores Reales")
+    return st.plotly_chart(fig_lstm)
