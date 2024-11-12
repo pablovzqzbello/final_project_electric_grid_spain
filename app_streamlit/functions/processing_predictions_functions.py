@@ -38,7 +38,7 @@ def preprocess_data(df_demanda, df_exchanges, df_generation):
     return df_merge_test
 
 
-def escalador(df, target_column="valor_demanda_MW", scaler_filename="scaler.pkl"):
+def escalador(df, target_column="valor_demanda_MW", scaler_filename="models/scaler.pkl"):
 
     # Seleccionar las columnas a escalar, excluyendo la columna objetivo
     columnas_a_escalar = df.drop(columns=[target_column]).columns
@@ -57,7 +57,6 @@ def escalador(df, target_column="valor_demanda_MW", scaler_filename="scaler.pkl"
     valores_escalados = valores_escalados.reshape((valores_escalados.shape[0], 1, valores_escalados.shape[1]))
 
     return valores_escalados, objetivo_escalado
-
 
 def train_test_split_data(valores_escalados, objetivo_escalado, train_ratio=0.8):
     # Calcular el tamaño del conjunto de entrenamiento

@@ -526,22 +526,20 @@ def main():
                 df_generation = load_data("SELECT * FROM generacion_energia")
                 df_exchanges = load_data("SELECT * FROM transacciones_energia")
                 df = preprocess_data(df_demanda, df_exchanges, df_generation)
-                valores_escalados, objetivo_escalado = escalador(df, target_column="valor_demanda_MW",
-                                                                 scaler_filename="models/scaler.pkl")
+                valores_escalados, objetivo_escalado = escalador(df)
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
-                modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl")
+                modelo_neuronal_rnn(X_test, y_test)
 
             else:
                 df_demanda = load_data("SELECT * FROM demanda_energia")
                 df_generation = load_data("SELECT * FROM generacion_energia")
                 df_exchanges = load_data("SELECT * FROM transacciones_energia")
                 df = preprocess_data(df_demanda, df_exchanges, df_generation)
-                valores_escalados, objetivo_escalado = escalador(df, target_column="valor_demanda_MW",
-                                                                 scaler_filename="models/scaler.pkl")
+                valores_escalados, objetivo_escalado = escalador(df)
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
-                modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl")
+                modelo_neuronal_lstm(X_test, y_test)
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
