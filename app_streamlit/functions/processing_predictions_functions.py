@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import streamlit as st
 import pickle
 
 def preprocess_data(df_demanda, df_exchanges, df_generation):
@@ -50,8 +51,8 @@ def escalador(df, target_column="valor_demanda_MW", scaler_filename="models/scal
         scaler = pickle.load(f)
 
     # Aplicar el escalador a los valores y al objetivo
-    valores_escalados = scaler.transform(valores)
-    objetivo_escalado = scaler.transform(objetivo.reshape(-1, 1))
+    valores_escalados = scaler.fit_transform(valores)
+    objetivo_escalado = scaler.fit_transform(objetivo.reshape(-1, 1))
 
     # Dar forma a los valores escalados
     valores_escalados = valores_escalados.reshape((valores_escalados.shape[0], 1, valores_escalados.shape[1]))
@@ -69,8 +70,7 @@ def train_test_split_data(valores_escalados, objetivo_escalado, train_ratio=0.8)
     return X_train, X_test, y_train, y_test
 
 
-def modelo_neuronal_rnn(X_test, y_test, scaler_filename, model_filename="models/rnn_model.pkl"):
-
+def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/rnn_model.pkl"):
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
@@ -81,43 +81,48 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename, model_filename="models/
 
     # Realizar predicciones
     predictions_scaled = model.predict(X_test)
-    predictions = scaler.inverse_transform(predictions_scaled)
-    expected = scaler.inverse_transform(y_test)
 
-    # Mostrar predicciones y graficar resultados
+    # Reformatear si es necesario para la transformación inversa
+    predictions = scaler.inverse_transform(predictions_scaled.reshape(-1, 1))
+    expected = scaler.inverse_transform(y_test.reshape(-1, 1))
+
+    # Mostrar predicciones
     for i in range(len(y_test)):
         print(f"Real: {expected[i]} | Predicción: {predictions[i]}")
 
+    # Graficar resultados
     plt.plot(expected, color="blue", alpha=0.7, label="Objetivo")
     plt.plot(predictions, color="green", alpha=0.7, label="Predicción")
     plt.legend()
-    plt.show()
+    st.pyplot(plt)  # Mostrar en Streamlit
 
     return predictions
 
 
-def modelo_neuronal_lstm(X_test, y_test, scaler_filename, model_filename="models/lstm_model.pkl"):
-
+def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model.pkl"):
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
 
-    # Cargar el modelo preentrenado desde el archivo pickle
+    # Cargar el modelo LSTM preentrenado desde el archivo pickle
     with open(model_filename, "rb") as f:
         model_lstm = pickle.load(f)
 
     # Realizar predicciones
     predictions_scaled = model_lstm.predict(X_test)
-    predictions = scaler.inverse_transform(predictions_scaled)
-    expected = scaler.inverse_transform(y_test)
+
+    # Asegurar que el escalador reciba datos en el formato correcto para la transformación inversa
+    predictions = scaler.inverse_transform(predictions_scaled.reshape(-1, 1))
+    expected = scaler.inverse_transform(y_test.reshape(-1, 1))
 
     # Mostrar predicciones y graficar resultados
     for i in range(len(y_test)):
         print(f"Real: {expected[i]} | Predicción: {predictions[i]}")
 
+    # Graficar resultados
     plt.plot(expected, color="blue", alpha=0.7, label="Objetivo")
     plt.plot(predictions, color="green", alpha=0.7, label="Predicción")
     plt.legend()
-    plt.show()
+    st.pyplot(plt)  # Mostrar en Streamlit
 
     return predictions

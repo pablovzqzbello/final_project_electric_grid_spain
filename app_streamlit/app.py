@@ -529,7 +529,8 @@ def main():
                 valores_escalados, objetivo_escalado = escalador(df)
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
-                modelo_neuronal_rnn(X_test, y_test)
+                fig_rnn=modelo_neuronal_rnn(X_test, y_test)
+                st.pyplot(fig_rnn)
 
             else:
                 df_demanda = load_data("SELECT * FROM demanda_energia")
@@ -539,7 +540,8 @@ def main():
                 valores_escalados, objetivo_escalado = escalador(df)
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
-                modelo_neuronal_lstm(X_test, y_test)
+                fig_lstm=modelo_neuronal_lstm(X_test, y_test)
+                st.pyplot(fig_lstm)
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
