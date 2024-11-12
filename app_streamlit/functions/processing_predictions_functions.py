@@ -91,6 +91,7 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", mod
         print(f"Real: {expected[i]} | Predicción: {predictions[i]}")
 
     # Graficar resultados
+    plt.figure(figsize=(16,8))
     plt.plot(expected, color="blue", alpha=0.7, label="Objetivo")
     plt.plot(predictions, color="green", alpha=0.7, label="Predicción")
     plt.legend()
@@ -120,6 +121,7 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
         print(f"Real: {expected[i]} | Predicción: {predictions[i]}")
 
     # Graficar resultados
+    plt.figure(figsize=(16,8))
     plt.plot(expected, color="blue", alpha=0.7, label="Objetivo")
     plt.plot(predictions, color="green", alpha=0.7, label="Predicción")
     plt.legend()
