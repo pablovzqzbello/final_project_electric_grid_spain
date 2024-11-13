@@ -137,6 +137,7 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
                   title="Predicciones vs Valores Reales")
     return st.plotly_chart(fig_lstm)
 
+
 def modelo_neuronal_rnn_seven_days(X_test, scaler_filename="models/scaler.pkl", model_filename="models/rnn_model.pkl"):
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
@@ -151,8 +152,11 @@ def modelo_neuronal_rnn_seven_days(X_test, scaler_filename="models/scaler.pkl", 
     input_sequence = X_test[-1]  # Tomamos el último valor de entrada para empezar la predicción
 
     for _ in range(7):  # Predecir 7 días
+        # Redimensionar la entrada para cumplir con el formato esperado por el modelo (1, 1, 7)
+        input_sequence_reshaped = input_sequence.reshape(1, 1, -1)  # (batch_size, time_steps, features)
+
         # Realizar la predicción para el siguiente día
-        prediction_scaled = model_rnn.predict(input_sequence.reshape(1, -1))
+        prediction_scaled = model_rnn.predict(input_sequence_reshaped)
         predictions_scaled.append(prediction_scaled[0])
 
         # Actualizamos la secuencia de entrada para incluir la predicción del día
@@ -165,7 +169,7 @@ def modelo_neuronal_rnn_seven_days(X_test, scaler_filename="models/scaler.pkl", 
     # Mostrar predicciones
     print("Predicciones para los próximos 7 días:")
     for i, pred in enumerate(predictions):
-        print(f"Día {i+1}: {pred[0]} MW")
+        print(f"Día {i + 1}: {pred[0]} MW")
 
     # Crear un DataFrame para las gráficas
     df = pd.DataFrame({
@@ -175,5 +179,49 @@ def modelo_neuronal_rnn_seven_days(X_test, scaler_filename="models/scaler.pkl", 
 
     # Graficar con plotly
     fig_rnn_7 = px.line(df, x='Fecha', y='Predicción', labels={'Fecha': 'Fecha', 'Predicción': 'Valor Predicho'},
-                       title="Predicción de Demanda de Energía para los Próximos 7 Días")
+                        title="Predicción de Demanda de Energía para los Próximos 7 Días")
     return st.plotly_chart(fig_rnn_7)
+
+def modelo_neuronal_lstm_seven_days(X_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model.pkl"):
+    # Cargar el escalador preentrenado desde el archivo pickle
+    with open(scaler_filename, "rb") as f:
+        scaler = pickle.load(f)
+
+    # Cargar el modelo LSTM preentrenado desde el archivo pickle
+    with open(model_filename, "rb") as f:
+        model_lstm = pickle.load(f)
+
+    # Predecir los próximos 7 días basándonos en las últimas observaciones
+    predictions_scaled = []
+    input_sequence = X_test[-1]  # Tomamos el último valor de entrada para empezar la predicción
+
+    for _ in range(7):  # Predecir 7 días
+        # Redimensionar la entrada para cumplir con el formato esperado por el modelo (1, 1, 7)
+        input_sequence_reshaped = input_sequence.reshape(1, 1, -1)  # (batch_size, time_steps, features)
+
+        # Realizar la predicción para el siguiente día
+        prediction_scaled = model_lstm.predict(input_sequence_reshaped)
+        predictions_scaled.append(prediction_scaled[0])
+
+        # Actualizamos la secuencia de entrada para incluir la predicción del día
+        input_sequence = np.roll(input_sequence, -1)  # Mover todos los valores una posición
+        input_sequence[-1] = prediction_scaled  # Asignar la predicción al último valor de la secuencia
+
+    # Convertir las predicciones escaladas a los valores originales
+    predictions = scaler.inverse_transform(np.array(predictions_scaled).reshape(-1, 1))
+
+    # Mostrar predicciones
+    print("Predicciones para los próximos 7 días:")
+    for i, pred in enumerate(predictions):
+        print(f"Día {i + 1}: {pred[0]} MW")
+
+    # Crear un DataFrame para las gráficas
+    df = pd.DataFrame({
+        'Fecha': pd.date_range(start="2024-11-09", periods=7, freq='D'),  # Asegúrate de ajustar la fecha inicial
+        'Predicción': predictions.flatten()
+    })
+
+    # Graficar con plotly
+    fig_lstm_7 = px.line(df, x='Fecha', y='Predicción', labels={'Fecha': 'Fecha', 'Predicción': 'Valor Predicho'},
+                        title="Predicción de Demanda de Energía para los Próximos 7 Días")
+    return st.plotly_chart(fig_lstm_7)
