@@ -504,9 +504,27 @@ def main():
 
         fig_co2_evolucion=px.line(filtered_df_co2_grouped, x='fecha', y='valor', title="Evolución de las emisiones CO2")
         st.plotly_chart(fig_co2_evolucion)
+        st.markdown("""La evolución de las emisiones de CO2 desde 2010 hasta 2024 muestra una tendencia marcada 
+        por fluctuaciones que reflejan la volatilidad inherente a los datos y la estacionalidad de las emisiones, 
+        más frecuentes en invierno y verano debido al mayor consumo y demanda estacional. Esta serie de picos y 
+        valles sugiere períodos de incrementos y disminuciones abruptas en las emisiones, relacionados principalmente 
+        con la estacionalidad y la constante relación entre generación y demanda de energía.
+        A partir de enero de 2019, se observa una disminución en las emisiones que no está relacionada directamente con 
+        la pandemia de la COVID-19, salvo durante el período de confinamiento, en el que se registraron bajas emisiones. 
+        Esta reducción es atribuible a la efectividad de las normativas europeas impulsadas por la Comisión Europea, 
+        como la norma EURO para transportes, y el Plan Nacional de Calidad del Aire (2017-2019), que implementa diversas 
+        medidas para reducir las emisiones en varios sectores, especialmente el industrial. Además, se alinean 
+        con los objetivos climáticos establecidos en las agendas HORIZON 2020 y 2030.""")
         #Gráfico por generación de las emisiones de co2
         fig_co2_energia=px.histogram(filtered_df_co2, x='fecha', y='valor', color='energia', title="Emisiones de CO2 según su generación")
         st.plotly_chart(fig_co2_energia)
+        st.markdown("""La evolución de las emisiones de CO2, desglosadas por tipo de energía, muestra una tendencia a la baja, 
+        especialmente a partir de 2019, gracias a la reducción en el uso del carbón. Este cambio refleja una transición 
+        clara hacia fuentes de energía más limpias y sostenibles, alineadas con los esfuerzos por mitigar el impacto ambiental. 
+        Sin embargo, a pesar de estos avances, el ciclo combinado sigue siendo la fuente de energía con mayor impacto en términos de emisiones, 
+        dominando ampliamente el espacio de las emisiones frente a otras fuentes como la cogeneración, las turbinas de gas, 
+        las turbinas de vapor, el diésel y el fuel-gas. Esto subraya la necesidad de seguir impulsando la eficiencia energética y la transición hacia energías renovables, 
+        para reducir aún más las emisiones de CO2 y avanzar hacia un modelo energético verdaderamente sostenible.""")
 
 
     elif choice == "Vista específica":
