@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import timedelta
 from functions.sql_function import extract_data
 from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, modelo_neuronal_rnn_seven_days, modelo_neuronal_lstm_seven_days
-
+from functions.vocabulary import obtener_vocabulario
 
 # Configuración de la página
 st.set_page_config(
@@ -525,6 +525,29 @@ def main():
         dominando ampliamente el espacio de las emisiones frente a otras fuentes como la cogeneración, las turbinas de gas, 
         las turbinas de vapor, el diésel y el fuel-gas. Esto subraya la necesidad de seguir impulsando la eficiencia energética y la transición hacia energías renovables, 
         para reducir aún más las emisiones de CO2 y avanzar hacia un modelo energético verdaderamente sostenible.""")
+
+        # Glosario
+        st.header('Vocabulario energético')
+
+        # Lista de letras
+        letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+                  'U', 'V', 'W', 'X', 'Y', 'Z']
+
+        # Multiselect para que el usuario seleccione múltiples letras
+        letras_seleccionadas = st.multiselect('Selecciona una o más letras', letras)
+
+        # Si se han seleccionado letras, mostramos sus definiciones
+        if letras_seleccionadas:
+            for letra in letras_seleccionadas:
+                st.write(f'**{letra}:**')
+                resultados = obtener_vocabulario(letra)
+                if isinstance(resultados, list):
+                    for definicion in resultados:
+                        st.write(f'- {definicion}')  # Mostrar cada definición por separado
+                else:
+                    st.write(resultados)
+        else:
+            st.write("Seleccione la inicial de la palabra que desee consultar.")
 
 
     elif choice == "Vista específica":
