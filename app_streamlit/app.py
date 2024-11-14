@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from datetime import timedelta
+from datetime import timedelta, datetime
 from functions.sql_function import extract_data
 from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, modelo_neuronal_rnn_seven_days, modelo_neuronal_lstm_seven_days
 from functions.vocabulary import obtener_vocabulario
@@ -198,16 +198,27 @@ def main():
             "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía."
         )
 
-        # Sección Demanda del mercado
-        st.subheader("Demanda del mercado")
-        df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
+        # Llamada general de datos
 
+        df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
         df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
         df_demanda['year'] = df_demanda['fecha'].dt.year
+        df_balance = load_data("SELECT fecha, valor_balance_GW, energia FROM balance_energia")
+        df_balance['fecha'] = pd.to_datetime(df_balance['fecha'])
+        df_balance['year'] =df_balance['fecha'].dt.year
+        df_generation = load_data("SELECT fecha, valor_generacion_GW, energia FROM generacion_energia")
+        df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+        df_generation['year'] = df_generation['fecha'].dt.year
+        df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
+        df_co2['fecha']=pd.to_datetime(df_co2['fecha'])
+        df_co2['year']=df_co2['fecha'].dt.year
 
-        # Filtros en el Sidebar para Demanda
+        # Filtros generales personalizados en el Sidebar
+
         with st.sidebar.expander("¡Filtros Personalizados!"):
             st.markdown("#### Filtro por Fecha")
+
+            # Selección del rango de fechas usando la tabla de demanda como referencia
             start_date_demanda = st.date_input(
                 "Fecha de inicio", value=df_demanda['fecha'].min(),
                 min_value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max()
@@ -217,18 +228,17 @@ def main():
                 min_value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max()
             )
 
-            tablas = {'Demanda': df_demanda,
-                      'Balance': df_balance,
-                      'Generación': df_generation,
-                      'Transacciones': df_exchanges,
-                      'Emisiones': df_co2}
+            start_date_demanda = datetime.combine(start_date_demanda, datetime.min.time())
+            end_date_demanda = datetime.combine(end_date_demanda, datetime.min.time())
 
-            # Filtrar todas las tablas a la vez y mostrar los resultados
-            for nombre_tabla, df in tablas.items():
-                df_filtrado = df[(df['fecha'] >= start_date) & (df['fecha'] <= end_date)]
-                st.write(f"Tabla filtrada: {nombre_tabla}")
-                st.dataframe(df_filtrado)
+            # Aplicar el filtro de fechas a todas las tablas
+            df_demanda = df_demanda[(df_demanda['fecha'] >= start_date_demanda) & (df_demanda['fecha'] <= end_date_demanda)]
+            df_balance = df_balance[(df_balance['fecha'] >= start_date_demanda) & (df_balance['fecha'] <= end_date_demanda)]
+            df_generation = df_generation[(df_generation['fecha'] >= start_date_demanda) & (df_generation['fecha'] <= end_date_demanda)]
+            df_co2 = df_co2[(df_co2['fecha'] >= start_date_demanda) & (df_co2['fecha'] <= end_date_demanda)]
 
+        # SECCIÓN DE DEMANDA
+        st.subheader("Demanda del mercado")
         # Filtro de periodo predefinido para Demanda (encima de la visualización)
         period_demanda = st.selectbox(
             "Seleccionar periodo",
@@ -333,7 +343,7 @@ def main():
 
         # Sección Balance Energético
         st.subheader("Balance energético")
-        df_balance = load_data("SELECT fecha, valor_balance_GW, energia FROM balance_energia")
+
 
         # Filtros en el Sidebar para Balance
         with st.sidebar.expander("Filtros para Balance Energético"):
@@ -438,7 +448,7 @@ def main():
 
         # Sección Generación Energética
         st.subheader("Generación energética")
-        df_generation = load_data("SELECT fecha, valor_generacion_GW, energia FROM generacion_energia")
+
 
         # Filtros en el Sidebar para Generación
         with st.sidebar.expander("Filtros para Generación Energética"):
@@ -497,7 +507,6 @@ def main():
         # Seccion de CO2
 
         st.subheader("Emisiones de CO2")
-        df_co2=load_data("SELECT fecha, valor, energia FROM emisiones_co2")
 
         #Filtros
 
@@ -538,6 +547,10 @@ def main():
 
             Esto subraya la necesidad de seguir impulsando la **eficiencia energética** y la **transición hacia energías renovables**, para reducir aún más las emisiones de CO2 y avanzar hacia un **modelo energético verdaderamente sostenible**.
         """)
+
+        #Filtro personalizado lateral
+
+
 
         # Glosario
         st.header('Vocabulario energético')
