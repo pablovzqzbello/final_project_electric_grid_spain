@@ -209,6 +209,9 @@ def main():
         df_generation = load_data("SELECT fecha, valor_generacion_GW, energia FROM generacion_energia")
         df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
         df_generation['year'] = df_generation['fecha'].dt.year
+        df_exchanges = load_data("SELECT fecha, valor_GW, tipo_transaccion, pais FROM transacciones_energia")
+        df_exchanges['fecha'] = pd.to_datetime(df_exchanges['fecha'])
+        df_exchanges['year']=df_exchanges['fecha'].dt.year
         df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
         df_co2['fecha']=pd.to_datetime(df_co2['fecha'])
         df_co2['year']=df_co2['fecha'].dt.year
@@ -234,6 +237,7 @@ def main():
             # Aplicar el filtro de fechas a todas las tablas
             df_demanda = df_demanda[(df_demanda['fecha'] >= start_date_demanda) & (df_demanda['fecha'] <= end_date_demanda)]
             df_balance = df_balance[(df_balance['fecha'] >= start_date_demanda) & (df_balance['fecha'] <= end_date_demanda)]
+            df_exchanges = df_exchanges[(df_exchanges['fecha'] >= start_date_demanda) & (df_exchanges['fecha'] <= end_date_demanda)]
             df_generation = df_generation[(df_generation['fecha'] >= start_date_demanda) & (df_generation['fecha'] <= end_date_demanda)]
             df_co2 = df_co2[(df_co2['fecha'] >= start_date_demanda) & (df_co2['fecha'] <= end_date_demanda)]
 
@@ -396,7 +400,6 @@ def main():
 
         # Sección Transacciones Energéticas
         st.subheader("Transacciones energéticas")
-        df_exchanges = load_data("SELECT fecha, valor_GW, tipo_transaccion, pais FROM transacciones_energia")
 
         # Filtros en el Sidebar para Transacciones
         with st.sidebar.expander("Filtros para Transacciones Energéticas"):
