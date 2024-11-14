@@ -51,8 +51,6 @@ def mostrar_mapa_coro():
 
     filtered_df['pais'] = filtered_df['pais'].replace(country_mapping)
 
-
-
     if not filtered_df.empty:
         color_scale = px.colors.sequential.YlGnBu
         max_value = filtered_df['valor_GW'].max()
@@ -127,22 +125,32 @@ def show_help():
     with st.expander("ℹ️ Ayuda de la Aplicación", expanded=True):
         st.markdown("""
             ### Ayuda de la Aplicación
-            Esta aplicación permite realizar un análisis interactivo de datos energéticos de la red eléctrica de España.
+            Esta aplicación permite realizar un análisis interactivo y detallado de los datos energéticos de la red eléctrica de España, abarcando varios aspectos fundamentales del sistema energético nacional. A continuación, se describen las principales secciones y funcionalidades para que puedas navegar y aprovechar al máximo la aplicación.
 
             **Secciones principales**:
-            - 🔌 **Demanda del mercado**: Visualización y análisis de la demanda energética en MW.
-            - ⚡ **Balance energético**: Información sobre el balance de distintos tipos de energía renovable generada.
-            - ✨ **Estructura de generación**: Información sobre la generación energética según cada tecnología utilizada por Redeia S.A.
-            - 🌍 **Transacciones energéticas**: Análisis de las transacciones de energía entre países.
+            - 🔌 **Demanda del Mercado**: Visualización y análisis de la evolución de la demanda energética en MW. Podrás observar tendencias históricas y realizar comparativas entre diferentes periodos.
+            - ⚡ **Balance Energético**: Información sobre el balance de distintos tipos de energía, incluyendo energía renovable y no renovable. Aquí puedes explorar cómo se genera y consume la energía en distintos momentos.
+            - ✨ **Estructura de Generación**: Análisis detallado de la generación energética, desglosada por las diferentes tecnologías utilizadas por Redeia S.A., como energía eólica, solar, hidroeléctrica, entre otras.
+            - 🌍 **Transacciones Energéticas**: Análisis de las transacciones de energía entre España y otros países. Podrás visualizar las importaciones y exportaciones de energía, así como los principales socios comerciales de España en este ámbito.
+            - 📊 **Emisiones de CO2**: Monitorización de las emisiones de CO2 asociadas a la generación de energía, desglosada por tipo de fuente. Esta sección permite evaluar el impacto ambiental del consumo energético y los avances hacia la sostenibilidad.
+            - 📖 **Vocabulario Energético**: Glosario interactivo de términos clave en el ámbito energético. Podrás seleccionar una letra para explorar definiciones y aclarar conceptos importantes.
 
             **Filtros disponibles**:
-            - Selección de periodos específicos: "Última semana", "Último mes", "Último año".
-            - Filtro personalizado de fecha para un análisis más detallado.
+            - **Filtro de Fechas**: Puedes filtrar los datos por periodos específicos como "Última semana", "Último mes", "Último año" o realizar una selección personalizada de fecha para un análisis más detallado. Este filtro está disponible en todas las secciones y permite ajustar el rango temporal de los gráficos y análisis presentados.
+            - **Filtros Específicos por Sección**: Además del filtro de fechas general, cada sección cuenta con filtros específicos para ajustar la visualización según los parámetros de interés (por ejemplo, tipo de energía, país, tipo de transacción, etc.).
+
+            **Cómo Navegar la Aplicación**:
+            - Utiliza el menú lateral para seleccionar la sección que deseas explorar.
+            - Aplica los filtros personalizados en el sidebar para refinar los resultados mostrados en los gráficos.
+            - Haz clic en "Mostrar Ayuda" para acceder a esta guía en cualquier momento.
+
+            Esta herramienta está diseñada para ofrecer una visión integral del sector energético español, permitiendo a los usuarios realizar análisis personalizados y obtener información útil sobre la producción, consumo, y sostenibilidad energética en España.
         """)
 
 # Botón en el sidebar para mostrar la ayuda
 if st.sidebar.button("ℹ️ Mostrar Ayuda"):
     show_help()
+
 
 # Función principal
 def main():
@@ -226,11 +234,17 @@ def main():
         fig1 = px.line(filtered_df_demanda, x='fecha', y='valor_demanda_MW', title="Demanda Energética en MW")
         st.plotly_chart(fig1)
 
-        st.markdown("La gráfica muestra la evolución de la demanda energética en España desde 2011 hasta 2024. "
-                    "Se observa una marcada reducción en la demanda durante el periodo de confinamiento por la pandemia de COVID-19, comenzando el 14 de marzo de 2020. "
-                    "El punto más bajo ocurre en esta fase y la recuperación gradual inicia en junio del mismo año con la reapertura económica y la flexibilización de las restricciones."
-                    "Aunque podría esperarse un aumento en la demanda debido al incremento del consumo doméstico, esta disminución refleja el impacto del cierre temporal de muchas actividades industriales y comerciales, que son los principales consumidores de energía. "
-                    "Las variaciones en la demanda a lo largo del año responden a patrones diarios, semanales y estacionales: el consumo es mayor durante el día que en la noche, más alto entre semana que los fines de semana, y tiende a incrementarse en invierno y en verano, especialmente durante los picos de frío y calor.")
+        st.markdown("""
+            **Evolución de la Demanda Energética en España (2011-2024)**
+
+            La gráfica muestra la **evolución de la demanda energética** en España desde 2011 hasta 2024.
+
+            Se observa una marcada **reducción** en la demanda durante el periodo de **confinamiento** por la pandemia de **COVID-19**, comenzando el 14 de marzo de 2020. El punto más bajo ocurre en esta fase, y la **recuperación** gradual inicia en junio del mismo año con la **reapertura económica** y la flexibilización de las restricciones.
+
+            Aunque podría esperarse un aumento en la demanda debido al incremento del **consumo doméstico**, esta disminución refleja el impacto del cierre temporal de muchas actividades industriales y comerciales, que son los principales **consumidores de energía**.
+
+            Las variaciones en la demanda a lo largo del año responden a **patrones diarios**, **semanales** y **estacionales**: el consumo es mayor durante el **día** que en la **noche**, más alto entre semana que los fines de semana, y tiende a incrementarse en **invierno** y en **verano**, especialmente durante los **picos de frío** y **calor**.
+        """)
 
         # Gráfico de barras mensual de demanda promedio
         filtered_df_demanda['mes'] = filtered_df_demanda['fecha'].dt.to_period('M').dt.to_timestamp()
@@ -238,21 +252,19 @@ def main():
         fig_demanda_mensual = px.bar(demanda_mensual, x='mes', y='valor_demanda_MW',
                                      title="Demanda Promedio Mensual en MW")
         st.plotly_chart(fig_demanda_mensual)
-        st.markdown ("La gráfica muestra la demanda promedio mensual de energía en MW durante un período prolongado, "
-                     "cubriendo aproximadamente desde 2011 hasta 2024. A lo largo del tiempo, la demanda promedio "
-                     "mensual parece mantenerse relativamente estable, aunque con algunas fluctuaciones. Se observan "
-                     "ciertos picos de demanda en distintos años, especialmente alrededor de 2012 y 2017-2018, "
-                     "que podrían estar relacionados con factores estacionales, cambios en el consumo, o eventos "
-                     "específicos que incrementaron la demanda. Asimismo, hay momentos con disminuciones, que podrían "
-                     "deberse a condiciones económicas, climáticas o cambios en la eficiencia energética. Aunque el "
-                     "gráfico no especifica los meses exactos, es posible que haya patrones de demanda estacionales, "
-                     "como aumentos durante periodos de clima extremo, en los que se usa más energía para calefacción "
-                     "o refrigeración. En los últimos años (aproximadamente desde 2023), parece haber una leve disminución "
-                     "en la demanda promedio mensual, lo cual podría indicar un cambio en el consumo de energía, "
-                     "posiblemente debido a iniciativas de eficiencia energética, cambios en el comportamiento de consumo, "
-                     "un aumento de los precios de la energía o una desaceleración económica.")
+        st.markdown("""
+            **Demanda Promedio Mensual de Energía en MW (2011-2024)**
 
-# Filtros en el Sidebar para la comparación de años de Pablo
+            La gráfica muestra la **demanda promedio mensual de energía** en MW durante un período prolongado, cubriendo aproximadamente desde 2011 hasta 2024. 
+
+            A lo largo del tiempo, la demanda promedio mensual parece mantenerse relativamente estable, aunque con algunas fluctuaciones. Se observan ciertos **picos de demanda** en distintos años, especialmente alrededor de **2012** y **2017-2018**, que podrían estar relacionados con **factores estacionales**, **cambios en el consumo**, o **eventos específicos** que incrementaron la demanda.
+
+            Asimismo, hay momentos con **disminuciones**, que podrían deberse a **condiciones económicas**, **climáticas** o cambios en la **eficiencia energética**. Aunque el gráfico no especifica los meses exactos, es posible que haya **patrones de demanda estacionales**, como aumentos durante **periodos de clima extremo**, en los que se usa más energía para **calefacción** o **refrigeración**.
+
+            En los últimos años (aproximadamente desde **2023**), parece haber una leve **disminución** en la demanda promedio mensual, lo cual podría indicar un cambio en el **consumo de energía**, posiblemente debido a **iniciativas de eficiencia energética**, cambios en el **comportamiento de consumo**, un aumento de los **precios de la energía** o una **desaceleración económica**.
+        """)
+
+        # Filtros en el Sidebar para la comparación de años de Pablo
 
         st.sidebar.subheader("Comparación de Años")
         available_years = df_demanda['year'].unique()
@@ -299,11 +311,13 @@ def main():
 
             # Mostrar la gráfica comparativa
             st.plotly_chart(fig_comparador)
-        st.markdown("Este gráfico dinámico permite comparar la demanda anual de manera visual e intuitiva. A través de "
-                    "él, podemos observar las diferencias en la demanda entre los distintos años registrados en nuestra "
-                    "base de datos, con indicadores claros del máximo, mediana, media y mínimo de demanda para cada año.")
+        st.markdown("""
+            **Comparación de Demanda Anual**
 
-################ BALANCE
+            Este gráfico dinámico permite comparar la **demanda anual** de manera visual e intuitiva. A través de él, podemos observar las diferencias en la demanda entre los distintos años registrados en nuestra base de datos, con indicadores claros del **máximo**, **mediana**, **media** y **mínimo** de demanda para cada año.
+        """)
+
+        ################ BALANCE
 
         # Sección Balance Energético
         st.subheader("Balance energético")
@@ -325,42 +339,38 @@ def main():
                        title="Balance Generación Energías Renovables en GW")
         st.plotly_chart(fig2)
 
-        st.markdown("La gráfica muestra el balance de generación de energías renovables en GW a lo largo del tiempo, "
-                    "desde aproximadamente 2011 hasta 2024. A lo largo del período, se observan fuertes fluctuaciones en "
-                    "la generación de energía renovable, lo cual es característico de este tipo de fuentes debido a su "
-                    "dependencia de condiciones naturales como el viento, la luz solar y la lluvia para la energía "
-                    "hidroeléctrica. La generación no es constante y muestra picos y caídas de forma regular. Aunque "
-                    "la variabilidad es alta, se nota una tendencia general al alza en la capacidad de generación "
-                    "renovable. Desde 2020 en adelante, parece que los picos máximos son más altos que en años "
-                    "anteriores, lo que podría indicar un aumento en la capacidad instalada o una mayor integración "
-                    "de energías renovables en el sistema eléctrico. Es probable que existan patrones estacionales en "
-                    "la generación, ya que el gráfico muestra ciclos repetitivos. Esto puede deberse a estaciones del "
-                    "año donde ciertas fuentes renovables, como la eólica y la hidroeléctrica, tienen una mayor "
-                    "o menor disponibilidad. En los últimos años (desde 2022), parece que la generación ha alcanzado "
-                    "picos más altos y también presenta una mayor estabilidad en algunos períodos. Esto puede estar "
-                    "relacionado con avances tecnológicos o mejoras en la eficiencia de generación renovable, así como "
-                    "un mejor manejo de la variabilidad a través de almacenamiento de energía o estrategias de gestión "
-                    "de la red. La gráfica muestra una dependencia significativa de factores naturales que influencian "
-                    "la generación renovable, pero con una tendencia general positiva en cuanto a la capacidad y "
-                    "contribución de las energías renovables en el sistema eléctrico. Esto sugiere que se están "
-                    "logrando avances en la integración de estas energías, aunque aún existen desafíos en la gestión de "
-                    "su variabilidad.")
+        st.markdown("""
+            **Balance de Generación de Energías Renovables en GW (2011-2024)**
+
+            La gráfica muestra el **balance de generación de energías renovables** en GW a lo largo del tiempo, desde aproximadamente 2011 hasta 2024.
+
+            A lo largo del período, se observan fuertes **fluctuaciones** en la generación de energía renovable, lo cual es característico de este tipo de fuentes debido a su dependencia de **condiciones naturales** como el **viento**, la **luz solar** y la **lluvia** para la energía **hidroeléctrica**. La generación no es constante y muestra **picos** y **caídas** de forma regular.
+
+            Aunque la **variabilidad** es alta, se nota una tendencia general al alza en la **capacidad de generación renovable**. Desde 2020 en adelante, parece que los **picos máximos** son más altos que en años anteriores, lo que podría indicar un aumento en la **capacidad instalada** o una mayor **integración de energías renovables** en el sistema eléctrico.
+
+            Es probable que existan **patrones estacionales** en la generación, ya que el gráfico muestra ciclos repetitivos. Esto puede deberse a estaciones del año donde ciertas fuentes renovables, como la **eólica** y la **hidroeléctrica**, tienen una mayor o menor disponibilidad.
+
+            En los últimos años (desde 2022), parece que la generación ha alcanzado **picos más altos** y también presenta una mayor **estabilidad** en algunos períodos. Esto puede estar relacionado con **avances tecnológicos** o mejoras en la **eficiencia de generación renovable**, así como un mejor manejo de la **variabilidad** a través de **almacenamiento de energía** o estrategias de **gestión de la red**.
+
+            La gráfica muestra una dependencia significativa de **factores naturales** que influyen en la generación renovable, pero con una tendencia general positiva en cuanto a la **capacidad** y **contribución de las energías renovables** en el sistema eléctrico. Esto sugiere que se están logrando avances en la **integración de estas energías**, aunque aún existen desafíos en la gestión de su **variabilidad**.
+        """)
 
         # Gráfico de área apilado para balance energético
         fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_GW', color='energia',
                                       title="Balance Energético por Tipo de Energía en GW")
         st.plotly_chart(fig_balance_energia)
 
-        st.markdown("El gráfico que se presenta muestra la evolución temporal de la generación de energía eléctrica "
-                    "a partir de diversas fuentes renovables entre 2011 y 2024. Cada línea representa una fuente "
-                    "específica (eólica, hidráulica, solar fotovoltaica, etc.) y su altura en un punto dado indica "
-                    "la cantidad de energía generada en ese momento.  Revela una transformación profunda en el sector "
-                    "energético, con un claro protagonismo de las energías renovables.  El auge de las energías "
-                    "renovables abre nuevas oportunidades en el sector de los servicios energéticos, como la gestión de "
-                    "la energía, la eficiencia energética y la comercialización de electricidad. Este hecho ha incentivado"
-                    "la construcción de parques eólicos, plantas solares y otras infraestructuras relacionadas con "
-                    "las energías renovables, especialmente a partir del año 2020 fruto de una fuerte transición energética"
-                    "que cumple con los objetivos de la agenda climática de Horizon 2020 y Horizon 2030")
+        st.markdown("""
+            **Evolución de la Generación de Energía Eléctrica Renovable (2011-2024)**
+
+            El gráfico que se presenta muestra la **evolución temporal de la generación de energía eléctrica** a partir de diversas fuentes renovables entre 2011 y 2024. 
+
+            Cada línea representa una fuente específica (**eólica**, **hidráulica**, **solar fotovoltaica**, etc.) y su altura en un punto dado indica la cantidad de **energía generada** en ese momento.
+
+            Revela una transformación profunda en el **sector energético**, con un claro protagonismo de las **energías renovables**. El auge de las **energías renovables** abre nuevas oportunidades en el sector de los **servicios energéticos**, como la **gestión de la energía**, la **eficiencia energética** y la **comercialización de electricidad**.
+
+            Este hecho ha incentivado la construcción de **parques eólicos**, **plantas solares** y otras **infraestructuras** relacionadas con las **energías renovables**, especialmente a partir del año 2020 fruto de una fuerte **transición energética** que cumple con los objetivos de la **agenda climática de Horizon 2020 y Horizon 2030**.
+        """)
 
         # Sección Transacciones Energéticas
         st.subheader("Transacciones energéticas")
@@ -381,18 +391,17 @@ def main():
                                                  x='fecha', y='valor_GW', color='tipo_transaccion',
                                                  title="Evolución General de Transacciones Energéticas en GW")
         st.plotly_chart(fig_evolucion_transacciones)
-        st.markdown("La evolución de las transacciones comerciales entre Redeia S.A. y sus socios internacionales "
-                    "muestra una notable reducción en la dependencia de las importaciones hacia el año 2022. "
-                    "Este cambio responde, en gran medida, al impulso en la generación de energías renovables, "
-                    "especialmente en el sector solar fotovoltaico, que ha permitido a España aumentar gradualmente "
-                    "su capacidad de exportación. La transición energética y el crecimiento sostenido del sector "
-                    "renovable han favorecido un modelo más autosuficiente, donde las importaciones se utilizan "
-                    "de manera estratégica para cubrir picos de demanda, pero ya no constituyen el eje central del "
-                    "abastecimiento.Además, una ligera reducción en el consumo energético ha permitido un mayor margen "
-                    "para las exportaciones, consolidando a España como un exportador neto en el contexto europeo. "
-                    "Así, la combinación de una menor dependencia de combustibles fósiles y el incremento de "
-                    "la capacidad renovable posiciona a Redeia S.A. en una posición de liderazgo en el comercio "
-                    "energético, apuntalando el camino hacia un sistema más sostenible y eficiente.")
+        st.markdown("""
+            La **evolución de las transacciones comerciales** entre **Redeia S.A.** y sus socios internacionales muestra una notable **reducción** en la dependencia de las **importaciones** hacia el año **2022**. 
+
+            Este cambio responde, en gran medida, al impulso en la **generación de energías renovables**, especialmente en el sector **solar fotovoltaico**, que ha permitido a España aumentar gradualmente su capacidad de **exportación**. 
+
+            La **transición energética** y el crecimiento sostenido del sector **renovable** han favorecido un modelo más **autosuficiente**, donde las importaciones se utilizan de manera estratégica para cubrir **picos de demanda**, pero ya no constituyen el eje central del abastecimiento.
+
+            Además, una ligera **reducción en el consumo energético** ha permitido un mayor margen para las **exportaciones**, consolidando a **España** como un **exportador neto** en el contexto europeo.
+
+            Así, la combinación de una menor **dependencia de combustibles fósiles** y el incremento de la **capacidad renovable** posiciona a **Redeia S.A.** en una posición de **liderazgo** en el **comercio energético**, apuntalando el camino hacia un sistema más **sostenible** y **eficiente**.
+        """)
 
         # Gráfico de evolución de transacciones energéticas por país
 
@@ -401,15 +410,13 @@ def main():
             x='fecha', y='valor_GW', color='pais',
             title="Evolución por país de Transacciones Energéticas en GW")
         st.plotly_chart(fig_evolucion_transacciones_pais)
-        st.markdown("Esta gráfica muestra la evolución histórica de las importaciones y exportaciones de energía "
-                    "de España, desglosada por países clave (Francia, Portugal, Marruecos y Andorra). "
-                    "Los valores positivos representan exportaciones, mientras que los valores negativos corresponden "
-                    "a importaciones.Al interactuar con los filtros, se observa que Francia ha sido tradicionalmente "
-                    "el principal proveedor energético de España. Sin embargo, a partir de 2020-2021, se nota una "
-                    "tendencia hacia un aumento de las exportaciones, lo que podría estar vinculado al crecimiento en "
-                    "la producción de energía renovable en el país. Esta transición resalta el cambio de España de "
-                    "importador a exportador energético, reflejando una mayor autosuficiencia y un compromiso con "
-                    "fuentes de energía sostenibles.")
+        st.markdown("""
+            Esta gráfica muestra la **evolución histórica** de las **importaciones y exportaciones de energía** de España, desglosada por **países clave** (**Francia**, **Portugal**, **Marruecos** y **Andorra**). 
+
+            Los valores **positivos** representan **exportaciones**, mientras que los valores **negativos** corresponden a **importaciones**. Al interactuar con los filtros, se observa que **Francia** ha sido tradicionalmente el principal proveedor energético de España. 
+
+            Sin embargo, a partir de **2020-2021**, se nota una tendencia hacia un aumento de las **exportaciones**, lo que podría estar vinculado al crecimiento en la **producción de energía renovable** en el país. Esta **transición** resalta el cambio de España de **importador a exportador energético**, reflejando una mayor **autosuficiencia** y un compromiso con **fuentes de energía sostenibles**.
+        """)
 
         # Gráfico de flujo de transacciones energéticas por país
         transacciones_pais = filtered_df_exchanges.groupby(['pais', 'tipo_transaccion'])['valor_GW'].sum().reset_index()
@@ -445,21 +452,17 @@ def main():
         fig4 = px.histogram(filtered_df_generation, x='fecha', y='valor_generacion_GW', color='energia',
                             title="Generación en GW")
         st.plotly_chart(fig4)
-        st.markdown("Este gráfico ilustra la evolución de la generación de energía en Redeia S.A., mostrando tanto "
-                    "fuentes renovables como no renovables entre 2012 y 2024. En tan solo 12 años, se observan dos "
-                    "fenómenos clave que reflejan una transición energética en España.En primer lugar, destaca "
-                    "la reducción de la dependencia de los combustibles fósiles, especialmente el carbón, que muestra "
-                    "una caída drástica en 2019 como fuente principal de energía. Este cambio es un paso importante "
-                    "hacia la descarbonización del sector energético.En segundo lugar, se observa un notable crecimiento "
-                    "en las energías renovables, con la energía eólica y la solar fotovoltaica liderando este cambio, "
-                    "especialmente a partir de 2020. También destacan el incremento de la energía solar térmica y "
-                    "la generación hidroeléctrica mediante turbinación de bombeo, cuyo crecimiento ha sido evidente desde 2012."
-                    "Respecto a las energías no renovables, la energía nuclear ha mantenido una presencia constante "
-                    "como fuente complementaria, necesaria para cubrir la demanda energética actual. Sin embargo, "
-                    "se observa una tendencia general a la reducción de otras fuentes no renovables, como los motores "
-                    "diésel, turbinas de gas, turbinas de vapor, cogeneración (energía eléctrica y térmica) y residuos "
-                    "no renovables. Esta transición hacia fuentes de energía más limpias subraya el compromiso de Redeia "
-                    "S.A. con la sostenibilidad y la adaptación al cambio en el panorama energético.")
+        st.markdown("""
+            Este gráfico ilustra la **evolución de la generación de energía** en **Redeia S.A.**, mostrando tanto **fuentes renovables** como **no renovables** entre 2012 y 2024. 
+
+            En tan solo 12 años, se observan dos fenómenos clave que reflejan una **transición energética** en España. En primer lugar, destaca la **reducción de la dependencia de los combustibles fósiles**, especialmente el **carbón**, que muestra una caída drástica en 2019 como fuente principal de energía. Este cambio es un paso importante hacia la **descarbonización** del sector energético.
+
+            En segundo lugar, se observa un notable **crecimiento en las energías renovables**, con la **energía eólica** y la **solar fotovoltaica** liderando este cambio, especialmente a partir de 2020. También destacan el incremento de la **energía solar térmica** y la **generación hidroeléctrica** mediante **turbinación de bombeo**, cuyo crecimiento ha sido evidente desde 2012.
+
+            Respecto a las **energías no renovables**, la **energía nuclear** ha mantenido una presencia constante como fuente complementaria, necesaria para cubrir la **demanda energética** actual. Sin embargo, se observa una tendencia general a la **reducción** de otras fuentes no renovables, como los **motores diésel**, **turbinas de gas**, **turbinas de vapor**, **cogeneración** (energía eléctrica y térmica) y **residuos no renovables**.
+
+            Esta **transición hacia fuentes de energía más limpias** subraya el compromiso de **Redeia S.A.** con la **sostenibilidad** y la adaptación al cambio en el panorama energético.
+        """)
 
         # Distribución de Generación Energética
         fig5 = px.pie(
@@ -471,15 +474,13 @@ def main():
             height=700
         )
         st.plotly_chart(fig5)
-        st.markdown("La estructura de generación energética de esta empresa española se apoya en cinco fuentes "
-                    "principales. La energía nuclear constituye el 20.6% del total, subrayando su importancia "
-                    "como fuente constante en el mix energético. La energía eólica ocupa el segundo lugar con un 19.9%, "
-                    "reflejando el impulso hacia fuentes limpias. La generación mediante ciclo combinado representa "
-                    "un 15.1%, seguida de la energía hidráulica con un 10.9%, que continúa siendo una fuente relevante. "
-                    "Aunque el carbón, con un 10.5%, aún forma parte de la producción, se encuentra en clara disminución. "
-                    "Esta distribución muestra la transición hacia un modelo energético más sostenible, con un incremento "
-                    "notable en fuentes renovables y una reducción gradual de los combustibles fósiles.")
+        st.markdown("""
+            La **estructura de generación energética** de esta empresa española se apoya en cinco fuentes principales. 
 
+            La **energía nuclear** constituye el **20.6%** del total, subrayando su importancia como fuente constante en el **mix energético**. La **energía eólica** ocupa el segundo lugar con un **19.9%**, reflejando el impulso hacia **fuentes limpias**. La **generación mediante ciclo combinado** representa un **15.1%**, seguida de la **energía hidráulica** con un **10.9%**, que continúa siendo una fuente relevante.
+
+            Aunque el **carbón**, con un **10.5%**, aún forma parte de la producción, se encuentra en clara disminución. Esta distribución muestra la **transición hacia un modelo energético más sostenible**, con un incremento notable en **fuentes renovables** y una **reducción gradual de los combustibles fósiles**.
+        """)
 
         # Seccion de CO2
 
@@ -504,34 +505,33 @@ def main():
 
         fig_co2_evolucion=px.line(filtered_df_co2_grouped, x='fecha', y='valor', title="Evolución de las emisiones CO2")
         st.plotly_chart(fig_co2_evolucion)
-        st.markdown("""La evolución de las emisiones de CO2 desde 2010 hasta 2024 muestra una tendencia marcada 
-        por fluctuaciones que reflejan la volatilidad inherente a los datos y la estacionalidad de las emisiones, 
-        más frecuentes en invierno y verano debido al mayor consumo y demanda estacional. Esta serie de picos y 
-        valles sugiere períodos de incrementos y disminuciones abruptas en las emisiones, relacionados principalmente 
-        con la estacionalidad y la constante relación entre generación y demanda de energía.
-        A partir de enero de 2019, se observa una disminución en las emisiones que no está relacionada directamente con 
-        la pandemia de la COVID-19, salvo durante el período de confinamiento, en el que se registraron bajas emisiones. 
-        Esta reducción es atribuible a la efectividad de las normativas europeas impulsadas por la Comisión Europea, 
-        como la norma EURO para transportes, y el Plan Nacional de Calidad del Aire (2017-2019), que implementa diversas 
-        medidas para reducir las emisiones en varios sectores, especialmente el industrial. Además, se alinean 
-        con los objetivos climáticos establecidos en las agendas HORIZON 2020 y 2030.""")
+        st.markdown("""
+            La **evolución de las emisiones de CO2** desde 2010 hasta 2024 muestra una tendencia marcada por fluctuaciones que reflejan la volatilidad inherente a los datos y la **estacionalidad de las emisiones**, más frecuentes en **invierno** y **verano** debido al mayor **consumo** y **demanda estacional**. 
+
+            Esta serie de **picos y valles** sugiere períodos de incrementos y disminuciones abruptas en las emisiones, relacionados principalmente con la **estacionalidad** y la constante relación entre **generación** y **demanda de energía**.
+
+            A partir de enero de **2019**, se observa una **disminución en las emisiones** que no está relacionada directamente con la **pandemia de la COVID-19**, salvo durante el período de **confinamiento**, en el que se registraron bajas emisiones. Esta **reducción** es atribuible a la efectividad de las **normativas europeas** impulsadas por la **Comisión Europea**, como la norma **EURO** para transportes, y el **Plan Nacional de Calidad del Aire** (2017-2019), que implementa diversas medidas para reducir las emisiones en varios sectores, especialmente el **industrial**.
+
+            Además, se alinean con los **objetivos climáticos** establecidos en las agendas **HORIZON 2020 y 2030**.
+        """)
+
         #Gráfico por generación de las emisiones de co2
+
         fig_co2_energia=px.histogram(filtered_df_co2, x='fecha', y='valor', color='energia', title="Emisiones de CO2 según su generación")
         st.plotly_chart(fig_co2_energia)
-        st.markdown("""La evolución de las emisiones de CO2, desglosadas por tipo de energía, muestra una tendencia a la baja, 
-        especialmente a partir de 2019, gracias a la reducción en el uso del carbón. Este cambio refleja una transición 
-        clara hacia fuentes de energía más limpias y sostenibles, alineadas con los esfuerzos por mitigar el impacto ambiental. 
-        Sin embargo, a pesar de estos avances, el ciclo combinado sigue siendo la fuente de energía con mayor impacto en términos de emisiones, 
-        dominando ampliamente el espacio de las emisiones frente a otras fuentes como la cogeneración, las turbinas de gas, 
-        las turbinas de vapor, el diésel y el fuel-gas. Esto subraya la necesidad de seguir impulsando la eficiencia energética y la transición hacia energías renovables, 
-        para reducir aún más las emisiones de CO2 y avanzar hacia un modelo energético verdaderamente sostenible.""")
+        st.markdown("""
+            La **evolución de las emisiones de CO2**, desglosadas por **tipo de energía**, muestra una **tendencia a la baja**, especialmente a partir de **2019**, gracias a la **reducción en el uso del carbón**. Este cambio refleja una **transición clara hacia fuentes de energía más limpias y sostenibles**, alineadas con los esfuerzos por mitigar el impacto ambiental. 
+
+            Sin embargo, a pesar de estos avances, el **ciclo combinado** sigue siendo la fuente de energía con mayor impacto en términos de emisiones, dominando ampliamente el espacio de las emisiones frente a otras fuentes como la **cogeneración**, las **turbinas de gas**, las **turbinas de vapor**, el **diésel** y el **fuel-gas**. 
+
+            Esto subraya la necesidad de seguir impulsando la **eficiencia energética** y la **transición hacia energías renovables**, para reducir aún más las emisiones de CO2 y avanzar hacia un **modelo energético verdaderamente sostenible**.
+        """)
 
         # Glosario
         st.header('Vocabulario energético')
 
         # Lista de letras
-        letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-                  'U', 'V', 'W', 'X', 'Y', 'Z']
+        letras = ['C', 'E', 'F', 'H', 'M', 'N', 'R', 'S', 'T']
 
         # Multiselect para que el usuario seleccione múltiples letras
         letras_seleccionadas = st.multiselect('Selecciona una o más letras', letras)
@@ -553,8 +553,6 @@ def main():
     elif choice == "Vista específica":
 
         st.title("Predicciones de Demanda Energética")
-
-
 
 
         model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)"])
