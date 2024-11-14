@@ -217,6 +217,18 @@ def main():
                 min_value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max()
             )
 
+            tablas = {'Demanda': df_demanda,
+                      'Balance': df_balance,
+                      'Generación': df_generation,
+                      'Transacciones': df_exchanges,
+                      'Emisiones': df_co2}
+
+            # Filtrar todas las tablas a la vez y mostrar los resultados
+            for nombre_tabla, df in tablas.items():
+                df_filtrado = df[(df['fecha'] >= start_date) & (df['fecha'] <= end_date)]
+                st.write(f"Tabla filtrada: {nombre_tabla}")
+                st.dataframe(df_filtrado)
+
         # Filtro de periodo predefinido para Demanda (encima de la visualización)
         period_demanda = st.selectbox(
             "Seleccionar periodo",
