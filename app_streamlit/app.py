@@ -5,6 +5,8 @@ from datetime import timedelta, datetime
 from functions.sql_function import extract_data
 from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, modelo_neuronal_rnn_seven_days, modelo_neuronal_lstm_seven_days
 from functions.vocabulary import obtener_vocabulario
+from streamlit_lottie import st_lottie
+import json
 
 # Configuración de la página
 st.set_page_config(
@@ -100,8 +102,6 @@ def mostrar_mapa_coro():
     else:
         st.warning("No hay datos para mostrar en el mapa con la selección actual.")
 
-
-
 #######################
 
 # Función para aplicar filtro de fecha con periodos predefinidos
@@ -151,13 +151,11 @@ def show_help():
 if st.sidebar.button("ℹ️ Mostrar Ayuda"):
     show_help()
 
-
 # Función principal
 def main():
 
-
     # Menú de selección en el sidebar
-    choices = ["Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético"]
+    choices = ["Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético", '¡Costes promedios!']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -346,8 +344,8 @@ def main():
         ################ BALANCE
 
         # Sección Balance Energético
-        st.subheader("Balance energético")
 
+        st.subheader("Balance energético")
 
         # Filtros en el Sidebar para Balance
         with st.sidebar.expander("Filtros para Balance Energético"):
@@ -553,8 +551,6 @@ def main():
 
         #Filtro personalizado lateral
 
-
-
         # Glosario
         st.header('Vocabulario energético')
 
@@ -578,10 +574,77 @@ def main():
             st.write("Seleccione la inicial de la palabra que desee consultar.")
 
 
+
+    elif choice == "¡Costes promedios!":
+
+        st.title("💡 Calculadora de Costos de Electrodomésticos")
+        def load_lottie_file(filepath):
+            try:
+                with open(filepath, "r") as file:
+                    return json.load(file)
+            except FileNotFoundError:
+                st.error(f"Error: No se encontró el archivo {filepath}. Verifica la ruta.")
+                return None
+
+
+        tarifas = {
+
+            "Endesa": 0.157,  # €/kWh
+
+            "Iberdrola": 0.153,
+
+            "Naturgy": 0.160,
+
+            "Repsol": 0.159,
+
+        }
+
+        st.sidebar.header("📊 Selección de Tarifa Eléctrica")
+        tarifa_seleccionada = st.sidebar.selectbox("Selecciona tu compañía eléctrica", options=list(tarifas.keys()))
+        precio_tarifa = tarifas[tarifa_seleccionada]
+        st.sidebar.header("⏱️ Tiempo de Uso")
+        tiempo_uso = st.sidebar.slider("Selecciona el tiempo de uso (en horas)", min_value=1, max_value=24, value=2)
+
+
+        electrodomesticos = {
+
+            "Lavadora": {"consumo": 0.9, "lottie": "auxiliary/Animation - 1731783434718.json"},
+            "Aire Acondicionado": {"consumo": 1.5, "lottie": "auxiliary/Animation - 1731783350461.json"},
+            "Horno": {"consumo": 2.0, "lottie": "auxiliary/Animation - 1731783259030.json"},
+            "Frigorífico": {"consumo": 0.8, "lottie": "auxiliary/Animation - 1731783226494.json"},
+
+        }
+
+
+        st.info(f"**Tarifa Seleccionada:** {tarifa_seleccionada} - {precio_tarifa:.3f} €/kWh")
+        for electro, datos in electrodomesticos.items():
+
+
+            consumo = datos["consumo"]
+            costo_total = consumo * tiempo_uso * precio_tarifa
+
+            # Visualización del electrodoméstico
+            st.subheader(f"🔌 {electro}")
+            col1, col2 = st.columns([1, 2])
+
+            with col1:
+
+                # Cargar y mostrar la animación Lottie
+                animation_data = load_lottie_file(datos["lottie"])
+                if animation_data:
+                    st_lottie(animation_data, height=150, width=150, key=electro)
+
+            with col2:
+
+                st.markdown(f"**Consumo:** {consumo} kWh/h")
+                st.markdown(f"**Tiempo de Uso:** {tiempo_uso} horas")
+                st.markdown(f"**Costo Total Estimado:** {costo_total:.2f} €")
+                st.divider()  # Línea divisoria entre electrodomésticos
+
+
     elif choice == "Vista específica":
 
         st.title("Predicciones de Demanda Energética")
-
 
         model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)"])
 
