@@ -3,7 +3,7 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta, datetime
 from functions.sql_function import extract_data
-from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, modelo_neuronal_rnn_seven_days, modelo_neuronal_lstm_seven_days
+from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, predict_7_days_rnn, predict_7_days_lstm
 from functions.vocabulary import obtener_vocabulario
 from streamlit_lottie import st_lottie
 import json
@@ -660,7 +660,7 @@ def main():
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
                 modelo_neuronal_rnn(X_test, y_test)
-                modelo_neuronal_rnn_seven_days(X_test)
+                predict_7_days_rnn(last_sequence=X_test[-1])
 
             else:
                 df_demanda = load_data("SELECT * FROM demanda_energia")
@@ -670,8 +670,10 @@ def main():
                 valores_escalados, objetivo_escalado = escalador(df)
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
+
                 modelo_neuronal_lstm(X_test, y_test)
-                modelo_neuronal_lstm_seven_days(X_test)
+                predict_7_days_lstm(last_sequence=X_test[-1])
+
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()

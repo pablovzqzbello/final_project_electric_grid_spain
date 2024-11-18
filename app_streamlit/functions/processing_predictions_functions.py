@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import streamlit as st
 import pickle
 import plotly.express as px
@@ -57,7 +56,7 @@ def escalador(df, target_column="valor_demanda_MW", scaler_filename="models/scal
     objetivo_escalado = scaler.fit_transform(objetivo.reshape(-1, 1))
 
     # Dar forma a los valores escalados
-    valores_escalados = valores_escalados.reshape((valores_escalados.shape[0], 1, valores_escalados.shape[1]))
+    valores_escalados = valores_escalados.reshape((valores_escalados.shape[0], valores_escalados.shape[1],1))
 
     return valores_escalados, objetivo_escalado
 
@@ -72,7 +71,7 @@ def train_test_split_data(valores_escalados, objetivo_escalado, train_ratio=0.8)
     return X_train, X_test, y_train, y_test
 
 
-def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/rnn_model.pkl"):
+def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/rnn_model_actualizado.pkl"):
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
@@ -85,8 +84,8 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", mod
     predictions_scaled = model_rnn.predict(X_test)
 
     # Asegurar que el escalador reciba datos en el formato correcto para la transformación inversa
-    predictions = scaler.inverse_transform(predictions_scaled.reshape(-1, 1))
-    expected = scaler.inverse_transform(y_test.reshape(-1, 1))
+    predictions = scaler.inverse_transform(predictions_scaled)
+    expected = scaler.inverse_transform(y_test)
 
     # Mostrar predicciones
     for i in range(len(y_test)):
@@ -105,7 +104,7 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", mod
     return st.plotly_chart(fig_rnn)
 
 
-def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model.pkl"):
+def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model_actualizado.pkl"):
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
@@ -118,8 +117,8 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
     predictions_scaled = model_lstm.predict(X_test)
 
     # Asegurar que el escalador reciba datos en el formato correcto para la transformación inversa
-    predictions = scaler.inverse_transform(predictions_scaled.reshape(-1, 1))
-    expected = scaler.inverse_transform(y_test.reshape(-1, 1))
+    predictions = scaler.inverse_transform(predictions_scaled)
+    expected = scaler.inverse_transform(y_test)
 
     # Mostrar predicciones
     for i in range(len(y_test)):
@@ -138,90 +137,103 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
     return st.plotly_chart(fig_lstm)
 
 
-def modelo_neuronal_rnn_seven_days(X_test, scaler_filename="models/scaler.pkl", model_filename="models/rnn_model.pkl"):
-    # Cargar el escalador preentrenado desde el archivo pickle
+def predict_7_days_rnn(
+        scaler_filename="models/scaler.pkl",
+        model_filename="models/rnn_model_actualizado.pkl",
+        last_sequence=None):
+
+    # Cargar el scaler y el modelo
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
 
-    # Cargar el modelo LSTM preentrenado desde el archivo pickle
     with open(model_filename, "rb") as f:
-        model_rnn = pickle.load(f)
+        model = pickle.load(f)
 
-    # Predecir los próximos 7 días basándonos en las últimas observaciones
+    # Inicializar la lista de predicciones escaladas
     predictions_scaled = []
-    input_sequence = X_test[-1]  # Tomamos el último valor de entrada para empezar la predicción
+    input_sequence = last_sequence.copy()
 
-    for _ in range(7):  # Predecir 7 días
-        # Redimensionar la entrada para cumplir con el formato esperado por el modelo (1, 1, 7)
-        input_sequence_reshaped = input_sequence.reshape(1, 1, -1)  # (batch_size, time_steps, features)
+    # Generar predicciones para los próximos 7 días
+    for _ in range(7):
+        # Redimensionar la secuencia para cumplir con el formato del modelo
+        input_sequence_reshaped = input_sequence.reshape(1, input_sequence.shape[0], input_sequence.shape[1])
 
-        # Realizar la predicción para el siguiente día
-        prediction_scaled = model_rnn.predict(input_sequence_reshaped)
-        predictions_scaled.append(prediction_scaled[0])
+        # Realizar la predicción
+        prediction_scaled = model.predict(input_sequence_reshaped)[0, 0]
+        predictions_scaled.append(prediction_scaled)
 
-        # Actualizamos la secuencia de entrada para incluir la predicción del día
-        input_sequence = np.roll(input_sequence, -1)  # Mover todos los valores una posición
-        input_sequence[-1] = prediction_scaled  # Asignar la predicción al último valor de la secuencia
+        # Actualizar la secuencia de entrada
+        input_sequence = np.append(input_sequence[1:], [[prediction_scaled]], axis=0)
 
-    # Convertir las predicciones escaladas a los valores originales
+    # Desescalar las predicciones
     predictions = scaler.inverse_transform(np.array(predictions_scaled).reshape(-1, 1))
 
-    # Mostrar predicciones
-    print("Predicciones para los próximos 7 días:")
-    for i, pred in enumerate(predictions):
-        print(f"Día {i + 1}: {pred[0]} MW")
-
-    # Crear un DataFrame para las gráficas
-    df = pd.DataFrame({
-        'Fecha': pd.date_range(start="2024-11-09", periods=7, freq='D'),  # Asegúrate de ajustar la fecha inicial
-        'Predicción': predictions.flatten()
+    # Crear un DataFrame para las predicciones
+    days = list(range(1, 8))  # Días 1 al 7
+    predictions_df = pd.DataFrame({
+        "Día": days,
+        "Demanda (MW)": predictions.flatten()
     })
 
-    # Graficar con plotly
-    fig_rnn_7 = px.line(df, x='Fecha', y='Predicción', labels={'Fecha': 'Fecha', 'Predicción': 'Valor Predicho'},
-                        title="Predicción de Demanda de Energía para los Próximos 7 Días")
-    return st.plotly_chart(fig_rnn_7)
+    # Crear el gráfico con plotly.express
+    fig_rnn = px.line(
+        predictions_df,
+        x="Día",
+        y="Demanda (MW)",
+        title="Predicción de 7 días de energía",
+        markers=True,
+        template="plotly_white"
+    )
 
-def modelo_neuronal_lstm_seven_days(X_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model.pkl"):
-    # Cargar el escalador preentrenado desde el archivo pickle
+    return st.plotly_chart(fig_rnn)
+
+
+def predict_7_days_lstm(
+        scaler_filename="models/scaler.pkl",
+        model_filename="models/lstm_model_actualizado.pkl",
+        last_sequence=None):
+
+    # Cargar el scaler y el modelo
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
 
-    # Cargar el modelo LSTM preentrenado desde el archivo pickle
     with open(model_filename, "rb") as f:
-        model_lstm = pickle.load(f)
+        model = pickle.load(f)
 
-    # Predecir los próximos 7 días basándonos en las últimas observaciones
+    # Inicializar la lista de predicciones escaladas
     predictions_scaled = []
-    input_sequence = X_test[-1]  # Tomamos el último valor de entrada para empezar la predicción
+    input_sequence = last_sequence.copy()
 
-    for _ in range(7):  # Predecir 7 días
-        # Redimensionar la entrada para cumplir con el formato esperado por el modelo (1, 1, 7)
-        input_sequence_reshaped = input_sequence.reshape(1, 1, -1)  # (batch_size, time_steps, features)
+    # Generar predicciones para los próximos 7 días
+    for _ in range(7):
+        # Redimensionar la secuencia para cumplir con el formato del modelo
+        input_sequence_reshaped = input_sequence.reshape(1, input_sequence.shape[0], input_sequence.shape[1])
 
-        # Realizar la predicción para el siguiente día
-        prediction_scaled = model_lstm.predict(input_sequence_reshaped)
-        predictions_scaled.append(prediction_scaled[0])
+        # Realizar la predicción
+        prediction_scaled = model.predict(input_sequence_reshaped)[0, 0]
+        predictions_scaled.append(prediction_scaled)
 
-        # Actualizamos la secuencia de entrada para incluir la predicción del día
-        input_sequence = np.roll(input_sequence, -1)  # Mover todos los valores una posición
-        input_sequence[-1] = prediction_scaled  # Asignar la predicción al último valor de la secuencia
+        # Actualizar la secuencia de entrada
+        input_sequence = np.append(input_sequence[1:], [[prediction_scaled]], axis=0)
 
-    # Convertir las predicciones escaladas a los valores originales
+    # Desescalar las predicciones
     predictions = scaler.inverse_transform(np.array(predictions_scaled).reshape(-1, 1))
 
-    # Mostrar predicciones
-    print("Predicciones para los próximos 7 días:")
-    for i, pred in enumerate(predictions):
-        print(f"Día {i + 1}: {pred[0]} MW")
-
-    # Crear un DataFrame para las gráficas
-    df = pd.DataFrame({
-        'Fecha': pd.date_range(start="2024-11-09", periods=7, freq='D'),  # Asegúrate de ajustar la fecha inicial
-        'Predicción': predictions.flatten()
+    # Crear un DataFrame para las predicciones
+    days = list(range(1, 8))  # Días 1 al 7
+    predictions_df = pd.DataFrame({
+        "Día": days,
+        "Demanda (MW)": predictions.flatten()
     })
 
-    # Graficar con plotly
-    fig_lstm_7 = px.line(df, x='Fecha', y='Predicción', labels={'Fecha': 'Fecha', 'Predicción': 'Valor Predicho'},
-                        title="Predicción de Demanda de Energía para los Próximos 7 Días")
-    return st.plotly_chart(fig_lstm_7)
+    # Crear el gráfico con plotly.express
+    fig_lstm = px.line(
+        predictions_df,
+        x="Día",
+        y="Demanda (MW)",
+        title="Predicción de 7 días de energía",
+        markers=True,
+        template="plotly_white"
+    )
+
+    return st.plotly_chart(fig_lstm)
