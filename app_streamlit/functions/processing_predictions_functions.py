@@ -40,12 +40,16 @@ def preprocess_data(df_demanda, df_exchanges, df_generation):
     return df_merge_test
 
 
-def escalador(df, target_column="valor_demanda_MW", scaler_filename="models/scaler.pkl"):
+def escalador(df, T=7, target_column="valor_demanda_MW", scaler_filename="models/scaler.pkl"):
 
     # Seleccionar las columnas a escalar, excluyendo la columna objetivo
     columnas_a_escalar = df.drop(columns=[target_column]).columns
     valores = df[columnas_a_escalar].values
     objetivo = df[target_column].values
+
+    # Seleccionar las columnas a escalar, excluyendo la columna objetivo
+    valores = valores
+    objetivo = objetivo
 
     # Cargar el escalador desde el archivo pickle
     with open(scaler_filename, "rb") as f:
@@ -55,10 +59,25 @@ def escalador(df, target_column="valor_demanda_MW", scaler_filename="models/scal
     valores_escalados = scaler.fit_transform(valores)
     objetivo_escalado = scaler.fit_transform(objetivo.reshape(-1, 1))
 
-    # Dar forma a los valores escalados
-    valores_escalados = valores_escalados.reshape((valores_escalados.shape[0], valores_escalados.shape[1],1))
-
-    return valores_escalados, objetivo_escalado
+    # Crear listas para las secuencias de entrada y salida
+    X = []
+    y = []
+    
+    # Generar ventanas deslizantes
+    for t in range(len(df) - T):
+        # Toma valores de X de t en t con stride de 1
+        x = valores_escalados[t : t + T]
+        X.append(x)
+        
+        # Toma los valores de t en t
+        y_ = objetivo_escalado[t + T]
+        y.append(y_)
+    
+    # Convertir listas a arrays de numpy
+    X = np.array(X)  # Dimensión: (samples, timesteps, features)
+    y = np.array(y)  # Dimensión: (samples, 1)
+    
+    return X, y
 
 def train_test_split_data(valores_escalados, objetivo_escalado, train_ratio=0.8):
     # Calcular el tamaño del conjunto de entrenamiento
@@ -71,12 +90,12 @@ def train_test_split_data(valores_escalados, objetivo_escalado, train_ratio=0.8)
     return X_train, X_test, y_train, y_test
 
 
-def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/rnn_model_actualizado.pkl"):
+def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/rnn_model.pkl"):
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
 
-    # Cargar el modelo LSTM preentrenado desde el archivo pickle
+    # Cargar el modelo RNN preentrenado desde el archivo pickle
     with open(model_filename, "rb") as f:
         model_rnn = pickle.load(f)
 
@@ -104,7 +123,7 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", mod
     return st.plotly_chart(fig_rnn)
 
 
-def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model_actualizado.pkl"):
+def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/lstm_model.pkl"):
     # Cargar el escalador preentrenado desde el archivo pickle
     with open(scaler_filename, "rb") as f:
         scaler = pickle.load(f)
@@ -139,7 +158,7 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
 
 def predict_7_days_rnn(
         scaler_filename="models/scaler.pkl",
-        model_filename="models/rnn_model_actualizado.pkl",
+        model_filename="models/rnn_model.pkl",
         last_sequence=None):
 
     # Cargar el scaler y el modelo
@@ -149,23 +168,31 @@ def predict_7_days_rnn(
     with open(model_filename, "rb") as f:
         model = pickle.load(f)
 
-    # Inicializar la lista de predicciones escaladas
-    predictions_scaled = []
-    input_sequence = last_sequence.copy()
+    #return predictions
+    if last_sequence.ndim == 3:
+        last_sequence = last_sequence[0]  
 
-    # Generar predicciones para los próximos 7 días
-    for _ in range(7):
+    if last_sequence is None or last_sequence.ndim != 2:
+        raise ValueError("`last_sequence` debe ser un array 2D con forma (T, n_features).")
+    
+    predictions_scaled = []
+    input_sequence = last_sequence.reshape(7,7)
+
+    for _ in range(7):  # Predecir 7 días
         # Redimensionar la secuencia para cumplir con el formato del modelo
         input_sequence_reshaped = input_sequence.reshape(1, input_sequence.shape[0], input_sequence.shape[1])
 
         # Realizar la predicción
-        prediction_scaled = model.predict(input_sequence_reshaped)[0, 0]
+        prediction_scaled = model.predict(input_sequence_reshaped)[0, 0]  # Extraer el valor escalar
         predictions_scaled.append(prediction_scaled)
 
         # Actualizar la secuencia de entrada
-        input_sequence = np.append(input_sequence[1:], [[prediction_scaled]], axis=0)
-
-    # Desescalar las predicciones
+        # Desplazar los timesteps anteriores y añadir la nueva predicción como una característica adicional
+        new_timestep = np.zeros(input_sequence.shape[1])
+        new_timestep[0] = prediction_scaled  # Suponiendo que la predicción corresponde a la primera característica
+        input_sequence = np.vstack((input_sequence[1:], new_timestep))
+    
+    # Invertir la escala de las predicciones
     predictions = scaler.inverse_transform(np.array(predictions_scaled).reshape(-1, 1))
 
     # Crear un DataFrame para las predicciones
@@ -190,7 +217,7 @@ def predict_7_days_rnn(
 
 def predict_7_days_lstm(
         scaler_filename="models/scaler.pkl",
-        model_filename="models/lstm_model_actualizado.pkl",
+        model_filename="models/lstm_model.pkl",
         last_sequence=None):
 
     # Cargar el scaler y el modelo
@@ -200,23 +227,31 @@ def predict_7_days_lstm(
     with open(model_filename, "rb") as f:
         model = pickle.load(f)
 
-    # Inicializar la lista de predicciones escaladas
-    predictions_scaled = []
-    input_sequence = last_sequence.copy()
+    #return predictions
+    if last_sequence.ndim == 3:
+        last_sequence = last_sequence[0]  
 
-    # Generar predicciones para los próximos 7 días
-    for _ in range(7):
+    if last_sequence is None or last_sequence.ndim != 2:
+        raise ValueError("`last_sequence` debe ser un array 2D con forma (T, n_features).")
+    
+    predictions_scaled = []
+    input_sequence = last_sequence.reshape(7,7)
+
+    for _ in range(7):  # Predecir 7 días
         # Redimensionar la secuencia para cumplir con el formato del modelo
         input_sequence_reshaped = input_sequence.reshape(1, input_sequence.shape[0], input_sequence.shape[1])
 
         # Realizar la predicción
-        prediction_scaled = model.predict(input_sequence_reshaped)[0, 0]
+        prediction_scaled = model.predict(input_sequence_reshaped)[0, 0]  # Extraer el valor escalar
         predictions_scaled.append(prediction_scaled)
 
         # Actualizar la secuencia de entrada
-        input_sequence = np.append(input_sequence[1:], [[prediction_scaled]], axis=0)
-
-    # Desescalar las predicciones
+        # Desplazar los timesteps anteriores y añadir la nueva predicción como una característica adicional
+        new_timestep = np.zeros(input_sequence.shape[1])
+        new_timestep[0] = prediction_scaled  # Suponiendo que la predicción corresponde a la primera característica
+        input_sequence = np.vstack((input_sequence[1:], new_timestep))
+    
+    # Invertir la escala de las predicciones
     predictions = scaler.inverse_transform(np.array(predictions_scaled).reshape(-1, 1))
 
     # Crear un DataFrame para las predicciones

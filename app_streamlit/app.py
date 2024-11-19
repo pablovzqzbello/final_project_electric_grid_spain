@@ -660,7 +660,7 @@ def main():
                 X_train, X_test, y_train, y_test = train_test_split_data(valores_escalados, objetivo_escalado,
                                                                          train_ratio=0.8)
                 modelo_neuronal_rnn(X_test, y_test)
-                predict_7_days_rnn(last_sequence=X_test[-1])
+                predict_7_days_rnn(last_sequence=X_test)
 
             else:
                 df_demanda = load_data("SELECT * FROM demanda_energia")
@@ -672,7 +672,7 @@ def main():
                                                                          train_ratio=0.8)
 
                 modelo_neuronal_lstm(X_test, y_test)
-                predict_7_days_lstm(last_sequence=X_test[-1])
+                predict_7_days_lstm(last_sequence=X_test)
 
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
