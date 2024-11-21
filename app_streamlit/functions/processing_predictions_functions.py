@@ -155,6 +155,37 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
                   title="Predicciones vs Valores Reales")
     return st.plotly_chart(fig_lstm)
 
+def modelo_neuronal_gru(X_test, y_test, scaler_filename="models/scaler.pkl", model_filename="models/gru_model.pkl"):
+    # Cargar el escalador preentrenado desde el archivo pickle
+    with open(scaler_filename, "rb") as f:
+        scaler = pickle.load(f)
+
+    # Cargar el modelo LSTM preentrenado desde el archivo pickle
+    with open(model_filename, "rb") as f:
+        model_lstm = pickle.load(f)
+
+    # Realizar predicciones
+    predictions_scaled = model_lstm.predict(X_test)
+
+    # Asegurar que el escalador reciba datos en el formato correcto para la transformación inversa
+    predictions = scaler.inverse_transform(predictions_scaled)
+    expected = scaler.inverse_transform(y_test)
+
+    # Mostrar predicciones
+    for i in range(len(y_test)):
+        print(f"Real: {expected[i]} | Predicción: {predictions[i]}")
+
+    # Crear un DataFrame para las gráficas
+    df = pd.DataFrame({
+        'Fecha': range(len(expected)),  # Asumiendo que cada índice es una fecha secuencial
+        'Real': expected.flatten(),
+        'Predicción': predictions.flatten()
+    })
+
+    # Graficar con plotly
+    fig_gru = px.line(df, x='Fecha', y=['Real', 'Predicción'], labels={'Fecha': 'Tiempo', 'value': 'Valor'},
+                  title="Predicciones vs Valores Reales")
+    return st.plotly_chart(fig_gru)
 
 def predict_7_days_rnn(
         scaler_filename="models/scaler.pkl",
@@ -272,3 +303,61 @@ def predict_7_days_lstm(
     )
 
     return st.plotly_chart(fig_lstm)
+
+
+def predict_7_days_gru(
+        scaler_filename="models/scaler.pkl",
+        model_filename="models/gru_model.pkl",
+        last_sequence=None):
+    # Cargar el scaler y el modelo
+    with open(scaler_filename, "rb") as f:
+        scaler = pickle.load(f)
+
+    with open(model_filename, "rb") as f:
+        model = pickle.load(f)
+
+    # return predictions
+    if last_sequence.ndim == 3:
+        last_sequence = last_sequence[0]
+
+    if last_sequence is None or last_sequence.ndim != 2:
+        raise ValueError("`last_sequence` debe ser un array 2D con forma (T, n_features).")
+
+    predictions_scaled = []
+    input_sequence = last_sequence.reshape(7, 7)
+
+    for _ in range(7):  # Predecir 7 días
+        # Redimensionar la secuencia para cumplir con el formato del modelo
+        input_sequence_reshaped = input_sequence.reshape(1, input_sequence.shape[0], input_sequence.shape[1])
+
+        # Realizar la predicción
+        prediction_scaled = model.predict(input_sequence_reshaped)[0, 0]  # Extraer el valor escalar
+        predictions_scaled.append(prediction_scaled)
+
+        # Actualizar la secuencia de entrada
+        # Desplazar los timesteps anteriores y añadir la nueva predicción como una característica adicional
+        new_timestep = np.zeros(input_sequence.shape[1])
+        new_timestep[0] = prediction_scaled  # Suponiendo que la predicción corresponde a la primera característica
+        input_sequence = np.vstack((input_sequence[1:], new_timestep))
+
+    # Invertir la escala de las predicciones
+    predictions = scaler.inverse_transform(np.array(predictions_scaled).reshape(-1, 1))
+
+    # Crear un DataFrame para las predicciones
+    days = list(range(1, 8))  # Días 1 al 7
+    predictions_df = pd.DataFrame({
+        "Día": days,
+        "Demanda (MW)": predictions.flatten()
+    })
+
+    # Crear el gráfico con plotly.express
+    fig_gru = px.line(
+        predictions_df,
+        x="Día",
+        y="Demanda (MW)",
+        title="Predicción de 7 días de energía",
+        markers=True,
+        template="plotly_white"
+    )
+
+    return st.plotly_chart(fig_gru)
