@@ -3,7 +3,7 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta, datetime
 from functions.sql_function import extract_data
-from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, predict_7_days_rnn, predict_7_days_lstm, modelo_neuronal_gru, predict_7_days_gru
+from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, predict_7_days_rnn, predict_7_days_lstm, modelo_neuronal_gru, predict_7_days_gru, model_prophet
 from functions.vocabulary import obtener_vocabulario
 from streamlit_lottie import st_lottie
 import json
@@ -646,7 +646,7 @@ def main():
 
         st.title("Predicciones de Demanda Energética")
 
-        model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)", "Demanda (GRU)"])
+        model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)", "Demanda (GRU)", "Demanda (Prophet)"])
 
         if st.button("Realizar Predicción"):
 
@@ -673,6 +673,15 @@ def main():
 
                 modelo_neuronal_lstm(X_test, y_test)
                 predict_7_days_lstm(last_sequence=X_test)
+
+            elif model_choice == "Demanda (Prophet)":
+
+                df_demanda = load_data("SELECT * FROM demanda_energia")
+                df_generation = load_data("SELECT * FROM generacion_energia")
+                df_exchanges = load_data("SELECT * FROM transacciones_energia")
+                df = preprocess_data(df_demanda, df_exchanges, df_generation)
+
+                model_prophet(df)
 
             else:
 

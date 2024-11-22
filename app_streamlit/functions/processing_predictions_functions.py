@@ -1,3 +1,5 @@
+from modulefinder import Module
+
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -361,3 +363,32 @@ def predict_7_days_gru(
     )
 
     return st.plotly_chart(fig_gru)
+
+
+def model_prophet(df, model_filename='models/predictions_prophet.pkl'):
+    # Preparación del df para procesar mediante Prophet
+
+    df = df.rename(columns={'año': 'year', 'mes': 'month', 'dia': 'day'})
+    df['fecha'] = pd.to_datetime(df[['year', 'month', 'day']])
+    df_prophet = df[['valor_demanda_MW', 'fecha']]
+    df_prophet = df_prophet.rename(columns={'valor_demanda_MW': 'y', 'fecha': 'ds'})
+    df_prophet = df_prophet[['ds', 'y']]
+
+    # Llamada al modelo preentrenado
+
+    with open(model_filename, 'rb') as f:
+        model = pickle.load(f)
+
+    # Predicciones del modelo
+
+    model.fit(df_prophet)
+    future = model.make_future_dataframe(periods=31)
+    forecast = model.predict(future)
+
+    # Preparación de las visualizaciones
+
+    forecast_1 = forecast[['ds', 'yhat_lower', 'yhat_upper', 'yhat']]
+    fig_evol = model.plot(forecast_1)
+    fig_granularity = model.plot_components(forecast)
+
+    return plt.show(fig_evol), plt.show(fig_granularity)
