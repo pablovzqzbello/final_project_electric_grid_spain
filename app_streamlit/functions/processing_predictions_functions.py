@@ -4,7 +4,9 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import pickle
+import matplotlib.pyplot as plt
 import plotly.express as px
+from prophet import Prophet
 
 def preprocess_data(df_demanda, df_exchanges, df_generation):
     # Eliminar columnas innecesarias
@@ -365,23 +367,22 @@ def predict_7_days_gru(
     return st.plotly_chart(fig_gru)
 
 
-def model_prophet(df, model_filename='models/predictions_prophet.pkl'):
+def model_prophet(df):
     # Preparación del df para procesar mediante Prophet
 
-    df = df.rename(columns={'año': 'year', 'mes': 'month', 'dia': 'day'})
+    df = df.rename(columns={"año": "year", "mes": "month", "dia": "day"})
     df['fecha'] = pd.to_datetime(df[['year', 'month', 'day']])
     df_prophet = df[['valor_demanda_MW', 'fecha']]
     df_prophet = df_prophet.rename(columns={'valor_demanda_MW': 'y', 'fecha': 'ds'})
     df_prophet = df_prophet[['ds', 'y']]
 
-    # Llamada al modelo preentrenado
+    # Llamada y entrenamiento del modelo
 
-    with open(model_filename, 'rb') as f:
-        model = pickle.load(f)
+    model = Prophet()
+    model.fit(df_prophet)
 
     # Predicciones del modelo
 
-    model.fit(df_prophet)
     future = model.make_future_dataframe(periods=31)
     forecast = model.predict(future)
 
@@ -391,4 +392,5 @@ def model_prophet(df, model_filename='models/predictions_prophet.pkl'):
     fig_evol = model.plot(forecast_1)
     fig_granularity = model.plot_components(forecast)
 
-    return plt.show(fig_evol), plt.show(fig_granularity)
+    st.pyplot(fig_evol)
+    st.pyplot(fig_granularity)
