@@ -12,8 +12,7 @@ import json
 st.set_page_config(
     page_title="PFB: Red Eléctrica Española",
     page_icon="🔋",
-    layout="wide"
-)
+    layout="wide")
 
 # Función para cargar datos con caché
 @st.cache_data
@@ -44,8 +43,7 @@ def mostrar_mapa_coro():
         'Francia': 'France',
         'Portugal': 'Portugal',
         'Marruecos': 'Morocco',
-        'Andorra': 'Andorra',
-    }
+        'Andorra': 'Andorra',}
 
     st.write('Datos Filtrados:', filtered_df)
 
@@ -68,8 +66,7 @@ def mostrar_mapa_coro():
             title=f"Intercambio de energía ({tipo_transaccion}) de España con otros países",
             labels={'valor_GW': 'GWh'},
             width=1900,
-            height=1600,
-        )
+            height=1600,)
 
         fig.update_geos(
             showcoastlines=True, coastlinecolor='Black',
@@ -77,8 +74,7 @@ def mostrar_mapa_coro():
             showocean=True, oceancolor='lightblue',
             projection_type='natural earth',
             lonaxis_range=[-25, 55],
-            lataxis_range=[-35, 70],
-        )
+            lataxis_range=[-35, 70],)
 
         fig.update_layout(
             margin={'r':0,'t':50,'l':0,'b':0},
@@ -86,8 +82,7 @@ def mostrar_mapa_coro():
             coloraxis_colorbar=dict(
                 title='Gwh',
                 tickvals=[0, max_value / 2, max_value],
-                ticks='outside')
-        )
+                ticks='outside'))
         for index, row in filtered_df.iterrows():
             if row['valor_GW'] == max_value or row['valor_GW'] == filtered_df['valor_GW'].min():
                 fig.add_annotation(
@@ -95,8 +90,7 @@ def mostrar_mapa_coro():
                     y=row['valor_GW'],
                     text=f'{row['pais']}: {row['valor_GW']:,} GhW',
                     showarrow=False,
-                    yshift=10
-                    )
+                    yshift=10)
 
         st.plotly_chart(fig)
     else:
@@ -173,16 +167,14 @@ def main():
             "Redeia Corporación, S.A. es un grupo empresarial multinacional de origen español fundado el 29 de enero de "
             "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico. "
             "Cuenta con una financiación público-privada, en la que el Gobierno de España cubre el 20% de las inversiones, "
-            "mientras que el 80% lo cubre capital privado."
-        )
+            "mientras que el 80% lo cubre capital privado.")
 
         st.header("¿De dónde se obtiene la información?")
         st.markdown(
             "La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
             "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar "
             "libremente los datos que Redeia genera a tiempo real. "
-            "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)"
-        )
+            "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)")
 
         st.header("Objetivos")
         st.markdown(
@@ -193,8 +185,7 @@ def main():
             "\n- Demanda energética del mercado español"
             "\n- Transacciones Internacionales"
             "\n\nComo punto clave, este estudio se centra en la sostenibilidad, con especial atención al precio y al "
-            "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía."
-        )
+            "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía.")
 
         # Llamada general de datos
 
@@ -222,12 +213,10 @@ def main():
             # Selección del rango de fechas usando la tabla de demanda como referencia
             start_date_demanda = st.date_input(
                 "Fecha de inicio", value=df_demanda['fecha'].min(),
-                min_value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max()
-            )
+                min_value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max())
             end_date_demanda = st.date_input(
                 "Fecha de fin", value=df_demanda['fecha'].max(),
-                min_value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max()
-            )
+                min_value=df_demanda['fecha'].min(), max_value=df_demanda['fecha'].max())
 
             start_date_demanda = datetime.combine(start_date_demanda, datetime.min.time())
             end_date_demanda = datetime.combine(end_date_demanda, datetime.min.time())
@@ -244,13 +233,11 @@ def main():
         # Filtro de periodo predefinido para Demanda (encima de la visualización)
         period_demanda = st.selectbox(
             "Seleccionar periodo",
-            ["Personalizado", "Última semana", "Último mes", "Último año", "Histórico"]
-        )
+            ["Personalizado", "Última semana", "Último mes", "Último año", "Histórico"])
 
         if period_demanda == "Personalizado":
             filtered_df_demanda = date_filter(
-                df_demanda, period_demanda, start_date_demanda, end_date_demanda
-            )
+                df_demanda, period_demanda, start_date_demanda, end_date_demanda)
         else:
             filtered_df_demanda = date_filter(df_demanda, period_demanda)
 
@@ -295,8 +282,7 @@ def main():
         selected_years = st.sidebar.multiselect(
             "Selecciona los años a comparar",
             options=sorted(available_years),
-            default=[2022, 2023]
-        )
+            default=[2022, 2023])
 
         if selected_years:
             df_demanda_comparador = df_demanda[df_demanda['year'].isin(selected_years)].copy()
@@ -308,8 +294,7 @@ def main():
             # Crear la gráfica de comparación con la fecha ajustada
             fig_comparador = px.line(
                 df_demanda_comparador, x='fecha_ajustada', y='valor_demanda_MW', color='year',
-                title=f"Comparador de Demanda en MW, años {', '.join(map(str, selected_years))}"
-            )
+                title=f"Comparador de Demanda en MW, años {', '.join(map(str, selected_years))}")
 
             # Calcular métricas para líneas de referencia
             metricas = df_demanda_comparador.groupby('year')['valor_demanda_MW'].agg(['mean', 'median', 'min', 'max'])
@@ -318,20 +303,16 @@ def main():
             for year, row in metricas.iterrows():
                 fig_comparador.add_hline(
                     y=row['mean'], line_color='yellow', line_dash="dash",
-                    annotation_text=f"Media {year}", annotation_position="top left"
-                )
+                    annotation_text=f"Media {year}", annotation_position="top left")
                 fig_comparador.add_hline(
                     y=row['median'], line_color='blue', line_dash="dot",
-                    annotation_text=f"Mediana {year}", annotation_position="top left"
-                )
+                    annotation_text=f"Mediana {year}", annotation_position="top left")
                 fig_comparador.add_hline(
                     y=row['min'], line_color='red', line_dash="dot",
-                    annotation_text=f"Mínimo {year}", annotation_position="top left"
-                )
+                    annotation_text=f"Mínimo {year}", annotation_position="top left")
                 fig_comparador.add_hline(
                     y=row['max'], line_color='green', line_dash="dot",
-                    annotation_text=f"Máximo {year}", annotation_position="top left"
-                )
+                    annotation_text=f"Máximo {year}", annotation_position="top left")
 
             # Mostrar la gráfica comparativa
             st.plotly_chart(fig_comparador)
@@ -352,8 +333,7 @@ def main():
             st.markdown("#### Filtro por Tipo de Energía")
             energia_type = st.multiselect(
                 "Tipo de Energía (Balance)", options=df_balance['energia'].unique(),
-                default=df_balance['energia'].unique()
-            )
+                default=df_balance['energia'].unique())
 
         filtered_df_balance = df_balance[df_balance['energia'].isin(energia_type)]
         filtered_df_balance = date_filter(filtered_df_balance, period_demanda)
@@ -494,8 +474,7 @@ def main():
             names='energia',
             title="Distribución de Generación Energética",
             width=900,
-            height=700
-        )
+            height=700)
         st.plotly_chart(fig5)
         st.markdown("""
             La **estructura de generación energética** de esta empresa española se apoya en cinco fuentes principales. 
@@ -595,9 +574,7 @@ def main():
 
             "Naturgy": 0.160,
 
-            "Repsol": 0.159,
-
-        }
+            "Repsol": 0.159,}
 
         st.sidebar.header("📊 Selección de Tarifa Eléctrica")
         tarifa_seleccionada = st.sidebar.selectbox("Selecciona tu compañía eléctrica", options=list(tarifas.keys()))

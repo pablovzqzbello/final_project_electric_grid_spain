@@ -119,8 +119,7 @@ def modelo_neuronal_rnn(X_test, y_test, scaler_filename="models/scaler.pkl", mod
     df = pd.DataFrame({
         'Fecha': range(len(expected)),  # Asumiendo que cada índice es una fecha secuencial
         'Real': expected.flatten(),
-        'Predicción': predictions.flatten()
-    })
+        'Predicción': predictions.flatten()})
 
     # Graficar con plotly
     fig_rnn = px.line(df, x='Fecha', y=['Real', 'Predicción'], labels={'Fecha': 'Tiempo', 'value': 'Valor'},
@@ -152,8 +151,7 @@ def modelo_neuronal_lstm(X_test, y_test, scaler_filename="models/scaler.pkl", mo
     df = pd.DataFrame({
         'Fecha': range(len(expected)),  # Asumiendo que cada índice es una fecha secuencial
         'Real': expected.flatten(),
-        'Predicción': predictions.flatten()
-    })
+        'Predicción': predictions.flatten()})
 
     # Graficar con plotly
     fig_lstm = px.line(df, x='Fecha', y=['Real', 'Predicción'], labels={'Fecha': 'Tiempo', 'value': 'Valor'},
@@ -184,8 +182,7 @@ def modelo_neuronal_gru(X_test, y_test, scaler_filename="models/scaler.pkl", mod
     df = pd.DataFrame({
         'Fecha': range(len(expected)),  # Asumiendo que cada índice es una fecha secuencial
         'Real': expected.flatten(),
-        'Predicción': predictions.flatten()
-    })
+        'Predicción': predictions.flatten()})
 
     # Graficar con plotly
     fig_gru = px.line(df, x='Fecha', y=['Real', 'Predicción'], labels={'Fecha': 'Tiempo', 'value': 'Valor'},
@@ -235,18 +232,16 @@ def predict_7_days_rnn(
     days = list(range(1, 8))  # Días 1 al 7
     predictions_df = pd.DataFrame({
         "Día": days,
-        "Demanda (MW)": predictions.flatten()
-    })
+        "Demanda (MW)": predictions.flatten()})
 
     # Crear el gráfico con plotly.express
     fig_rnn = px.line(
         predictions_df,
         x="Día",
         y="Demanda (MW)",
-        title="Predicción de 7 días de energía",
+        title="Predicción de 7 días de demanda",
         markers=True,
-        template="plotly_white"
-    )
+        template="plotly_white")
 
     return st.plotly_chart(fig_rnn)
 
@@ -294,18 +289,16 @@ def predict_7_days_lstm(
     days = list(range(1, 8))  # Días 1 al 7
     predictions_df = pd.DataFrame({
         "Día": days,
-        "Demanda (MW)": predictions.flatten()
-    })
+        "Demanda (MW)": predictions.flatten()})
 
     # Crear el gráfico con plotly.express
     fig_lstm = px.line(
         predictions_df,
         x="Día",
         y="Demanda (MW)",
-        title="Predicción de 7 días de energía",
+        title="Predicción de 7 días de demanda",
         markers=True,
-        template="plotly_white"
-    )
+        template="plotly_white")
 
     return st.plotly_chart(fig_lstm)
 
@@ -352,18 +345,16 @@ def predict_7_days_gru(
     days = list(range(1, 8))  # Días 1 al 7
     predictions_df = pd.DataFrame({
         "Día": days,
-        "Demanda (MW)": predictions.flatten()
-    })
+        "Demanda (MW)": predictions.flatten()})
 
     # Crear el gráfico con plotly.express
     fig_gru = px.line(
         predictions_df,
         x="Día",
         y="Demanda (MW)",
-        title="Predicción de 7 días de energía",
+        title="Predicción de 7 días de demanda",
         markers=True,
-        template="plotly_white"
-    )
+        template="plotly_white")
 
     return st.plotly_chart(fig_gru)
 
