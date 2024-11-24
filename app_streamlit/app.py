@@ -611,9 +611,7 @@ def main():
             "Lavadora": {"consumo": 0.9, "lottie": "auxiliary/Animation - 1731783434718.json"},
             "Aire Acondicionado": {"consumo": 1.5, "lottie": "auxiliary/Animation - 1731783350461.json"},
             "Horno": {"consumo": 2.0, "lottie": "auxiliary/Animation - 1731783259030.json"},
-            "Frigorífico": {"consumo": 0.8, "lottie": "auxiliary/Animation - 1731783226494.json"},
-
-        }
+            "Frigorífico": {"consumo": 0.8, "lottie": "auxiliary/Animation - 1731783226494.json"},}
 
 
         st.info(f"**Tarifa Seleccionada:** {tarifa_seleccionada} - {precio_tarifa:.3f} €/kWh")

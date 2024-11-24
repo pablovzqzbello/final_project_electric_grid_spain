@@ -6,6 +6,7 @@ import streamlit as st
 import pickle
 import matplotlib.pyplot as plt
 import plotly.express as px
+import plotly.graph_objects as go
 from prophet import Prophet
 
 def preprocess_data(df_demanda, df_exchanges, df_generation):
@@ -369,7 +370,6 @@ def predict_7_days_gru(
 
 def model_prophet(df):
     # Preparación del df para procesar mediante Prophet
-
     df = df.rename(columns={"año": "year", "mes": "month", "dia": "day"})
     df['fecha'] = pd.to_datetime(df[['year', 'month', 'day']])
     df_prophet = df[['valor_demanda_MW', 'fecha']]
@@ -377,20 +377,76 @@ def model_prophet(df):
     df_prophet = df_prophet[['ds', 'y']]
 
     # Llamada y entrenamiento del modelo
-
     model = Prophet()
     model.fit(df_prophet)
 
     # Predicciones del modelo
-
     future = model.make_future_dataframe(periods=31)
     forecast = model.predict(future)
 
-    # Preparación de las visualizaciones
+    # Gráfico 1: Predicción vs Datos Reales
+    fig1 = go.Figure()
+    fig1.add_trace(go.Scatter(x=df_prophet['ds'], y=df_prophet['y'], mode='lines+markers', name='Datos Reales'))
+    fig1.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat'], mode='lines', name='Predicciones'))
+    fig1.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat_upper'], fill=None, mode='lines', name='Confianza Superior', line=dict(dash='dot')))
+    fig1.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat_lower'], fill='tonexty', mode='lines', name='Confianza Inferior', line=dict(dash='dot')))
+    fig1.update_layout(title="Predicciones vs Datos Reales", xaxis_title="Fecha", yaxis_title="Demanda (MW)")
+    st.plotly_chart(fig1)
 
-    forecast_1 = forecast[['ds', 'yhat_lower', 'yhat_upper', 'yhat']]
-    fig_evol = model.plot(forecast_1)
-    fig_granularity = model.plot_components(forecast)
+    # Gráfico 2: Errores a lo largo del tiempo
+    df_errors = forecast[['ds', 'yhat']].merge(df_prophet, on='ds', how='left')
+    df_errors['error'] = abs(df_errors['y'] - df_errors['yhat'])
+    fig2 = go.Figure()
+    fig2.add_trace(go.Scatter(x=df_errors['ds'], y=df_errors['error'], mode='lines+markers', name='Error Absoluto'))
+    fig2.update_layout(title="Errores en Predicciones", xaxis_title="Fecha", yaxis_title="Error Absoluto (MW)")
+    st.plotly_chart(fig2)
 
-    st.pyplot(fig_evol)
-    st.pyplot(fig_granularity)
+    # Gráfico 3: Comparación por Granularidad
+    granularities = ['D', 'W', 'ME']  # Día, Semana, Mes
+    for gran in granularities:
+        df_gran = df_errors.resample(gran, on='ds').mean()
+        fig3 = go.Figure()
+        fig3.add_trace(go.Bar(x=df_gran.index, y=df_gran['y'], name='Datos Reales'))
+        fig3.add_trace(go.Bar(x=df_gran.index, y=df_gran['yhat'], name='Predicciones'))
+        fig3.update_layout(title=f"Predicciones y Datos Reales - Granularidad {gran}",
+                           xaxis_title="Fecha", yaxis_title="Demanda Promedio (MW)", barmode='group')
+        st.plotly_chart(fig3)
+
+    # Gráfico 4: Componentes del modelo Prophet
+    st.write("Componentes del modelo Prophet")
+    fig4 = model.plot_components(forecast)
+    st.pyplot(fig4)
+
+    # Gráfico 5: Histograma de errores
+    fig5 = px.histogram(df_errors, x='error', nbins=20, title="Histograma de Errores", labels={'error': 'Error Absoluto'})
+    st.plotly_chart(fig5)
+
+    # Gráfico 6: Distribución de errores (Densidad)
+    fig6 = px.density_contour(df_errors, x='ds', y='error', title="Distribución de Errores", labels={'ds': 'Fecha', 'error': 'Error Absoluto'})
+    st.plotly_chart(fig6)
+
+    # Gráfico 7: Acumulación de Predicciones y Reales
+    df_cumulative = df_errors.copy()
+    df_cumulative['real_cumsum'] = df_cumulative['y'].cumsum()
+    df_cumulative['pred_cumsum'] = df_cumulative['yhat'].cumsum()
+    fig7 = go.Figure()
+    fig7.add_trace(go.Scatter(x=df_cumulative['ds'], y=df_cumulative['real_cumsum'], mode='lines', name='Acumulado Real'))
+    fig7.add_trace(go.Scatter(x=df_cumulative['ds'], y=df_cumulative['pred_cumsum'], mode='lines', name='Acumulado Predicción'))
+    fig7.update_layout(title="Demanda Acumulada: Reales vs Predicciones", xaxis_title="Fecha", yaxis_title="Demanda Acumulada (MW)")
+    st.plotly_chart(fig7)
+
+
+    for period in [7, 14, 30]:
+        last_n_days = df_prophet.iloc[-period:]
+
+        # Próximos N días predichos
+        next_n_days = forecast.iloc[len(df_prophet):len(df_prophet) + period]
+
+        # Crear gráfico
+        fig8 = go.Figure()
+        fig8.add_trace(go.Scatter(x=last_n_days['ds'], y=last_n_days['y'], mode='lines+markers', name='Últimos Días (Reales)', line=dict(color='blue')))
+        fig8.add_trace(go.Scatter(x=next_n_days['ds'], y=next_n_days['yhat'], mode='lines+markers', name='Próximos Días (Predicción)', line=dict(color='red')))
+
+        title = f"Comparación Últimos {period} Días vs Próximos {period} Días"
+        fig8.update_layout(title=title, xaxis_title="Fecha", yaxis_title="Demanda (MW)")
+        st.plotly_chart(fig8)
