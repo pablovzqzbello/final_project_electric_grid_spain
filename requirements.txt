@@ -64,3 +64,4 @@ ipython
 pyunicodedata
 keras
 tensorflow
+prophet

@@ -23,11 +23,11 @@ def preprocess_data(df_demanda, df_exchanges, df_generation):
 
     # Filtrar df_exchanges
     df_exchanges_filtered = df_exchanges[(df_exchanges['tipo_transaccion'] == 'saldo')]
-    df_exchanges_agg = df_exchanges_filtered.groupby("fecha", as_index=False)["valor_GW"].sum()
+    df_exchanges_agg = df_exchanges_filtered.groupby("fecha", as_index=False)["valor_MW"].sum()
 
     # Merge de los DataFrames
     df_merge_test = df_demanda.merge(df_exchanges_agg, on="fecha", how="left")
-    df_merge_test = df_merge_test.rename(columns={"valor_GW": "saldo_intercambios"})
+    df_merge_test = df_merge_test.rename(columns={"valor_MW": "saldo_intercambios"})
     df_merge_test = df_merge_test.merge(df_generation_filtered, on="fecha", how="left")
 
     # Interpolación de valores NaN'S en 'saldo_intercambios'

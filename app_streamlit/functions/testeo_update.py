@@ -70,7 +70,7 @@ def extract_balance(start_day, end_day, time_trunc='day'):
     df_balance = pd.DataFrame(all_data) 
     df_balance['fecha_extraccion'] = pd.Timestamp.now()
     df_balance["fecha_extraccion"]= df_balance["fecha_extraccion"].dt.floor("s")
-    df_balance.rename(columns={'datetime':'fecha', 'value':'valor_balance_GW', 'percentage':'porcentaje','type':'energia'},inplace=True)
+    df_balance.rename(columns={'datetime':'fecha', 'value':'valor_balance_MW', 'percentage':'porcentaje','type':'energia'},inplace=True)
     df_balance.drop(['porcentaje'], axis=1, inplace=True)
     df_balance['fecha']=df_balance['fecha'].str.split('T').str[0]
     df_balance['fecha'] = pd.to_datetime(df_balance['fecha'], errors="coerce").dt.date
@@ -164,7 +164,7 @@ def extract_exchange(start_day, end_day, time_trunc='day', widget='todas-fronter
     df_exchanges['fecha_extraccion'] = pd.Timestamp.now()
     df_exchanges["fecha_extraccion"] = df_exchanges["fecha_extraccion"].dt.floor("s")
     df_exchanges.rename(
-        columns={'datetime': 'fecha', 'value': 'valor_GW', 'percentage': 'porcentaje', 'type': 'tipo_transaccion',
+        columns={'datetime': 'fecha', 'value': 'valor_MW', 'percentage': 'porcentaje', 'type': 'tipo_transaccion',
                  'country': 'pais'}, inplace=True)
     df_exchanges.drop(['porcentaje'], axis=1, inplace=True)
     df_exchanges['fecha'] = df_exchanges['fecha'].str.split('T').str[0]
@@ -223,7 +223,7 @@ def extract_generation(start_day, end_day, time_trunc='day'):
     df_generation['fecha_extraccion'] = pd.Timestamp.now()
     df_generation["fecha_extraccion"] = df_generation["fecha_extraccion"].dt.floor("s")
     df_generation.rename(
-        columns={'datetime': 'fecha', 'value': 'valor_generacion_GW', 'percentage': 'porcentaje', 'type': 'energia',
+        columns={'datetime': 'fecha', 'value': 'valor_generacion_MW', 'percentage': 'porcentaje', 'type': 'energia',
                  'technology_type': 'tipo_tecnología'}, inplace=True)
     df_generation.drop(['porcentaje', 'title', 'groupId', 'id', 'description', 'color'], axis=1, inplace=True)
     df_generation['fecha'] = df_generation['fecha'].str.split('T').str[0]

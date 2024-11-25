@@ -63,7 +63,7 @@ def crear_tablas():
                 
             CREATE TABLE IF NOT EXISTS balance_energia (
                 fecha DATE,
-                valor_balance_GW FLOAT,
+                valor_balance_MW FLOAT,
                 energia VARCHAR(50),
                 fecha_extraccion DATETIME,
                 PRIMARY KEY (fecha, energia),
@@ -72,7 +72,7 @@ def crear_tablas():
             CREATE TABLE IF NOT EXISTS transacciones_energia (
                 pais VARCHAR(50),
                 tipo_transaccion VARCHAR(20),
-                valor_GW FLOAT,
+                valor_MW FLOAT,
                 fecha DATE,
                 fecha_extraccion DATETIME,
                 PRIMARY KEY (pais, tipo_transaccion, fecha),
@@ -80,7 +80,7 @@ def crear_tablas():
 
             CREATE TABLE IF NOT EXISTS generacion_energia (
                 fecha DATE,
-                valor_generacion_GW FLOAT,
+                valor_generacion_MW FLOAT,
                 energia VARCHAR(50),
                 tipo_tecnología VARCHAR(50),
                 fecha_extraccion DATETIME,

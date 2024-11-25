@@ -23,7 +23,7 @@ def load_data(query):
 
 def load_exchanges_data():
     query = """
-    SELECT pais, tipo_transaccion, SUM(valor_GW) AS valor_GW
+    SELECT pais, tipo_transaccion, SUM(valor_MW) AS valor_MW
     FROM transacciones_energia
     GROUP BY pais, tipo_transaccion
     """
@@ -64,7 +64,7 @@ def mostrar_mapa_coro():
             color_continuous_scale=color_scale,
             range_color = (0, max_value),
             title=f"Intercambio de energía ({tipo_transaccion}) de España con otros países",
-            labels={'valor_GW': 'GWh'},
+            labels={'valor_MW': 'MWh'},
             width=1900,
             height=1600,)
 
@@ -80,15 +80,15 @@ def mostrar_mapa_coro():
             margin={'r':0,'t':50,'l':0,'b':0},
             title_x=0.5,
             coloraxis_colorbar=dict(
-                title='Gwh',
+                title='Mwh',
                 tickvals=[0, max_value / 2, max_value],
                 ticks='outside'))
         for index, row in filtered_df.iterrows():
-            if row['valor_GW'] == max_value or row['valor_GW'] == filtered_df['valor_GW'].min():
+            if row['valor_MW'] == max_value or row['valor_MW'] == filtered_df['valor_MW'].min():
                 fig.add_annotation(
                     x=row['pais'],
-                    y=row['valor_GW'],
-                    text=f'{row['pais']}: {row['valor_GW']:,} GhW',
+                    y=row['valor_MW'],
+                    text=f'{row['pais']}: {row['valor_MW']:,} MhW',
                     showarrow=False,
                     yshift=10)
 
@@ -192,13 +192,13 @@ def main():
         df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
         df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
         df_demanda['year'] = df_demanda['fecha'].dt.year
-        df_balance = load_data("SELECT fecha, valor_balance_GW, energia FROM balance_energia")
+        df_balance = load_data("SELECT fecha, valor_balance_MW, energia FROM balance_energia")
         df_balance['fecha'] = pd.to_datetime(df_balance['fecha'])
         df_balance['year'] =df_balance['fecha'].dt.year
-        df_generation = load_data("SELECT fecha, valor_generacion_GW, energia FROM generacion_energia")
+        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia FROM generacion_energia")
         df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
         df_generation['year'] = df_generation['fecha'].dt.year
-        df_exchanges = load_data("SELECT fecha, valor_GW, tipo_transaccion, pais FROM transacciones_energia")
+        df_exchanges = load_data("SELECT fecha, valor_MW, tipo_transaccion, pais FROM transacciones_energia")
         df_exchanges['fecha'] = pd.to_datetime(df_exchanges['fecha'])
         df_exchanges['year']=df_exchanges['fecha'].dt.year
         df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
@@ -339,8 +339,8 @@ def main():
         filtered_df_balance = date_filter(filtered_df_balance, period_demanda)
 
         # Visualización de Balance Energético
-        fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_GW', color='energia',
-                       title="Balance Generación Energías Renovables en GW")
+        fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_MW', color='energia',
+                       title="Balance Generación Energías Renovables en MW")
         st.plotly_chart(fig2)
 
         st.markdown("""
@@ -360,8 +360,8 @@ def main():
         """)
 
         # Gráfico de área apilado para balance energético
-        fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_GW', color='energia',
-                                      title="Balance Energético por Tipo de Energía en GW")
+        fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_MW', color='energia',
+                                      title="Balance Energético por Tipo de Energía en MW")
         st.plotly_chart(fig_balance_energia)
 
         st.markdown("""
@@ -391,8 +391,8 @@ def main():
 
         # Gráfico de evolución de transacciones energéticas general
         fig_evolucion_transacciones=px.histogram(filtered_df_exchanges[~(filtered_df_exchanges['tipo_transaccion']=='saldo')],
-                                                 x='fecha', y='valor_GW', color='tipo_transaccion',
-                                                 title="Evolución General de Transacciones Energéticas en GW")
+                                                 x='fecha', y='valor_MW', color='tipo_transaccion',
+                                                 title="Evolución General de Transacciones Energéticas en MW")
         st.plotly_chart(fig_evolucion_transacciones)
         st.markdown("""
             La **evolución de las transacciones comerciales** entre **Redeia S.A.** y sus socios internacionales muestra una notable **reducción** en la dependencia de las **importaciones** hacia el año **2022**. 
@@ -410,8 +410,8 @@ def main():
 
         fig_evolucion_transacciones_pais = px.histogram(
             filtered_df_exchanges[~(filtered_df_exchanges['tipo_transaccion'] == 'saldo')],
-            x='fecha', y='valor_GW', color='pais',
-            title="Evolución por país de Transacciones Energéticas en GW")
+            x='fecha', y='valor_MW', color='pais',
+            title="Evolución por país de Transacciones Energéticas en MW")
         st.plotly_chart(fig_evolucion_transacciones_pais)
         st.markdown("""
             Esta gráfica muestra la **evolución histórica** de las **importaciones y exportaciones de energía** de España, desglosada por **países clave** (**Francia**, **Portugal**, **Marruecos** y **Andorra**). 
@@ -422,9 +422,9 @@ def main():
         """)
 
         # Gráfico de flujo de transacciones energéticas por país
-        transacciones_pais = filtered_df_exchanges.groupby(['pais', 'tipo_transaccion'])['valor_GW'].sum().reset_index()
-        fig_transacciones = px.bar(transacciones_pais, x='pais', y='valor_GW', color='tipo_transaccion',
-                                   title="Transacciones Energéticas por País en GW", barmode='group')
+        transacciones_pais = filtered_df_exchanges.groupby(['pais', 'tipo_transaccion'])['valor_MW'].sum().reset_index()
+        fig_transacciones = px.bar(transacciones_pais, x='pais', y='valor_MW', color='tipo_transaccion',
+                                   title="Transacciones Energéticas por País en MW", barmode='group')
         st.plotly_chart(fig_transacciones)
 
         # Sección Generación Energética
@@ -447,13 +447,13 @@ def main():
         filtered_df_generation = date_filter(filtered_df_generation, period_demanda)
 
         # Gráfico de líneas para generación de energía
-        fig_generacion_energia = px.area(filtered_df_generation, x='fecha', y='valor_generacion_GW', color='energia',
-                                         title="Estructura de generación energética en GW")
+        fig_generacion_energia = px.area(filtered_df_generation, x='fecha', y='valor_generacion_MW', color='energia',
+                                         title="Estructura de generación energética en MW")
         st.plotly_chart(fig_generacion_energia)
 
         # Visualización de Generación Energética
-        fig4 = px.histogram(filtered_df_generation, x='fecha', y='valor_generacion_GW', color='energia',
-                            title="Generación en GW")
+        fig4 = px.histogram(filtered_df_generation, x='fecha', y='valor_generacion_MW', color='energia',
+                            title="Generación en MW")
         st.plotly_chart(fig4)
         st.markdown("""
             Este gráfico ilustra la **evolución de la generación de energía** en **Redeia S.A.**, mostrando tanto **fuentes renovables** como **no renovables** entre 2012 y 2024. 
@@ -470,7 +470,7 @@ def main():
         # Distribución de Generación Energética
         fig5 = px.pie(
             filtered_df_generation,
-            values='valor_generacion_GW',
+            values='valor_generacion_MW',
             names='energia',
             title="Distribución de Generación Energética",
             width=900,

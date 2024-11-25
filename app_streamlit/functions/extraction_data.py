@@ -91,7 +91,7 @@ def extract_balance(start_year=2011, end_year=2025, time_trunc='day'):
     df_balance['fecha_extraccion'] = pd.Timestamp.now()
     df_balance["fecha_extraccion"] = df_balance["fecha_extraccion"].dt.floor("s")
     df_balance.rename(
-        columns={'datetime': 'fecha', 'value': 'valor_balance_GW', 'percentage': 'porcentaje', 'type': 'energia'},
+        columns={'datetime': 'fecha', 'value': 'valor_balance_MW', 'percentage': 'porcentaje', 'type': 'energia'},
         inplace=True)
     df_balance.drop(['porcentaje'], axis=1, inplace=True)
     df_balance['fecha'] = df_balance['fecha'].str.split('T').str[0]
@@ -143,7 +143,7 @@ def extract_exchange(start_year=2011, end_year=2025, time_trunc='day', widget='t
     df_exchanges['fecha_extraccion'] = pd.Timestamp.now()
     df_exchanges["fecha_extraccion"] = df_exchanges["fecha_extraccion"].dt.floor("s")
     df_exchanges.rename(
-        columns={'datetime': 'fecha', 'value': 'valor_GW', 'percentage': 'porcentaje', 'type': 'tipo_transaccion',
+        columns={'datetime': 'fecha', 'value': 'valor_MW', 'percentage': 'porcentaje', 'type': 'tipo_transaccion',
                  'country': 'pais'}, inplace=True)
     df_exchanges.drop(['porcentaje'], axis=1, inplace=True)
     df_exchanges['fecha'] = df_exchanges['fecha'].str.split('T').str[0]
@@ -201,7 +201,7 @@ def extract_generation(start_year=2011, end_year=2025, time_trunc='day'):
     df_generation['fecha_extraccion'] = pd.Timestamp.now()
     df_generation["fecha_extraccion"] = df_generation["fecha_extraccion"].dt.floor("s")
     df_generation.rename(
-        columns={'datetime': 'fecha', 'value': 'valor_generacion_GW', 'percentage': 'porcentaje', 'type': 'energia',
+        columns={'datetime': 'fecha', 'value': 'valor_generacion_MW', 'percentage': 'porcentaje', 'type': 'energia',
                  'technology_type': 'tipo_tecnología'}, inplace=True)
     df_generation.drop(['porcentaje', 'title', 'groupId', 'id', 'description', 'color'], axis=1, inplace=True)
     df_generation['fecha'] = df_generation['fecha'].str.split('T').str[0]
