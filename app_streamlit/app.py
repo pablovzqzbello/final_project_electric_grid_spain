@@ -53,7 +53,7 @@ def mostrar_mapa_coro():
 
     if not filtered_df.empty:
         color_scale = px.colors.sequential.YlGnBu
-        max_value = filtered_df['valor_GW'].max()
+        max_value = filtered_df['valor_MW'].max()
 
         fig = px.choropleth(
             filtered_df,
