@@ -7,6 +7,8 @@ from functions.processing_predictions_functions import preprocess_data, escalado
 from functions.vocabulary import obtener_vocabulario
 from streamlit_lottie import st_lottie
 import json
+import pydeck as pdk
+import plotly.graph_objects as go
 
 # Configuración de la página
 st.set_page_config(
@@ -149,7 +151,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ["Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético", '¡Costes promedios!']
+    choices = ['Página Principal', "Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético", '¡Costes promedios!']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -675,6 +677,204 @@ def main():
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
         mostrar_mapa_coro()
+
+
+
+
+    elif choice == "Página Principal":
+
+        # Función para cargar animaciones Lottie
+
+        def load_lottie_file(filepath):
+
+            try:
+
+                with open(filepath, "r") as file:
+
+                    return json.load(file)
+
+            except FileNotFoundError:
+
+                st.error(f"Error: No se encontró el archivo {filepath}. Verifica la ruta.")
+
+                return None
+
+        # Animación de bienvenida
+
+        lottie_intro = load_lottie_file("auxiliary/Animation - 1732401006815.json")
+
+        if lottie_intro:
+            st_lottie(lottie_intro, height=250, key="welcome_animation")
+
+        # Título principal
+
+        st.title("🔋 **Bienvenido a la Plataforma de Análisis Energético de Redeia S.A.**")
+
+        st.markdown("""
+
+            ---
+
+            ### 🚀 **Explora y analiza el futuro del sector energético español**
+
+            Esta aplicación interactiva combina datos históricos, análisis científico y herramientas predictivas para ayudarte
+
+            a comprender y tomar decisiones informadas sobre el sistema energético.
+
+            ---
+
+        """)
+
+        # Tarjetas de métricas clave
+
+        st.header("📊 **Indicadores Energéticos Clave**")
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+
+            st.metric("⚡ Generación Total (GW)", "34.25", "⬆︎ 2.5%")
+
+            st.caption("Progreso basado en los últimos 5 años.")
+
+        with col2:
+
+            st.metric("📈 Máxima Demanda Registrada (MW)", "20,340", "⬆︎ 1.8%")
+
+            st.caption("Histórico actualizado a 2024.")
+
+        with col3:
+
+            st.metric("🌱 Emisiones Totales (tCO2)", "12,450", "⬇︎ 4.2%")
+
+            st.caption("Reducción anual promedio desde 2020.")
+
+        # Sección "Aprende y Optimiza"
+
+        st.header("💡 **Aprende y Optimiza**")
+
+        st.subheader("🌍 **Impacto de las Energías Renovables**")
+
+        st.markdown("""
+
+            Las energías renovables han transformado el panorama energético global.  
+
+            En España, la transición hacia fuentes limpias como la eólica y la solar está reduciendo la dependencia de combustibles fósiles.
+
+        """)
+
+        st.info("💡 **Dato clave:** La energía eólica representa el 19.9% del mix energético español en 2024.")
+
+        # Recomendaciones interactivas
+
+        st.subheader("🧠 **Recomendaciones Personalizadas**")
+
+        st.write("Selecciona tus prioridades para obtener sugerencias adaptadas:")
+
+        prioridades = st.multiselect(
+
+            "¿Cuáles son tus objetivos?",
+
+            ["Reducir emisiones", "Ahorrar costos", "Aumentar eficiencia energética"]
+
+        )
+
+        if "Reducir emisiones" in prioridades:
+            st.success("🌱 Cambia a proveedores de energía renovable y minimiza el uso de combustibles fósiles.")
+
+        if "Ahorrar costos" in prioridades:
+            st.success("💡 Ajusta tus consumos a las horas valle y revisa los electrodomésticos de mayor consumo.")
+
+        if "Aumentar eficiencia energética" in prioridades:
+            st.success("⚡ Opta por dispositivos inteligentes y sistemas de monitoreo energético.")
+
+        if "Reducir emisiones" in prioridades and "Ahorrar costos" in prioridades:
+            st.success("🌱💡 Implementa paneles solares y ajusta tus consumos a las horas valle.")
+
+        if "Reducir emisiones" in prioridades and "Aumentar eficiencia energética" in prioridades:
+            st.success("🌱⚡ Considera electrodomésticos eficientes y fuentes renovables.")
+
+        if "Ahorrar costos" in prioridades and "Aumentar eficiencia energética" in prioridades:
+            st.success("💡⚡ Aprovecha la tecnología de bajo consumo y revisa tus hábitos energéticos.")
+
+        # Tendencias Globales y Comparativas
+
+        st.header("🌐 **Tendencias Globales y Comparativas**")
+
+        st.markdown("""
+
+            El sector energético mundial está en constante evolución. Aquí te mostramos cómo España se compara con otros países:
+
+            - **Generación renovable**: España ocupa el **4º lugar en Europa** en capacidad instalada de energía solar.
+
+            - **Demanda energética**: Crecimiento moderado del **1.3% anual** desde 2019.
+
+            - **Emisiones de CO2**: Reducción del **35% desde 2010**, en línea con los objetivos de la UE.
+
+        """)
+
+        st.info(
+            "🔎 **Nota:** Los datos provienen de informes internacionales de la Agencia Internacional de Energía (IEA).")
+
+        # Aprendizaje interactivo: Glosario energético
+
+        st.header("📖 **Glosario Energético**")
+
+        st.markdown("Selecciona una letra para explorar términos clave del sector energético:")
+
+        letras = ['C', 'E', 'F', 'H', 'M', 'N', 'R', 'S', 'T']
+
+        letra_seleccionada = st.selectbox("Selecciona una letra", letras)
+
+        if letra_seleccionada:
+
+            st.write(f"**Términos que empiezan con la letra {letra_seleccionada}:**")
+
+            definiciones = obtener_vocabulario(letra_seleccionada)
+
+            if isinstance(definiciones, list):
+
+                for definicion in definiciones:
+                    st.write(f"- {definicion}")
+
+            else:
+
+                st.write(definiciones)
+
+        # Información adicional sobre Redeia
+
+        st.header("📖 **Sobre Redeia S.A.**")
+
+        st.markdown("""
+
+            Redeia Corporación, S.A. es líder en innovación y sostenibilidad energética.  
+
+            Como operador del sistema eléctrico español, impulsa la transición hacia un modelo limpio y eficiente.
+
+            ---
+
+        """)
+
+        st.image("auxiliary/redeia_marca1_2.png", width=150)
+
+        # Animación final y despedida
+
+        lottie_thanks = load_lottie_file("auxiliary/thanks_animation.json")
+
+        if lottie_thanks:
+            st_lottie(lottie_thanks, height=200, key="thanks_animation")
+
+        st.markdown("""
+
+            ---
+
+            🤝 **Gracias por explorar nuestra aplicación**  
+
+            Esperamos que esta herramienta te inspire a tomar decisiones energéticas informadas.
+
+        """)
+
+        st.snow()
+
 
 if __name__ == "__main__":
     main()
