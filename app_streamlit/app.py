@@ -765,7 +765,7 @@ def main():
 
         with col1:
 
-            st.metric("⚡ Generación Total (GW)", "34.25", "⬆︎ 2.5%")
+            st.metric("⚡ Generación Total (MW)", "34.25", "⬆︎ 2.5%")
 
             st.caption("Progreso basado en los últimos 5 años.")
 
