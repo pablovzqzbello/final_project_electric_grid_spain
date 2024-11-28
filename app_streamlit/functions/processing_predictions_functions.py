@@ -5,6 +5,7 @@ import numpy as np
 import streamlit as st
 import pickle
 import matplotlib.pyplot as plt
+import json
 import plotly.express as px
 import plotly.graph_objects as go
 from prophet import Prophet
@@ -441,3 +442,30 @@ def model_prophet(df):
         title = f"Comparación Últimos {period} Días vs Próximos {period} Días"
         fig8.update_layout(title=title, xaxis_title="Fecha", yaxis_title="Demanda (MW)")
         st.plotly_chart(fig8)
+
+def visual_loss_rnn(history_filename='models/history_rnn.json'):
+
+    with open(history_filename, "r") as f:
+        history_rnn = json.load(f)
+
+        df_rnn = pd.DataFrame(history_rnn)
+
+    return st.plotly_chart(px.line(df_rnn, y=['loss', 'val_loss'], title='Función de pérdida (MSE)'))
+
+def visual_loss_lstm(history_filename='models/history_lstm.json'):
+
+    with open(history_filename, "r") as f:
+         history_lstm = json.load(f)
+
+         df_lstm = pd.DataFrame(history_lstm)
+
+    return st.plotly_chart(px.line(df_lstm, y=['loss', 'val_loss'],title='Función de pérdida (MSE)'))
+
+def visual_loss_gru(history_filename='models/history_gru.json'):
+
+    with open(history_filename, "r") as f:
+        history_gru = json.load(f)
+
+        df_gru = pd.DataFrame(history_gru)
+
+    return st.plotly_chart(px.line(df_gru, y=['loss', 'val_loss'], title='Función de pérdida (MSE)'))

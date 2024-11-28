@@ -3,8 +3,9 @@ import plotly.express as px
 import pandas as pd
 from datetime import timedelta, datetime
 from functions.sql_function import extract_data
-from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, predict_7_days_rnn, predict_7_days_lstm, modelo_neuronal_gru, predict_7_days_gru, model_prophet
+from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, predict_7_days_rnn, predict_7_days_lstm, modelo_neuronal_gru, predict_7_days_gru, model_prophet, visual_loss_rnn, visual_loss_lstm, visual_loss_gru
 from functions.vocabulary import obtener_vocabulario
+from functions.balance_function import saldo_balance
 from streamlit_lottie import st_lottie
 import json
 import pydeck as pdk
@@ -61,7 +62,7 @@ def mostrar_mapa_coro():
             filtered_df,
             locations="pais",
             locationmode="country names",
-            color="valor_GW",
+            color="valor_MW",
             projection="mercator",
             color_continuous_scale=color_scale,
             range_color = (0, max_value),
@@ -197,7 +198,7 @@ def main():
         df_balance = load_data("SELECT fecha, valor_balance_MW, energia FROM balance_energia")
         df_balance['fecha'] = pd.to_datetime(df_balance['fecha'])
         df_balance['year'] =df_balance['fecha'].dt.year
-        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia FROM generacion_energia")
+        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
         df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
         df_generation['year'] = df_generation['fecha'].dt.year
         df_exchanges = load_data("SELECT fecha, valor_MW, tipo_transaccion, pais FROM transacciones_energia")
@@ -360,6 +361,8 @@ def main():
 
             La gráfica muestra una dependencia significativa de **factores naturales** que influyen en la generación renovable, pero con una tendencia general positiva en cuanto a la **capacidad** y **contribución de las energías renovables** en el sistema eléctrico. Esto sugiere que se están logrando avances en la **integración de estas energías**, aunque aún existen desafíos en la gestión de su **variabilidad**.
         """)
+
+        saldo_balance()
 
         # Gráfico de área apilado para balance energético
         fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_MW', color='energia',
@@ -638,6 +641,7 @@ def main():
                                                                          train_ratio=0.8)
                 modelo_neuronal_rnn(X_test, y_test)
                 predict_7_days_rnn(last_sequence=X_test)
+                visual_loss_rnn()
 
             elif model_choice == "Demanda (LSTM)":
                 df_demanda = load_data("SELECT * FROM demanda_energia")
@@ -650,6 +654,7 @@ def main():
 
                 modelo_neuronal_lstm(X_test, y_test)
                 predict_7_days_lstm(last_sequence=X_test)
+                visual_loss_lstm()
 
             elif model_choice == "Demanda (Prophet)":
 
@@ -672,7 +677,7 @@ def main():
 
                 modelo_neuronal_gru(X_test, y_test)
                 predict_7_days_gru(last_sequence=X_test)
-
+                visual_loss_gru()
 
 
     elif choice == "Mapa Coroplético de Intercambio Energético":
