@@ -586,6 +586,15 @@ def main():
             st.write("Seleccione la inicial de la palabra que desee consultar.")
 
 
+        #Relaciones de variables
+
+        #Scatter
+
+
+
+        #Heatmap
+
+
 
     elif choice == "¡Costes promedios!":
 
