@@ -152,7 +152,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal', "Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético", '¡Costes promedios!', 'About Us']
+    choices = ['Página Principal', "Vista general", "Vista específica", '¡Costes promedios!', 'About Us']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -412,7 +412,7 @@ def main():
 
         # Sección Transacciones Energéticas
         st.subheader("Transacciones energéticas")
-
+        mostrar_mapa_coro()
         # Filtros en el Sidebar para Transacciones
         with st.sidebar.expander("Filtros para Transacciones Energéticas"):
             st.markdown("#### Filtro por País")
@@ -712,196 +712,49 @@ def main():
                 visual_loss_gru()
 
 
-    elif choice == "Mapa Coroplético de Intercambio Energético":
-        mostrar_mapa_coro()
-
-
     elif choice == "About Us":
 
         st.title("Sobre Nosotros")
 
-        st.markdown("""
+        st.markdown(
 
-        Somos un equipo apasionado de **científicos de datos** que combina creatividad, análisis y tecnología para resolver problemas del mundo real. 
+            """
 
-        Desde diferentes ciudades de España, colaboramos para crear soluciones innovadoras y visualizaciones impactantes.
+            Somos un equipo apasionado de **científicos de datos** que combina creatividad, análisis y tecnología para resolver problemas del mundo real.
 
-        """)
 
-        # Añadir contenedor con estilos personalizados
+            Desde diferentes ciudades de España, colaboramos para crear soluciones innovadoras y visualizaciones impactantes.
 
-        st.markdown("""
+            """
 
-        <style>
+        )
 
-            .team-container {
+        # Datos de los miembros del equipo
 
-                display: flex;
+        team_members = [
 
-                justify-content: space-around;
+            {"name": "Geza Gabriel Szokacs", "location": "Madrid",
+             "linkedin": "http://www.linkedin.com/in/geza-gabriel-szokacs", "github": "https://github.com/S-G-Gabe"},
 
-                align-items: flex-start;
+            {"name": "Pablo Vázquez Bello", "location": "Coruña",
+             "linkedin": "https://www.linkedin.com/in/pablovazquezbello/",
+             "github": "https://github.com/pablovzqzbello"},
 
-                flex-wrap: wrap;
+            {"name": "Néstor Cantón Ordoñez", "location": "Sevilla",
+             "linkedin": "https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/",
+             "github": "https://github.com/nescanord"},
 
-                margin-top: 30px;
+        ]
 
-            }
+        for member in team_members:
+            st.subheader(member["name"])
 
-            .team-member {
+            st.write(f"📍 **Ubicación:** {member['location']}")
 
-                text-align: center;
+            st.write(f"[LinkedIn]({member['linkedin']}) | [GitHub]({member['github']})")
 
-                margin: 15px;
+            st.markdown("---")  # Línea divisoria
 
-                padding: 10px;
-
-                border-radius: 15px;
-
-                background: linear-gradient(to bottom, #ffffff, #f0f0f0);
-
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-
-                transition: transform 0.3s ease-in-out;
-
-            }
-
-            .team-member:hover {
-
-                transform: translateY(-5px);
-
-                box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-
-            }
-
-            .profile-img {
-
-                border-radius: 50%;
-
-                width: 120px;
-
-                height: 120px;
-
-                object-fit: cover;
-
-                margin-bottom: 10px;
-
-                border: 4px solid #0073e6;
-
-            }
-
-            .member-name {
-
-                font-size: 18px;
-
-                font-weight: bold;
-
-                color: #333;
-
-                margin-bottom: 5px;
-
-            }
-
-            .location {
-
-                font-size: 14px;
-
-                color: #666;
-
-                margin-bottom: 10px;
-
-            }
-
-            .links a {
-
-                display: inline-block;
-
-                margin: 5px;
-
-                padding: 8px 12px;
-
-                text-decoration: none;
-
-                color: white;
-
-                background-color: #0073e6;
-
-                border-radius: 5px;
-
-                font-size: 14px;
-
-                transition: background-color 0.3s ease-in-out;
-
-            }
-
-            .links a:hover {
-
-                background-color: #005bb5;
-
-            }
-
-        </style>
-
-
-        <div class="team-container">
-
-            <div class="team-member">
-
-                <img src="img_1.png" alt="Geza Gabriel Szokacs" class="profile-img">
-
-                <div class="member-name">Geza Gabriel Szokacs</div>
-
-                <div class="location">📍 Madrid</div>
-
-                <div class="links">
-
-                    <a href="http://www.linkedin.com/in/geza-gabriel-szokacs" target="_blank">LinkedIn</a>
-
-                    <a href="https://github.com/S-G-Gabe" target="_blank">GitHub</a>
-
-                </div>
-
-            </div>
-
-            <div class="team-member">
-
-                <img src="img.png" alt="Pablo Vázquez Bello" class="profile-img">
-
-                <div class="member-name">Pablo Vázquez Bello</div>
-
-                <div class="location">📍 Coruña</div>
-
-                <div class="links">
-
-                    <a href="https://www.linkedin.com/in/pablovazquezbello/" target="_blank">LinkedIn</a>
-
-                    <a href="https://github.com/pablovzqzbello" target="_blank">GitHub</a>
-
-                </div>
-
-            </div>
-
-            <div class="team-member">
-
-                <img src="img_2.png" alt="Néstor Cantón Ordoñez" class="profile-img">
-
-                <div class="member-name">Néstor Cantón Ordoñez</div>
-
-                <div class="location">📍 Sevilla</div>
-
-                <div class="links">
-
-                    <a href="https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/" target="_blank">LinkedIn</a>
-
-                    <a href="https://github.com/nescanord" target="_blank">GitHub</a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        """, unsafe_allow_html=True)
 
     elif choice == "Página Principal":
 
@@ -1094,72 +947,72 @@ def main():
         st.markdown(
             "**¡Explora estas funcionalidades desde el menú lateral y obtén una visión integral del sistema energético!**")
 
-    st.header("📊 **Indicadores Energéticos Clave**")
+        st.header("📊 **Indicadores Energéticos Clave**")
 
-    df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
+        df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
 
-    df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
+        df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
 
-    df_demanda['year'] = df_demanda['fecha'].dt.year
+        df_demanda['year'] = df_demanda['fecha'].dt.year
 
-    df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
+        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
 
-    df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+        df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
 
-    df_generation['year'] = df_generation['fecha'].dt.year
+        df_generation['year'] = df_generation['fecha'].dt.year
 
-    df_generation = df_generation[
+        df_generation = df_generation[
 
-        (df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
+            (df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
 
-    df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
+        df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
 
-    df_generation = df_generation.reset_index(drop=True)
+        df_generation = df_generation.reset_index(drop=True)
 
-    df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
+        df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
 
-    df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
+        df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
 
-    df_co2['year'] = df_co2['fecha'].dt.year
+        df_co2['year'] = df_co2['fecha'].dt.year
 
-    df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
+        df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
 
-    df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
+        df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
 
-    generacion_total = df_generation['valor_generacion_MW'].sum()
+        generacion_total = df_generation['valor_generacion_MW'].sum()
 
-    maxima_demanda = df_demanda['valor_demanda_MW'].max()
+        maxima_demanda = df_demanda['valor_demanda_MW'].max()
 
-    emisiones_totales = df_co2['valor'].sum()
+        emisiones_totales = df_co2['valor'].sum()
 
 
-    col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
 
-    with col1:
+        with col1:
 
-        st.metric("⚡ Generación Total (MW)", f"{generacion_total}", "⬆︎ 2.5%")
+            st.metric("⚡ Generación Total (MW)", f"{generacion_total}", "⬆︎ 2.5%")
 
-        st.caption("Progreso basado en los últimos 5 años.")
+            st.caption("Progreso basado en los últimos 5 años.")
 
-    with col2:
+        with col2:
 
-        st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", "⬆︎ 1.8%")
+            st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", "⬆︎ 1.8%")
 
-        st.caption("Histórico actualizado a 2024.")
+            st.caption("Histórico actualizado a 2024.")
 
-    with col3:
+        with col3:
 
-        st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", "⬇︎ 4.2%")
+            st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", "⬇︎ 4.2%")
 
-        st.caption("Reducción anual promedio desde 2020.")
+            st.caption("Reducción anual promedio desde 2020.")
 
-    # Sección "Aprende y Optimiza"
+        # Sección "Aprende y Optimiza"
 
-    st.header("💡 **Aprende y Optimiza**")
+        st.header("💡 **Aprende y Optimiza**")
 
-    st.subheader("🌍 **Impacto de las Energías Renovables**")
+        st.subheader("🌍 **Impacto de las Energías Renovables**")
 
-    st.markdown("""
+        st.markdown("""
 
 
             Las energías renovables han transformado el panorama energético global.  
@@ -1170,45 +1023,45 @@ def main():
 
         """)
 
-    st.info("💡 **Dato clave:** La energía eólica representa el 19.9% del mix energético español en 2024.")
+        st.info("💡 **Dato clave:** La energía eólica representa el 19.9% del mix energético español en 2024.")
 
     # Recomendaciones interactivas
 
-    st.subheader("🧠 **Recomendaciones Personalizadas**")
+        st.subheader("🧠 **Recomendaciones Personalizadas**")
 
-    st.write("Selecciona tus prioridades para obtener sugerencias adaptadas:")
+        st.write("Selecciona tus prioridades para obtener sugerencias adaptadas:")
 
-    prioridades = st.multiselect(
+        prioridades = st.multiselect(
 
-        "¿Cuáles son tus objetivos?",
+            "¿Cuáles son tus objetivos?",
 
         ["Reducir emisiones", "Ahorrar costos", "Aumentar eficiencia energética"]
 
-    )
+        )
 
-    if "Reducir emisiones" in prioridades:
-        st.success("🌱 Cambia a proveedores de energía renovable y minimiza el uso de combustibles fósiles.")
+        if "Reducir emisiones" in prioridades:
+            st.success("🌱 Cambia a proveedores de energía renovable y minimiza el uso de combustibles fósiles.")
 
-    if "Ahorrar costos" in prioridades:
-        st.success("💡 Ajusta tus consumos a las horas valle y revisa los electrodomésticos de mayor consumo.")
+        if "Ahorrar costos" in prioridades:
+            st.success("💡 Ajusta tus consumos a las horas valle y revisa los electrodomésticos de mayor consumo.")
 
-    if "Aumentar eficiencia energética" in prioridades:
-        st.success("⚡ Opta por dispositivos inteligentes y sistemas de monitoreo energético.")
+        if "Aumentar eficiencia energética" in prioridades:
+            st.success("⚡ Opta por dispositivos inteligentes y sistemas de monitoreo energético.")
 
-    if "Reducir emisiones" in prioridades and "Ahorrar costos" in prioridades:
-        st.success("🌱💡 Implementa paneles solares y ajusta tus consumos a las horas valle.")
+        if "Reducir emisiones" in prioridades and "Ahorrar costos" in prioridades:
+            st.success("🌱💡 Implementa paneles solares y ajusta tus consumos a las horas valle.")
 
-    if "Reducir emisiones" in prioridades and "Aumentar eficiencia energética" in prioridades:
-        st.success("🌱⚡ Considera electrodomésticos eficientes y fuentes renovables.")
+        if "Reducir emisiones" in prioridades and "Aumentar eficiencia energética" in prioridades:
+            st.success("🌱⚡ Considera electrodomésticos eficientes y fuentes renovables.")
 
-    if "Ahorrar costos" in prioridades and "Aumentar eficiencia energética" in prioridades:
-        st.success("💡⚡ Aprovecha la tecnología de bajo consumo y revisa tus hábitos energéticos.")
+        if "Ahorrar costos" in prioridades and "Aumentar eficiencia energética" in prioridades:
+            st.success("💡⚡ Aprovecha la tecnología de bajo consumo y revisa tus hábitos energéticos.")
 
-    # Tendencias Globales y Comparativas
+        # Tendencias Globales y Comparativas
 
-    st.header("🌐 **Tendencias Globales y Comparativas**")
+        st.header("🌐 **Tendencias Globales y Comparativas**")
 
-    st.markdown("""
+        st.markdown("""
 
 
             El sector energético mundial está en constante evolución. Aquí te mostramos cómo España se compara con otros países:
@@ -1225,41 +1078,41 @@ def main():
 
         """)
 
-    st.info(
+        st.info(
 
         "🔎 **Nota:** Los datos provienen de informes internacionales de la Agencia Internacional de Energía (IEA).")
 
     # Aprendizaje interactivo: Glosario energético
 
-    st.header("📖 **Glosario Energético**")
+        st.header("📖 **Glosario Energético**")
 
-    st.markdown("Selecciona una letra para explorar términos clave del sector energético:")
+        st.markdown("Selecciona una letra para explorar términos clave del sector energético:")
 
-    letras = ['C', 'E', 'F', 'H', 'M', 'N', 'R', 'S', 'T']
+        letras = ['C', 'E', 'F', 'H', 'M', 'N', 'R', 'S', 'T']
 
-    letra_seleccionada = st.selectbox("Selecciona una letra", letras)
+        letra_seleccionada = st.selectbox("Selecciona una letra", letras)
 
-    if letra_seleccionada:
+        if letra_seleccionada:
 
-        st.write(f"**Términos que empiezan con la letra {letra_seleccionada}:**")
+            st.write(f"**Términos que empiezan con la letra {letra_seleccionada}:**")
 
-        definiciones = obtener_vocabulario(letra_seleccionada)
+            definiciones = obtener_vocabulario(letra_seleccionada)
 
-        if isinstance(definiciones, list):
+            if isinstance(definiciones, list):
 
-            for definicion in definiciones:
-                st.write(f"- {definicion}")
+                for definicion in definiciones:
+                    st.write(f"- {definicion}")
 
 
-        else:
+            else:
 
-            st.write(definiciones)
+                st.write(definiciones)
 
     # Información adicional sobre Redeia
 
-    st.header("📖 **Sobre Redeia S.A.**")
+        st.header("📖 **Sobre Redeia S.A.**")
 
-    st.markdown("""
+        st.markdown("""
 
 
             Redeia Corporación, S.A. es líder en innovación y sostenibilidad energética.  
@@ -1273,22 +1126,22 @@ def main():
 
         """)
 
-    st.image("auxiliary/redeia_marca1_2.png", width=150)
+        st.image("auxiliary/redeia_marca1_2.png", width=150)
 
     # Animación final y despedida
-    def load_lottie_file(filepath):
-        try:
-            with open(filepath, "r") as file:
-                return json.load(file)
-        except FileNotFoundError:
-            st.error(f"Error: No se encontró el archivo {filepath}. Verifica la ruta.")
-            return None
-    lottie_thanks = load_lottie_file("auxiliary/thanks_animation.json")
+        def load_lottie_file(filepath):
+            try:
+                with open(filepath, "r") as file:
+                    return json.load(file)
+            except FileNotFoundError:
+                st.error(f"Error: No se encontró el archivo {filepath}. Verifica la ruta.")
+                return None
+        lottie_thanks = load_lottie_file("auxiliary/thanks_animation.json")
 
-    if lottie_thanks:
-        st_lottie(lottie_thanks, height=200, key="thanks_animation")
+        if lottie_thanks:
+            st_lottie(lottie_thanks, height=200, key="thanks_animation")
 
-    st.header("""🤝 **Gracias por explorar nuestra aplicación** 
+        st.header("""🤝 **Gracias por explorar nuestra aplicación** 
 
 
             Esperamos que esta herramienta te inspire a tomar decisiones energéticas informadas.
@@ -1296,9 +1149,9 @@ def main():
 
         """)
 
-    st.info('¡No te olvides de explorar todo esto en el menú lateral!')
+        st.info('¡No te olvides de explorar todo esto en el menú lateral!')
 
-    st.snow()
+        st.snow()
 
 if __name__ == "__main__":
     main()
