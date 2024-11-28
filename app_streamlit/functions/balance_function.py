@@ -7,8 +7,8 @@ import plotly.express as px
 def saldo_balance ():
 
     # Extracción datos
-    df_demanda = extract_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
-    df_generation = extract_data ("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
+    df_demanda = df_demanda
+    df_generation = df_generation
 
     #Filtrado del df
     df_generation = df_generation[(df_generation['energia'] == 'Generación total')|(df_generation['tipo_tecnología'] == 'Generación total')]

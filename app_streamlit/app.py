@@ -210,7 +210,7 @@ def main():
 
         # Filtros generales personalizados en el Sidebar
 
-        with st.sidebar.expander("¡Filtros Personalizados!"):
+        with st.sidebar.expander("Filtrado por fecha"):
             st.markdown("#### Filtro por Fecha")
 
             # Selección del rango de fechas usando la tabla de demanda como referencia
@@ -362,7 +362,36 @@ def main():
             La gráfica muestra una dependencia significativa de **factores naturales** que influyen en la generación renovable, pero con una tendencia general positiva en cuanto a la **capacidad** y **contribución de las energías renovables** en el sistema eléctrico. Esto sugiere que se están logrando avances en la **integración de estas energías**, aunque aún existen desafíos en la gestión de su **variabilidad**.
         """)
 
-        saldo_balance()
+        # Saldo de Balance
+
+        # Filtrado del df
+        df_generation = df_generation[(df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
+        df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
+        df_generation = df_generation.reset_index(drop=True)
+
+        # Creación de un nuevo df
+        df_saldo_balance = pd.merge(df_demanda, df_generation, on='fecha', how='inner')
+        df_saldo_balance = df_saldo_balance[['fecha', 'valor_demanda_MW', 'valor_generacion_MW']]
+        df_saldo_balance['balance'] = df_saldo_balance['valor_generacion_MW'] - df_saldo_balance['valor_demanda_MW']
+        df_saldo_balance=date_filter(df_saldo_balance, period_demanda)
+
+        # Visualización de generación y demanda
+        fig_demanda_generacion = px.line(df_saldo_balance,
+                      x='fecha',
+                      y=['valor_demanda_MW', 'valor_generacion_MW'],
+                      labels={'fecha': 'Fecha', 'value': 'Valores (MW)', 'variable': 'Categoría'},
+                      title='Balance entre demanda y generación')
+
+        #Visualización del saldo restante entre generación y demanda
+        fig_saldo = px.line(df_saldo_balance,
+                       x='fecha',
+                       y='balance',
+                       labels={'fecha': 'Fecha', 'value': 'Valores (MW)'},
+                       title='Balance energético')
+
+        # Mostrar la gráfica
+        st.plotly_chart(fig_demanda_generacion)
+        st.plotly_chart(fig_saldo)
 
         # Gráfico de área apilado para balance energético
         fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_MW', color='energia',
