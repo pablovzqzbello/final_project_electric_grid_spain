@@ -5,7 +5,6 @@ from datetime import timedelta, datetime
 from functions.sql_function import extract_data
 from functions.processing_predictions_functions import preprocess_data, escalador, train_test_split_data, modelo_neuronal_rnn, modelo_neuronal_lstm, predict_7_days_rnn, predict_7_days_lstm, modelo_neuronal_gru, predict_7_days_gru, model_prophet, visual_loss_rnn, visual_loss_lstm, visual_loss_gru
 from functions.vocabulary import obtener_vocabulario
-from functions.balance_function import saldo_balance
 from streamlit_lottie import st_lottie
 import json
 import pydeck as pdk
