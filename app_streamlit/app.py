@@ -364,12 +364,12 @@ def main():
         # Saldo de Balance
 
         # Filtrado del df
-        df_generation = df_generation[(df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
-        df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
-        df_generation = df_generation.reset_index(drop=True)
+        df_generation_balance = df_generation[(df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
+        df_generation_balance = df_generation_balance.drop(columns=['energia', 'tipo_tecnología'])
+        df_generation_balance = df_generation_balance.reset_index(drop=True)
 
         # Creación de un nuevo df
-        df_saldo_balance = pd.merge(df_demanda, df_generation, on='fecha', how='inner')
+        df_saldo_balance = pd.merge(df_demanda, df_generation_balance, on='fecha', how='inner')
         df_saldo_balance = df_saldo_balance[['fecha', 'valor_demanda_MW', 'valor_generacion_MW']]
         df_saldo_balance['balance'] = df_saldo_balance['valor_generacion_MW'] - df_saldo_balance['valor_demanda_MW']
         df_saldo_balance=date_filter(df_saldo_balance, period_demanda)
