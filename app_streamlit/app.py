@@ -755,296 +755,140 @@ def main():
 
 
 
+
     elif choice == "About Us":
 
-        # Título de la sección
+        # Título principal
 
-        st.title("Sobre Nosotros")
-
-        # Introducción
-
+        st.markdown("## Sobre Nosotros")
         st.markdown("""
-
-            <style>
-
-                .about-us-title {
-
-                    font-size: 36px;
-
-                    font-weight: bold;
-
-                    color: #333333;
-
-                    text-align: center;
-
-                    margin-bottom: 20px;
-
-                }
-
-                .about-us-intro {
-
-                    font-size: 18px;
-
-                    color: #666666;
-
-                    text-align: center;
-
-                    margin-bottom: 40px;
-
-                }
-
-            </style>
-
-            <div class="about-us-title">🌟 Equipo de Científicos de Datos 🌟</div>
-
-            <div class="about-us-intro">
-
-                Somos un equipo apasionado de <strong>científicos de datos</strong> que combina creatividad, análisis y tecnología para resolver problemas del mundo real. <br>
-
-                Desde diferentes ciudades de España, colaboramos para crear soluciones innovadoras y visualizaciones impactantes.
-
-            </div>
-
-        """, unsafe_allow_html=True)
-
-        # HTML y CSS para la presentación interactiva de los miembros
-
-        st.markdown("""
-
-            <style>
-
-                .team-container {
-
-                    display: flex;
-
-                    justify-content: center;
-
-                    align-items: center;
-
-                    flex-wrap: wrap;
-
-                    gap: 30px;
-
-                    margin-top: 20px;
-
-                }
-
-
-                .team-member {
-
-                    background: linear-gradient(145deg, #ffffff, #f0f0f0);
-
-                    border-radius: 20px;
-
-                    width: 280px;
-
-                    padding: 20px;
-
-                    text-align: center;
-
-                    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.7);
-
-                    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-                    position: relative;
-
-                    overflow: hidden;
-
-                }
-
-
-                .team-member:hover {
-
-                    transform: translateY(-10px);
-
-                    box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.2), -6px -6px 15px rgba(255, 255, 255, 0.8);
-
-                    background: linear-gradient(145deg, #f9f9f9, #ececec);
-
-                }
-
-
-                .team-member img {
-
-                    border-radius: 50%;
-
-                    width: 120px;
-
-                    height: 120px;
-
-                    object-fit: cover;
-
-                    margin-bottom: 15px;
-
-                    border: 5px solid #0073e6;
-
-                    transition: border-color 0.3s ease;
-
-                }
-
-
-                .team-member:hover img {
-
-                    border-color: #005bb5;
-
-                }
-
-
-                .member-name {
-
-                    font-size: 20px;
-
-                    font-weight: bold;
-
-                    color: #333333;
-
-                    margin-bottom: 5px;
-
-                }
-
-
-                .location {
-
-                    font-size: 16px;
-
-                    color: #666666;
-
-                    margin-bottom: 15px;
-
-                }
-
-
-                .links {
-
-                    margin-top: 10px;
-
-                }
-
-
-                .links a {
-
-                    display: inline-block;
-
-                    margin: 5px;
-
-                    padding: 8px 15px;
-
-                    font-size: 14px;
-
-                    color: white;
-
-                    background-color: #0073e6;
-
-                    text-decoration: none;
-
-                    border-radius: 5px;
-
-                    transition: background-color 0.3s ease;
-
-                }
-
-
-                .links a:hover {
-
-                    background-color: #005bb5;
-
-                }
-
-            </style>
-
+        <div id="about-us">
+            <h2 style="text-align: center; font-family: Arial, sans-serif; font-size: 36px;">🌟 Equipo de Científicos de Datos 🌟</h2>
+            <p style="text-align: center; font-family: Arial, sans-serif; font-size: 18px; color: #555;">
+                Somos un equipo apasionado de <strong>científicos de datos</strong> que combina creatividad, análisis y tecnología 
+                para resolver problemas del mundo real. Desde diferentes ciudades de España, colaboramos para crear soluciones 
+                innovadoras y visualizaciones impactantes.
+            </p>
             <div class="team-container">
-
-                <!-- Miembro 1 -->
-
-                <div class="team-member">
-
-                    <img src="img_1.png" alt="Geza Gabriel Szokacs">
-
+                <div class="team-member" onmouseover="animateCard(this)" onmouseout="resetCard(this)">
+                    <img src="img_1.png" alt="Geza Gabriel Szokacs" class="profile-img">
                     <div class="member-name">Geza Gabriel Szokacs</div>
-
                     <div class="location">📍 Madrid</div>
-
                     <div class="links">
-
                         <a href="http://www.linkedin.com/in/geza-gabriel-szokacs" target="_blank">LinkedIn</a>
-
                         <a href="https://github.com/S-G-Gabe" target="_blank">GitHub</a>
-
                     </div>
-
                 </div>
-
-
-                <!-- Miembro 2 -->
-
-                <div class="team-member">
-
-                    <img src="img.png" alt="Pablo Vázquez Bello">
-
+                <div class="team-member" onmouseover="animateCard(this)" onmouseout="resetCard(this)">
+                    <img src="img.png" alt="Pablo Vázquez Bello" class="profile-img">
                     <div class="member-name">Pablo Vázquez Bello</div>
-
                     <div class="location">📍 Coruña</div>
-
                     <div class="links">
-
                         <a href="https://www.linkedin.com/in/pablovazquezbello/" target="_blank">LinkedIn</a>
-
                         <a href="https://github.com/pablovzqzbello" target="_blank">GitHub</a>
-
                     </div>
-
                 </div>
-
-
-                <!-- Miembro 3 -->
-
-                <div class="team-member">
-
-                    <img src="img_2.png" alt="Néstor Cantón Ordoñez">
-
+                <div class="team-member" onmouseover="animateCard(this)" onmouseout="resetCard(this)">
+                    <img src="img_2.png" alt="Néstor Cantón Ordoñez" class="profile-img">
                     <div class="member-name">Néstor Cantón Ordoñez</div>
-
                     <div class="location">📍 Sevilla</div>
-
                     <div class="links">
-
                         <a href="https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/" target="_blank">LinkedIn</a>
-
                         <a href="https://github.com/nescanord" target="_blank">GitHub</a>
-
                     </div>
-
                 </div>
+            </div>
+        </div>
+
+        <script>
+        function animateCard(element) {
+            element.style.transform = "scale(1.05)";
+            element.style.boxShadow = "0px 8px 15px rgba(0, 0, 0, 0.3)";
+            element.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+        }
+
+        function resetCard(element) {
+            element.style.transform = "scale(1)";
+            element.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+            element.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+        }
+        </script>
+
+        <style>
+        #about-us {
+            font-family: Arial, sans-serif;
+        }
+
+        .team-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .team-member {
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 250px;
+        }
+
+        .profile-img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid #0073e6;
+        }
+
+        .member-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .location {
+            font-size: 16px;
+            color: #666666;
+            margin-bottom: 15px;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            font-size: 14px;
+            color: white;
+            background-color: #0073e6;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .links a:hover {
+            background-color: #005bb5;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        # Mensaje final
+
+        st.markdown("""
+
+            <div style="text-align: center; margin-top: 50px; font-size: 20px; font-weight: bold;">
+
+                🤝 ¡Gracias por conocernos! 🤝
 
             </div>
 
         """, unsafe_allow_html=True)
 
-        # Animación final
-
-        st.markdown("""
-
-            <style>
-
-                .thank-you {
-
-                    font-size: 24px;
-
-                    font-weight: bold;
-
-                    color: #333333;
-
-                    text-align: center;
-
-                    margin-top: 50px;
-
-                }
-
-            </style>
-
-            <div class="thank-you">🤝 ¡Gracias por conocernos! 🤝</div>
-
-        """, unsafe_allow_html=True)
 
 
 
