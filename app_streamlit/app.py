@@ -761,23 +761,51 @@ def main():
 
         st.header("📊 **Indicadores Energéticos Clave**")
 
+        #Cálculo métricas Kpis
+
+        #Extracción de la información
+
+        df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
+        df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
+        df_demanda['year'] = df_demanda['fecha'].dt.year
+        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
+        df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+        df_generation['year'] = df_generation['fecha'].dt.year
+        df_generation = df_generation[(df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
+        df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
+        df_generation = df_generation.reset_index(drop=True)
+        df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
+        df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
+        df_co2['year'] = df_co2['fecha'].dt.year
+        df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
+        df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
+
+        generacion_total = df_generation['valor_generacion_MW'].sum()
+        maxima_demanda = df_demanda['valor_demanda_MW'].max()
+        emisiones_totales = df_co2['valor'].sum()
+
+        #Cálculos porcentuales
+
+
+
+
         col1, col2, col3 = st.columns(3)
 
         with col1:
 
-            st.metric("⚡ Generación Total (MW)", "34.25", "⬆︎ 2.5%")
+            st.metric("⚡ Generación Total (MW)", f"{generacion_total}", "⬆︎ 2.5%")
 
             st.caption("Progreso basado en los últimos 5 años.")
 
         with col2:
 
-            st.metric("📈 Máxima Demanda Registrada (MW)", "20,340", "⬆︎ 1.8%")
+            st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", "⬆︎ 1.8%")
 
             st.caption("Histórico actualizado a 2024.")
 
         with col3:
 
-            st.metric("🌱 Emisiones Totales (tCO2)", "12,450", "⬇︎ 4.2%")
+            st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", "⬇︎ 4.2%")
 
             st.caption("Reducción anual promedio desde 2020.")
 
