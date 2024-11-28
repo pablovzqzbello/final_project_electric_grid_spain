@@ -7,8 +7,9 @@ from functions.processing_predictions_functions import preprocess_data, escalado
 from functions.vocabulary import obtener_vocabulario
 from streamlit_lottie import st_lottie
 import json
-import pydeck as pdk
-import plotly.graph_objects as go
+#import pydeck as pdk
+#import plotly.graph_objects as go
+import time
 
 # Configuración de la página
 st.set_page_config(
@@ -151,7 +152,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal', "Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético", '¡Costes promedios!']
+    choices = ['Página Principal', "Vista general", "Vista específica", "Mapa Coroplético de Intercambio Energético", '¡Costes promedios!', 'About Us']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -587,14 +588,8 @@ def main():
 
 
         #Relaciones de variables
-
         #Scatter
-
-
-
         #Heatmap
-
-
 
     elif choice == "¡Costes promedios!":
 
@@ -721,24 +716,203 @@ def main():
         mostrar_mapa_coro()
 
 
+    elif choice == "About Us":
 
+        st.title("Sobre Nosotros")
+
+        st.markdown("""
+
+        Somos un equipo apasionado de **científicos de datos** que combina creatividad, análisis y tecnología para resolver problemas del mundo real. 
+
+        Desde diferentes ciudades de España, colaboramos para crear soluciones innovadoras y visualizaciones impactantes.
+
+        """)
+
+        # Añadir contenedor con estilos personalizados
+
+        st.markdown("""
+
+        <style>
+
+            .team-container {
+
+                display: flex;
+
+                justify-content: space-around;
+
+                align-items: flex-start;
+
+                flex-wrap: wrap;
+
+                margin-top: 30px;
+
+            }
+
+            .team-member {
+
+                text-align: center;
+
+                margin: 15px;
+
+                padding: 10px;
+
+                border-radius: 15px;
+
+                background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
+                transition: transform 0.3s ease-in-out;
+
+            }
+
+            .team-member:hover {
+
+                transform: translateY(-5px);
+
+                box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+
+            }
+
+            .profile-img {
+
+                border-radius: 50%;
+
+                width: 120px;
+
+                height: 120px;
+
+                object-fit: cover;
+
+                margin-bottom: 10px;
+
+                border: 4px solid #0073e6;
+
+            }
+
+            .member-name {
+
+                font-size: 18px;
+
+                font-weight: bold;
+
+                color: #333;
+
+                margin-bottom: 5px;
+
+            }
+
+            .location {
+
+                font-size: 14px;
+
+                color: #666;
+
+                margin-bottom: 10px;
+
+            }
+
+            .links a {
+
+                display: inline-block;
+
+                margin: 5px;
+
+                padding: 8px 12px;
+
+                text-decoration: none;
+
+                color: white;
+
+                background-color: #0073e6;
+
+                border-radius: 5px;
+
+                font-size: 14px;
+
+                transition: background-color 0.3s ease-in-out;
+
+            }
+
+            .links a:hover {
+
+                background-color: #005bb5;
+
+            }
+
+        </style>
+
+
+        <div class="team-container">
+
+            <div class="team-member">
+
+                <img src="img_1.png" alt="Geza Gabriel Szokacs" class="profile-img">
+
+                <div class="member-name">Geza Gabriel Szokacs</div>
+
+                <div class="location">📍 Madrid</div>
+
+                <div class="links">
+
+                    <a href="http://www.linkedin.com/in/geza-gabriel-szokacs" target="_blank">LinkedIn</a>
+
+                    <a href="https://github.com/S-G-Gabe" target="_blank">GitHub</a>
+
+                </div>
+
+            </div>
+
+            <div class="team-member">
+
+                <img src="img.png" alt="Pablo Vázquez Bello" class="profile-img">
+
+                <div class="member-name">Pablo Vázquez Bello</div>
+
+                <div class="location">📍 Coruña</div>
+
+                <div class="links">
+
+                    <a href="https://www.linkedin.com/in/pablovazquezbello/" target="_blank">LinkedIn</a>
+
+                    <a href="https://github.com/pablovzqzbello" target="_blank">GitHub</a>
+
+                </div>
+
+            </div>
+
+            <div class="team-member">
+
+                <img src="img_2.png" alt="Néstor Cantón Ordoñez" class="profile-img">
+
+                <div class="member-name">Néstor Cantón Ordoñez</div>
+
+                <div class="location">📍 Sevilla</div>
+
+                <div class="links">
+
+                    <a href="https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/" target="_blank">LinkedIn</a>
+
+                    <a href="https://github.com/nescanord" target="_blank">GitHub</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        """, unsafe_allow_html=True)
 
     elif choice == "Página Principal":
 
         # Función para cargar animaciones Lottie
 
         def load_lottie_file(filepath):
-
             try:
-
                 with open(filepath, "r") as file:
-
                     return json.load(file)
-
             except FileNotFoundError:
-
                 st.error(f"Error: No se encontró el archivo {filepath}. Verifica la ruta.")
-
                 return None
 
         # Animación de bienvenida
@@ -750,201 +924,381 @@ def main():
 
         # Título principal
 
-        st.title("🔋 **Bienvenido a la Plataforma de Análisis Energético de Redeia S.A.**")
+        st.title("🔋 **¡Bienvenido a Redeia S.L. APP!**")
 
-        st.markdown("""
+        # Placeholder para el texto dinámico
 
-            ---
+        placeholder = st.empty()
 
-            ### 🚀 **Explora y analiza el futuro del sector energético español**
+        # Lista de mensajes para el efecto
 
-            Esta aplicación interactiva combina datos históricos, análisis científico y herramientas predictivas para ayudarte
+        mensajes = [
 
-            a comprender y tomar decisiones informadas sobre el sistema energético.
+            "📊 Analiza métricas clave del sistema energético español...",
 
-            ---
+            "🌱 Explora cómo las energías renovables están transformando nuestro futuro...",
+
+            "💡 Descubre proyecciones avanzadas con modelos predictivos de última generación...",
+
+            "⚡ ¡Toma decisiones energéticas informadas con Redeia S.L. APP!"
+
+        ]
+
+        # Simulación de escritura dinámica
+
+        for mensaje in mensajes:
+
+            texto_parcial = ""  # Acumula el texto letra por letra
+
+            for letra in mensaje:
+                texto_parcial += letra
+
+                placeholder.markdown(f"### {texto_parcial}")  # Escribe dinámicamente
+
+                time.sleep(0.01)  # Tiempo entre letras
+
+            time.sleep(1.5)  # Pausa entre mensajes
+
+        # Mensaje final
+
+        placeholder.markdown("""
+
+            ### 🔍 **Explora el sistema energético español como nunca antes**  
+
+            💻 Usa el menú lateral para acceder a todas las funcionalidades y descubre cómo Redeia lidera la transición energética.
 
         """)
 
-        # Tarjetas de métricas clave
-
-        st.header("📊 **Indicadores Energéticos Clave**")
-
-        #Cálculo métricas Kpis
-
-        #Extracción de la información
-
-        df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
-        df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
-        df_demanda['year'] = df_demanda['fecha'].dt.year
-        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
-        df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
-        df_generation['year'] = df_generation['fecha'].dt.year
-        df_generation = df_generation[(df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
-        df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
-        df_generation = df_generation.reset_index(drop=True)
-        df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
-        df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
-        df_co2['year'] = df_co2['fecha'].dt.year
-        df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
-        df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
-
-        generacion_total = df_generation['valor_generacion_MW'].sum()
-        maxima_demanda = df_demanda['valor_demanda_MW'].max()
-        emisiones_totales = df_co2['valor'].sum()
-
-        #Cálculos porcentuales
-
-
-
-
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-
-            st.metric("⚡ Generación Total (MW)", f"{generacion_total}", "⬆︎ 2.5%")
-
-            st.caption("Progreso basado en los últimos 5 años.")
-
-        with col2:
-
-            st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", "⬆︎ 1.8%")
-
-            st.caption("Histórico actualizado a 2024.")
-
-        with col3:
-
-            st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", "⬇︎ 4.2%")
-
-            st.caption("Reducción anual promedio desde 2020.")
-
-        # Sección "Aprende y Optimiza"
-
-        st.header("💡 **Aprende y Optimiza**")
-
-        st.subheader("🌍 **Impacto de las Energías Renovables**")
-
+        # CSS para personalizar tarjetas con colores destacados
         st.markdown("""
+            <style>
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 20px;
+            }
+            .card {
+                background: linear-gradient(145deg, #ffffff, #e6e6e6);
+                border-radius: 15px;
+                padding: 25px;
+                width: 48%;
+                box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.7);
+                transition: all 0.3s ease;
+            }
+            .card:hover {
+                transform: translateY(-10px);
+                box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2), -10px -10px 20px rgba(255, 255, 255, 0.8);
+                background: linear-gradient(145deg, #e6e6e6, #ffffff);
+            }
+            .card h3 {
+                font-size: 24px;
+                color: #333;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .card p {
+                font-size: 16px;
+                color: #666;
+                line-height: 1.6;
+            }
+            .highlight {
+                font-weight: bold;
+                color: #ff6f61;
+            }
+            .highlight-green {
+                font-weight: bold;
+                color: #28a745;
+            }
+            .highlight-blue {
+                font-weight: bold;
+                color: #007bff;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+        # Cabecera
+        st.header("🗺️ **Explora todo lo que nuestra aplicación ofrece**")
+        st.markdown(
+            "Bienvenido a una herramienta interactiva diseñada para analizar y comprender el sistema energético español. A continuación, te presentamos todas las funcionalidades principales que puedes explorar:")
+
+        # HTML para las tarjetas con texto en colores y negritas
+        st.markdown("""
+            <div class="container">
+                <div class="card">
+                    <h3>🌟 Análisis Histórico</h3>
+                    <p>
+                        - <span class="highlight">Demanda Energética</span>: Observa cómo ha evolucionado la demanda en España desde <span class="highlight-green">2011</span> hasta la actualidad.<br>
+                        - <span class="highlight">Generación de Energía</span>: Explora cómo las fuentes <span class="highlight-blue">renovables</span> y <span class="highlight-green">no renovables</span> han contribuido al mix energético.<br>
+                        - <span class="highlight">Emisiones de CO2</span>: Conoce el impacto ambiental del sector energético y los avances hacia la sostenibilidad.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>💡 Modelos Predictivos</h3>
+                    <p>
+                        - <span class="highlight">Proyecciones Avanzadas</span>: Anticipa escenarios futuros de <span class="highlight-blue">demanda</span>, <span class="highlight-green">generación</span> y emisiones utilizando modelos como <span class="highlight">RNN, LSTM, GRU</span> y <span class="highlight">Prophet</span>.<br>
+                        - <span class="highlight">Toma de Decisiones Informada</span>: Usa los resultados predictivos para comprender cómo podrían evolucionar las dinámicas energéticas.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>📊 Indicadores Clave</h3>
+                    <p>
+                        Consulta métricas dinámicas y detalladas, como:<br>
+                        - <span class="highlight-blue">**Generación Total de Energía (GW)**</span><br>
+                        - <span class="highlight-green">**Máxima Demanda Registrada (MW)**</span><br>
+                        - <span class="highlight">**Reducción Total de Emisiones de CO2 (tCO2)**</span>
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>🌱 Impacto Sostenible</h3>
+                    <p>
+                        - Analiza cómo las <span class="highlight-green">energías renovables</span> están transformando el panorama energético.<br>
+                        - Aprende sobre la contribución de tecnologías limpias como la <span class="highlight-blue">eólica</span>, <span class="highlight">solar</span> y <span class="highlight-green">hidráulica</span>.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>🧠 Recomendaciones Personalizadas</h3>
+                    <p>
+                        - Selecciona tus prioridades entre:<br>
+                        Reducir <span class="highlight-green">emisiones</span>, ahorrar <span class="highlight-blue">costos</span> y aumentar la <span class="highlight">eficiencia energética</span>.<br>
+                        - Obtén sugerencias específicas y adaptadas a tus intereses.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>🌐 Tendencias Globales</h3>
+                    <p>
+                        - Descubre cómo se compara España con otros países en <span class="highlight-green">generación renovable</span>, <span class="highlight">demanda energética</span> y reducción de emisiones.<br>
+                        - Comprende el papel de España en la <span class="highlight-blue">transición energética global</span>.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>📖 Glosario Energético Interactivo</h3>
+                    <p>
+                        - Explora términos clave del sector energético en un glosario ordenado alfabéticamente.<br>
+                        - Aprende conceptos <span class="highlight">fundamentales</span> para enriquecer tu comprensión.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>⚡ Educación y Contexto</h3>
+                    <p>
+                        - Información adicional sobre <span class="highlight">Redeia S.A.</span> y su papel en la <span class="highlight-green">sostenibilidad energética</span>.<br>
+                        - Enlaces a recursos externos para ampliar tu conocimiento.
+                    </p>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("---")
+        st.markdown(
+            "**¡Explora estas funcionalidades desde el menú lateral y obtén una visión integral del sistema energético!**")
+
+    st.header("📊 **Indicadores Energéticos Clave**")
+
+    df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
+
+    df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
+
+    df_demanda['year'] = df_demanda['fecha'].dt.year
+
+    df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
+
+    df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+
+    df_generation['year'] = df_generation['fecha'].dt.year
+
+    df_generation = df_generation[
+
+        (df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
+
+    df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
+
+    df_generation = df_generation.reset_index(drop=True)
+
+    df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
+
+    df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
+
+    df_co2['year'] = df_co2['fecha'].dt.year
+
+    df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
+
+    df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
+
+    generacion_total = df_generation['valor_generacion_MW'].sum()
+
+    maxima_demanda = df_demanda['valor_demanda_MW'].max()
+
+    emisiones_totales = df_co2['valor'].sum()
+
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+
+        st.metric("⚡ Generación Total (MW)", f"{generacion_total}", "⬆︎ 2.5%")
+
+        st.caption("Progreso basado en los últimos 5 años.")
+
+    with col2:
+
+        st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", "⬆︎ 1.8%")
+
+        st.caption("Histórico actualizado a 2024.")
+
+    with col3:
+
+        st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", "⬇︎ 4.2%")
+
+        st.caption("Reducción anual promedio desde 2020.")
+
+    # Sección "Aprende y Optimiza"
+
+    st.header("💡 **Aprende y Optimiza**")
+
+    st.subheader("🌍 **Impacto de las Energías Renovables**")
+
+    st.markdown("""
+
 
             Las energías renovables han transformado el panorama energético global.  
 
+
             En España, la transición hacia fuentes limpias como la eólica y la solar está reduciendo la dependencia de combustibles fósiles.
+
 
         """)
 
-        st.info("💡 **Dato clave:** La energía eólica representa el 19.9% del mix energético español en 2024.")
+    st.info("💡 **Dato clave:** La energía eólica representa el 19.9% del mix energético español en 2024.")
 
-        # Recomendaciones interactivas
+    # Recomendaciones interactivas
 
-        st.subheader("🧠 **Recomendaciones Personalizadas**")
+    st.subheader("🧠 **Recomendaciones Personalizadas**")
 
-        st.write("Selecciona tus prioridades para obtener sugerencias adaptadas:")
+    st.write("Selecciona tus prioridades para obtener sugerencias adaptadas:")
 
-        prioridades = st.multiselect(
+    prioridades = st.multiselect(
 
-            "¿Cuáles son tus objetivos?",
+        "¿Cuáles son tus objetivos?",
 
-            ["Reducir emisiones", "Ahorrar costos", "Aumentar eficiencia energética"]
+        ["Reducir emisiones", "Ahorrar costos", "Aumentar eficiencia energética"]
 
-        )
+    )
 
-        if "Reducir emisiones" in prioridades:
-            st.success("🌱 Cambia a proveedores de energía renovable y minimiza el uso de combustibles fósiles.")
+    if "Reducir emisiones" in prioridades:
+        st.success("🌱 Cambia a proveedores de energía renovable y minimiza el uso de combustibles fósiles.")
 
-        if "Ahorrar costos" in prioridades:
-            st.success("💡 Ajusta tus consumos a las horas valle y revisa los electrodomésticos de mayor consumo.")
+    if "Ahorrar costos" in prioridades:
+        st.success("💡 Ajusta tus consumos a las horas valle y revisa los electrodomésticos de mayor consumo.")
 
-        if "Aumentar eficiencia energética" in prioridades:
-            st.success("⚡ Opta por dispositivos inteligentes y sistemas de monitoreo energético.")
+    if "Aumentar eficiencia energética" in prioridades:
+        st.success("⚡ Opta por dispositivos inteligentes y sistemas de monitoreo energético.")
 
-        if "Reducir emisiones" in prioridades and "Ahorrar costos" in prioridades:
-            st.success("🌱💡 Implementa paneles solares y ajusta tus consumos a las horas valle.")
+    if "Reducir emisiones" in prioridades and "Ahorrar costos" in prioridades:
+        st.success("🌱💡 Implementa paneles solares y ajusta tus consumos a las horas valle.")
 
-        if "Reducir emisiones" in prioridades and "Aumentar eficiencia energética" in prioridades:
-            st.success("🌱⚡ Considera electrodomésticos eficientes y fuentes renovables.")
+    if "Reducir emisiones" in prioridades and "Aumentar eficiencia energética" in prioridades:
+        st.success("🌱⚡ Considera electrodomésticos eficientes y fuentes renovables.")
 
-        if "Ahorrar costos" in prioridades and "Aumentar eficiencia energética" in prioridades:
-            st.success("💡⚡ Aprovecha la tecnología de bajo consumo y revisa tus hábitos energéticos.")
+    if "Ahorrar costos" in prioridades and "Aumentar eficiencia energética" in prioridades:
+        st.success("💡⚡ Aprovecha la tecnología de bajo consumo y revisa tus hábitos energéticos.")
 
-        # Tendencias Globales y Comparativas
+    # Tendencias Globales y Comparativas
 
-        st.header("🌐 **Tendencias Globales y Comparativas**")
+    st.header("🌐 **Tendencias Globales y Comparativas**")
 
-        st.markdown("""
+    st.markdown("""
+
 
             El sector energético mundial está en constante evolución. Aquí te mostramos cómo España se compara con otros países:
 
+
             - **Generación renovable**: España ocupa el **4º lugar en Europa** en capacidad instalada de energía solar.
+
 
             - **Demanda energética**: Crecimiento moderado del **1.3% anual** desde 2019.
 
+
             - **Emisiones de CO2**: Reducción del **35% desde 2010**, en línea con los objetivos de la UE.
+
 
         """)
 
-        st.info(
-            "🔎 **Nota:** Los datos provienen de informes internacionales de la Agencia Internacional de Energía (IEA).")
+    st.info(
 
-        # Aprendizaje interactivo: Glosario energético
+        "🔎 **Nota:** Los datos provienen de informes internacionales de la Agencia Internacional de Energía (IEA).")
 
-        st.header("📖 **Glosario Energético**")
+    # Aprendizaje interactivo: Glosario energético
 
-        st.markdown("Selecciona una letra para explorar términos clave del sector energético:")
+    st.header("📖 **Glosario Energético**")
 
-        letras = ['C', 'E', 'F', 'H', 'M', 'N', 'R', 'S', 'T']
+    st.markdown("Selecciona una letra para explorar términos clave del sector energético:")
 
-        letra_seleccionada = st.selectbox("Selecciona una letra", letras)
+    letras = ['C', 'E', 'F', 'H', 'M', 'N', 'R', 'S', 'T']
 
-        if letra_seleccionada:
+    letra_seleccionada = st.selectbox("Selecciona una letra", letras)
 
-            st.write(f"**Términos que empiezan con la letra {letra_seleccionada}:**")
+    if letra_seleccionada:
 
-            definiciones = obtener_vocabulario(letra_seleccionada)
+        st.write(f"**Términos que empiezan con la letra {letra_seleccionada}:**")
 
-            if isinstance(definiciones, list):
+        definiciones = obtener_vocabulario(letra_seleccionada)
 
-                for definicion in definiciones:
-                    st.write(f"- {definicion}")
+        if isinstance(definiciones, list):
 
-            else:
+            for definicion in definiciones:
+                st.write(f"- {definicion}")
 
-                st.write(definiciones)
 
-        # Información adicional sobre Redeia
+        else:
 
-        st.header("📖 **Sobre Redeia S.A.**")
+            st.write(definiciones)
 
-        st.markdown("""
+    # Información adicional sobre Redeia
+
+    st.header("📖 **Sobre Redeia S.A.**")
+
+    st.markdown("""
+
 
             Redeia Corporación, S.A. es líder en innovación y sostenibilidad energética.  
 
+
             Como operador del sistema eléctrico español, impulsa la transición hacia un modelo limpio y eficiente.
 
+
             ---
+
 
         """)
 
-        st.image("auxiliary/redeia_marca1_2.png", width=150)
+    st.image("auxiliary/redeia_marca1_2.png", width=150)
 
-        # Animación final y despedida
+    # Animación final y despedida
+    def load_lottie_file(filepath):
+        try:
+            with open(filepath, "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            st.error(f"Error: No se encontró el archivo {filepath}. Verifica la ruta.")
+            return None
+    lottie_thanks = load_lottie_file("auxiliary/thanks_animation.json")
 
-        lottie_thanks = load_lottie_file("auxiliary/thanks_animation.json")
+    if lottie_thanks:
+        st_lottie(lottie_thanks, height=200, key="thanks_animation")
 
-        if lottie_thanks:
-            st_lottie(lottie_thanks, height=200, key="thanks_animation")
+    st.header("""🤝 **Gracias por explorar nuestra aplicación** 
 
-        st.markdown("""
-
-            ---
-
-            🤝 **Gracias por explorar nuestra aplicación**  
 
             Esperamos que esta herramienta te inspire a tomar decisiones energéticas informadas.
 
+
         """)
 
-        st.snow()
+    st.info('¡No te olvides de explorar todo esto en el menú lateral!')
 
+    st.snow()
 
 if __name__ == "__main__":
     main()
