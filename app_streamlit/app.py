@@ -94,7 +94,7 @@ def mostrar_mapa_coro():
         st.plotly_chart(fig_2d, use_container_width=True)
 
         # ---- Mapa 3D ----
-        st.subheader("Mapa 3D de Intercambio Energético")
+        st.subheader("¡Lo mismo pero en 3D!")
 
         # Agregar coordenadas para cada país
         country_coords = {
@@ -754,48 +754,298 @@ def main():
                 visual_loss_gru()
 
 
+
     elif choice == "About Us":
+
+        # Título de la sección
 
         st.title("Sobre Nosotros")
 
-        st.markdown(
+        # Introducción
 
-            """
+        st.markdown("""
 
-            Somos un equipo apasionado de **científicos de datos** que combina creatividad, análisis y tecnología para resolver problemas del mundo real.
+            <style>
+
+                .about-us-title {
+
+                    font-size: 36px;
+
+                    font-weight: bold;
+
+                    color: #333333;
+
+                    text-align: center;
+
+                    margin-bottom: 20px;
+
+                }
+
+                .about-us-intro {
+
+                    font-size: 18px;
+
+                    color: #666666;
+
+                    text-align: center;
+
+                    margin-bottom: 40px;
+
+                }
+
+            </style>
+
+            <div class="about-us-title">🌟 Equipo de Científicos de Datos 🌟</div>
+
+            <div class="about-us-intro">
+
+                Somos un equipo apasionado de <strong>científicos de datos</strong> que combina creatividad, análisis y tecnología para resolver problemas del mundo real. <br>
+
+                Desde diferentes ciudades de España, colaboramos para crear soluciones innovadoras y visualizaciones impactantes.
+
+            </div>
+
+        """, unsafe_allow_html=True)
+
+        # HTML y CSS para la presentación interactiva de los miembros
+
+        st.markdown("""
+
+            <style>
+
+                .team-container {
+
+                    display: flex;
+
+                    justify-content: center;
+
+                    align-items: center;
+
+                    flex-wrap: wrap;
+
+                    gap: 30px;
+
+                    margin-top: 20px;
+
+                }
 
 
-            Desde diferentes ciudades de España, colaboramos para crear soluciones innovadoras y visualizaciones impactantes.
+                .team-member {
 
-            """
+                    background: linear-gradient(145deg, #ffffff, #f0f0f0);
 
-        )
+                    border-radius: 20px;
 
-        # Datos de los miembros del equipo
+                    width: 280px;
 
-        team_members = [
+                    padding: 20px;
 
-            {"name": "Geza Gabriel Szokacs", "location": "Madrid",
-             "linkedin": "http://www.linkedin.com/in/geza-gabriel-szokacs", "github": "https://github.com/S-G-Gabe"},
+                    text-align: center;
 
-            {"name": "Pablo Vázquez Bello", "location": "Coruña",
-             "linkedin": "https://www.linkedin.com/in/pablovazquezbello/",
-             "github": "https://github.com/pablovzqzbello"},
+                    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.7);
 
-            {"name": "Néstor Cantón Ordoñez", "location": "Sevilla",
-             "linkedin": "https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/",
-             "github": "https://github.com/nescanord"},
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-        ]
+                    position: relative;
 
-        for member in team_members:
-            st.subheader(member["name"])
+                    overflow: hidden;
 
-            st.write(f"📍 **Ubicación:** {member['location']}")
+                }
 
-            st.write(f"[LinkedIn]({member['linkedin']}) | [GitHub]({member['github']})")
 
-            st.markdown("---")  # Línea divisoria
+                .team-member:hover {
+
+                    transform: translateY(-10px);
+
+                    box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.2), -6px -6px 15px rgba(255, 255, 255, 0.8);
+
+                    background: linear-gradient(145deg, #f9f9f9, #ececec);
+
+                }
+
+
+                .team-member img {
+
+                    border-radius: 50%;
+
+                    width: 120px;
+
+                    height: 120px;
+
+                    object-fit: cover;
+
+                    margin-bottom: 15px;
+
+                    border: 5px solid #0073e6;
+
+                    transition: border-color 0.3s ease;
+
+                }
+
+
+                .team-member:hover img {
+
+                    border-color: #005bb5;
+
+                }
+
+
+                .member-name {
+
+                    font-size: 20px;
+
+                    font-weight: bold;
+
+                    color: #333333;
+
+                    margin-bottom: 5px;
+
+                }
+
+
+                .location {
+
+                    font-size: 16px;
+
+                    color: #666666;
+
+                    margin-bottom: 15px;
+
+                }
+
+
+                .links {
+
+                    margin-top: 10px;
+
+                }
+
+
+                .links a {
+
+                    display: inline-block;
+
+                    margin: 5px;
+
+                    padding: 8px 15px;
+
+                    font-size: 14px;
+
+                    color: white;
+
+                    background-color: #0073e6;
+
+                    text-decoration: none;
+
+                    border-radius: 5px;
+
+                    transition: background-color 0.3s ease;
+
+                }
+
+
+                .links a:hover {
+
+                    background-color: #005bb5;
+
+                }
+
+            </style>
+
+            <div class="team-container">
+
+                <!-- Miembro 1 -->
+
+                <div class="team-member">
+
+                    <img src="img_1.png" alt="Geza Gabriel Szokacs">
+
+                    <div class="member-name">Geza Gabriel Szokacs</div>
+
+                    <div class="location">📍 Madrid</div>
+
+                    <div class="links">
+
+                        <a href="http://www.linkedin.com/in/geza-gabriel-szokacs" target="_blank">LinkedIn</a>
+
+                        <a href="https://github.com/S-G-Gabe" target="_blank">GitHub</a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Miembro 2 -->
+
+                <div class="team-member">
+
+                    <img src="img.png" alt="Pablo Vázquez Bello">
+
+                    <div class="member-name">Pablo Vázquez Bello</div>
+
+                    <div class="location">📍 Coruña</div>
+
+                    <div class="links">
+
+                        <a href="https://www.linkedin.com/in/pablovazquezbello/" target="_blank">LinkedIn</a>
+
+                        <a href="https://github.com/pablovzqzbello" target="_blank">GitHub</a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Miembro 3 -->
+
+                <div class="team-member">
+
+                    <img src="img_2.png" alt="Néstor Cantón Ordoñez">
+
+                    <div class="member-name">Néstor Cantón Ordoñez</div>
+
+                    <div class="location">📍 Sevilla</div>
+
+                    <div class="links">
+
+                        <a href="https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/" target="_blank">LinkedIn</a>
+
+                        <a href="https://github.com/nescanord" target="_blank">GitHub</a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        """, unsafe_allow_html=True)
+
+        # Animación final
+
+        st.markdown("""
+
+            <style>
+
+                .thank-you {
+
+                    font-size: 24px;
+
+                    font-weight: bold;
+
+                    color: #333333;
+
+                    text-align: center;
+
+                    margin-top: 50px;
+
+                }
+
+            </style>
+
+            <div class="thank-you">🤝 ¡Gracias por conocernos! 🤝</div>
+
+        """, unsafe_allow_html=True)
+
 
 
     elif choice == "Página Principal":
