@@ -758,137 +758,70 @@ def main():
 
     elif choice == "About Us":
 
-        # Título principal
+        st.title("🌟 Sobre Nosotros 🌟")
 
-        st.markdown("## Sobre Nosotros")
+        # Introducción
         st.markdown("""
-        <div id="about-us">
-            <h2 style="text-align: center; font-family: Arial, sans-serif; font-size: 36px;">🌟 Equipo de Científicos de Datos 🌟</h2>
-            <p style="text-align: center; font-family: Arial, sans-serif; font-size: 18px; color: #555;">
-                Somos un equipo apasionado de <strong>científicos de datos</strong> que combina creatividad, análisis y tecnología 
-                para resolver problemas del mundo real. Desde diferentes ciudades de España, colaboramos para crear soluciones 
-                innovadoras y visualizaciones impactantes.
-            </p>
-            <div class="team-container">
-                <div class="team-member" onmouseover="animateCard(this)" onmouseout="resetCard(this)">
-                    <img src="img_1.png" alt="Geza Gabriel Szokacs" class="profile-img">
-                    <div class="member-name">Geza Gabriel Szokacs</div>
-                    <div class="location">📍 Madrid</div>
-                    <div class="links">
-                        <a href="http://www.linkedin.com/in/geza-gabriel-szokacs" target="_blank">LinkedIn</a>
-                        <a href="https://github.com/S-G-Gabe" target="_blank">GitHub</a>
+            Somos un equipo apasionado de **científicos de datos** que combina creatividad, análisis y tecnología para resolver problemas del mundo real.  
+            Desde diferentes ciudades de España, colaboramos para crear soluciones innovadoras y visualizaciones impactantes.
+            """)
+
+        # Datos del equipo
+        team_members = [
+            {
+                "name": "Geza Gabriel Szokacs",
+                "location": "Madrid",
+                "linkedin": "http://www.linkedin.com/in/geza-gabriel-szokacs",
+                "github": "https://github.com/S-G-Gabe",
+                "image": "auxiliary/img_1.png",
+                "description": "Especialista en análisis predictivo y apasionado por el aprendizaje automático y la visualización de datos."
+            },
+            {
+                "name": "Pablo Vázquez Bello",
+                "location": "Coruña",
+                "linkedin": "https://www.linkedin.com/in/pablovazquezbello/",
+                "github": "https://github.com/pablovzqzbello",
+                "image": "auxiliary/img.png",
+                "description": "Experto en ingeniería de datos y diseño de arquitecturas escalables para proyectos de energía renovable."
+            },
+            {
+                "name": "Néstor Cantón Ordoñez",
+                "location": "Sevilla",
+                "linkedin": "https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/",
+                "github": "https://github.com/nescanord",
+                "image": "auxiliary/img_2.png",
+                "description": "Analista en sostenibilidad energética, optimización de procesos y amante de la ciencia de datos aplicada."
+            }
+        ]
+
+        # Sección del equipo
+        st.markdown("### Conoce a nuestro equipo 👨‍💻👩‍💻")
+
+        # Crear una visualización en tarjetas
+        for member in team_members:
+            st.markdown(
+                f"""
+                    <div style="border: 2px solid #e6e6e6; border-radius: 15px; padding: 20px; margin-bottom: 20px; background-color: #f9f9f9; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);">
+                        <div style="display: flex; align-items: center;">
+                            <img src="{member['image']}" alt="{member['name']}" style="border-radius: 50%; width: 120px; height: 120px; object-fit: cover; margin-right: 20px;">
+                            <div>
+                                <h3 style="margin: 0;">{member['name']}</h3>
+                                <p style="margin: 5px 0;"><strong>📍 Ubicación:</strong> {member['location']}</p>
+                                <p style="margin: 5px 0; font-size: 14px;">{member['description']}</p>
+                                <a href="{member['linkedin']}" style="text-decoration: none; color: white; background-color: #0073e6; padding: 8px 15px; border-radius: 5px; margin-right: 10px; font-size: 14px;">🔗 LinkedIn</a>
+                                <a href="{member['github']}" style="text-decoration: none; color: white; background-color: #333; padding: 8px 15px; border-radius: 5px; font-size: 14px;">📂 GitHub</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="team-member" onmouseover="animateCard(this)" onmouseout="resetCard(this)">
-                    <img src="img.png" alt="Pablo Vázquez Bello" class="profile-img">
-                    <div class="member-name">Pablo Vázquez Bello</div>
-                    <div class="location">📍 Coruña</div>
-                    <div class="links">
-                        <a href="https://www.linkedin.com/in/pablovazquezbello/" target="_blank">LinkedIn</a>
-                        <a href="https://github.com/pablovzqzbello" target="_blank">GitHub</a>
-                    </div>
-                </div>
-                <div class="team-member" onmouseover="animateCard(this)" onmouseout="resetCard(this)">
-                    <img src="img_2.png" alt="Néstor Cantón Ordoñez" class="profile-img">
-                    <div class="member-name">Néstor Cantón Ordoñez</div>
-                    <div class="location">📍 Sevilla</div>
-                    <div class="links">
-                        <a href="https://www.linkedin.com/in/n%C3%A9stor-cant%C3%B3n-ordo%C3%B1ez-b20027294/" target="_blank">LinkedIn</a>
-                        <a href="https://github.com/nescanord" target="_blank">GitHub</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script>
-        function animateCard(element) {
-            element.style.transform = "scale(1.05)";
-            element.style.boxShadow = "0px 8px 15px rgba(0, 0, 0, 0.3)";
-            element.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
-        }
-
-        function resetCard(element) {
-            element.style.transform = "scale(1)";
-            element.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
-            element.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
-        }
-        </script>
-
-        <style>
-        #about-us {
-            font-family: Arial, sans-serif;
-        }
-
-        .team-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .team-member {
-            text-align: center;
-            background: linear-gradient(to bottom, #ffffff, #f9f9f9);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 250px;
-        }
-
-        .profile-img {
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            margin-bottom: 15px;
-            border: 3px solid #0073e6;
-        }
-
-        .member-name {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333333;
-            margin-bottom: 5px;
-        }
-
-        .location {
-            font-size: 16px;
-            color: #666666;
-            margin-bottom: 15px;
-        }
-
-        .links a {
-            display: inline-block;
-            margin: 5px;
-            padding: 8px 15px;
-            font-size: 14px;
-            color: white;
-            background-color: #0073e6;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        .links a:hover {
-            background-color: #005bb5;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+                    """,
+                unsafe_allow_html=True
+            )
 
         # Mensaje final
-
         st.markdown("""
-
-            <div style="text-align: center; margin-top: 50px; font-size: 20px; font-weight: bold;">
-
-                🤝 ¡Gracias por conocernos! 🤝
-
-            </div>
-
-        """, unsafe_allow_html=True)
-
+            ---  
+            💡 Nuestro equipo trabaja con el compromiso de impulsar la sostenibilidad, desarrollar soluciones innovadoras y mejorar el futuro energético de España y el mundo.
+            """)
 
 
 
