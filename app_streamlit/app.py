@@ -7,9 +7,10 @@ from functions.processing_predictions_functions import preprocess_data, escalado
 from functions.vocabulary import obtener_vocabulario
 from streamlit_lottie import st_lottie
 import json
-#import pydeck as pdk
-#import plotly.graph_objects as go
+import pydeck as pdk
+import plotly.graph_objects as go
 import time
+import plotly.express as px
 
 # Configuración de la página
 st.set_page_config(
@@ -33,71 +34,112 @@ def load_exchanges_data():
     return extract_data(query)
 
 def mostrar_mapa_coro():
+
     st.title("Intercambio de Energía de Redeia S.A. con Otros Países")
 
+    # Cargar los datos
     df_exchanges = load_exchanges_data()
     st.write("Datos Cargados:", df_exchanges)
 
-
+    # Selector para el tipo de transacción
     tipo_transaccion = st.selectbox("Seleccionar tipo de transacción", options=["Importación", "Exportación"])
 
+    # Filtrar los datos según el tipo de transacción
     filtered_df = df_exchanges[df_exchanges['tipo_transaccion'] == tipo_transaccion]
     country_mapping = {
         'Francia': 'France',
         'Portugal': 'Portugal',
         'Marruecos': 'Morocco',
-        'Andorra': 'Andorra',}
-
-    st.write('Datos Filtrados:', filtered_df)
-
-    # Filtrar los datos por tipo de transacción seleccionado
-
+        'Andorra': 'Andorra',
+    }
     filtered_df['pais'] = filtered_df['pais'].replace(country_mapping)
 
     if not filtered_df.empty:
-        color_scale = px.colors.sequential.YlGnBu
+        # ---- Mapa 2D ----
+        st.subheader("Mapa Cloropléthico 2D")
+
+        color_scale = px.colors.sequential.Viridis
         max_value = filtered_df['valor_MW'].max()
 
-        fig = px.choropleth(
+        fig_2d = px.choropleth(
             filtered_df,
             locations="pais",
             locationmode="country names",
             color="valor_MW",
             projection="mercator",
             color_continuous_scale=color_scale,
-            range_color = (0, max_value),
-            title=f"Intercambio de energía ({tipo_transaccion}) de España con otros países",
+            range_color=(0, max_value),
+            title=f"Intercambio de energía ({tipo_transaccion}) de España con otros países (Mapa 2D)",
             labels={'valor_MW': 'MWh'},
-            width=1900,
-            height=1600,)
+        )
 
-        fig.update_geos(
-            showcoastlines=True, coastlinecolor='Black',
-            showland=True, landcolor='white',
-            showocean=True, oceancolor='lightblue',
-            projection_type='natural earth',
-            lonaxis_range=[-25, 55],
-            lataxis_range=[-35, 70],)
+        fig_2d.update_geos(
+            showcoastlines=True, coastlinecolor="Black",
+            showland=True, landcolor="lightgrey",
+            showocean=True, oceancolor="aliceblue",
+            projection_type="natural earth",
+        )
 
-        fig.update_layout(
-            margin={'r':0,'t':50,'l':0,'b':0},
+        fig_2d.update_layout(
+            margin={"r": 0, "t": 50, "l": 0, "b": 0},
             title_x=0.5,
             coloraxis_colorbar=dict(
-                title='Mwh',
+                title="MWh",
                 tickvals=[0, max_value / 2, max_value],
-                ticks='outside'))
-        for index, row in filtered_df.iterrows():
-            if row['valor_MW'] == max_value or row['valor_MW'] == filtered_df['valor_MW'].min():
-                fig.add_annotation(
-                    x=row['pais'],
-                    y=row['valor_MW'],
-                    text=f'{row['pais']}: {row['valor_MW']:,} MhW',
-                    showarrow=False,
-                    yshift=10)
+                ticks="outside"
+            ),
+            font=dict(family="Arial", size=14),
+        )
 
-        st.plotly_chart(fig)
+        st.plotly_chart(fig_2d, use_container_width=True)
+
+        # ---- Mapa 3D ----
+        st.subheader("Mapa 3D de Intercambio Energético")
+
+        # Agregar coordenadas para cada país
+        country_coords = {
+            'France': [2.2137, 46.2276],
+            'Portugal': [-8.2245, 39.3999],
+            'Morocco': [-7.0926, 31.7917],
+            'Andorra': [1.5211, 42.5078],
+        }
+
+        # Añadir coordenadas al dataframe
+        filtered_df['coordinates'] = filtered_df['pais'].map(country_coords)
+
+        layer = pdk.Layer(
+            "ColumnLayer",
+            data=filtered_df,
+            get_position="coordinates",
+            get_elevation="valor_MW",
+            elevation_scale=1000,
+            radius=30000,
+            get_fill_color=[255, 140, 0, 200],
+            pickable=True,
+            auto_highlight=True,
+        )
+
+        # Configurar la vista inicial del mapa
+        view_state = pdk.ViewState(
+            latitude=40.0,  # Centro aproximado para España y sus alrededores
+            longitude=-3.7,
+            zoom=4,
+            pitch=50,
+        )
+
+        # Crear el mapa con Deck.gl
+        r = pdk.Deck(
+            layers=[layer],
+            initial_view_state=view_state,
+            tooltip={"text": "{pais}\n{valor_MW} MWh"},
+        )
+
+        # Mostrar el mapa
+        st.pydeck_chart(r)
+
     else:
         st.warning("No hay datos para mostrar en el mapa con la selección actual.")
+
 
 #######################
 
