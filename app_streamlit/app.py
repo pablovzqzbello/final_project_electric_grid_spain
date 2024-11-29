@@ -626,8 +626,6 @@ def main():
         st.subheader('Relación de variables')
         eda_relations(df_demanda, df_generation, df_co2)
         st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
-        eda_demanda_ano_2020_z(df_demanda)
-        eda_demanda_ano_2020_t(df_demanda)
         eda_anos_atipicos(df_demanda)
         eda_anos_atipicos_dbscan(df_demanda)
 
