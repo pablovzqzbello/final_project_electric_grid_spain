@@ -10,6 +10,7 @@ import pydeck as pdk
 import time
 from functions.visual_eda import eda_boxplots, eda_relations, eda_demanda_ano_2020_z, eda_demanda_ano_2020_t, eda_anos_atipicos, eda_anos_atipicos_dbscan
 from functions.evolution_functions import crecimiento_anual_demanda, crecimiento_anual_generacion, crecimiento_anual_emisiones, crecimiento_anual_importaciones, crecimiento_anual_exportaciones, crecimiento_anual_balance
+from functions.kpi_calculation import calcular_crecimiento_demanda, calculo_crecimiento_co2, calcular_crecimiento_5_anos
 import plotly.express as px
 
 # Configuración de la página
@@ -1052,9 +1053,7 @@ def main():
 
         df_generation['year'] = df_generation['fecha'].dt.year
 
-        df_generation = df_generation[
-
-            (df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
+        df_generation = df_generation[(df_generation['energia'] == 'Generación total') | (df_generation['tipo_tecnología'] == 'Generación total')]
 
         df_generation = df_generation.drop(columns=['energia', 'tipo_tecnología'])
 
@@ -1068,32 +1067,32 @@ def main():
 
         df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
 
-        df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
+        df_co2_fecha = df_co2.groupby('fecha', as_index=False)['valor'].sum()
 
         generacion_total = df_generation['valor_generacion_MW'].sum()
 
         maxima_demanda = df_demanda['valor_demanda_MW'].max()
 
-        emisiones_totales = df_co2['valor'].sum()
+        emisiones_totales = df_co2_fecha['valor'].sum()
 
 
         col1, col2, col3 = st.columns(3)
 
         with col1:
 
-            st.metric("⚡ Generación Total (MW)", f"{generacion_total}", "⬆︎ 2.5%")
+            st.metric("⚡ Generación Total (MW)", f"{generacion_total}", f"{calcular_crecimiento_5_anos(df_generation)}")
 
             st.caption("Progreso basado en los últimos 5 años.")
 
         with col2:
 
-            st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", "⬆︎ 1.8%")
+            st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", f"{calcular_crecimiento_demanda(df_demanda)}")
 
             st.caption("Histórico actualizado a 2024.")
 
         with col3:
 
-            st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", "⬇︎ 4.2%")
+            st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", f"{calculo_crecimiento_co2(df_co2)}")
 
             st.caption("Reducción anual promedio desde 2020.")
 
