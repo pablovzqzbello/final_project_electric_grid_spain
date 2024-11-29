@@ -39,14 +39,23 @@ def mostrar_mapa_coro():
     st.title("Intercambio de Energía de Redeia S.A. con Otros Países")
 
     # Cargar los datos
-    df_exchanges = load_exchanges_data()
-    st.write("Datos Cargados:", df_exchanges)
+    df_exchanges = load_exchanges_data()  # Reemplaza con tu función real
+    st.write("Datos originales cargados:", df_exchanges)
+
+    # Limpieza de datos
+    df_exchanges['tipo_transaccion'] = df_exchanges['tipo_transaccion'].str.strip().str.capitalize()
+
+    # Mostrar tipos únicos de transacción
+    st.write("Tipos únicos de transacción:", df_exchanges['tipo_transaccion'].unique())
 
     # Selector para el tipo de transacción
     tipo_transaccion = st.selectbox("Seleccionar tipo de transacción", options=["Importación", "Exportación"])
 
     # Filtrar los datos según el tipo de transacción
     filtered_df = df_exchanges[df_exchanges['tipo_transaccion'] == tipo_transaccion]
+    st.write(f"Datos filtrados para {tipo_transaccion}:", filtered_df)
+
+    # Mapear nombres de países
     country_mapping = {
         'Francia': 'France',
         'Portugal': 'Portugal',
@@ -108,11 +117,13 @@ def mostrar_mapa_coro():
         # Añadir coordenadas al dataframe
         filtered_df['coordinates'] = filtered_df['pais'].map(country_coords)
 
+        filtered_df['valor_MW_abs'] = filtered_df['valor_MW'].abs()
+
         layer = pdk.Layer(
             "ColumnLayer",
             data=filtered_df,
             get_position="coordinates",
-            get_elevation="valor_MW",
+            get_elevation="valor_MW_abs",  # Usar los valores absolutos
             elevation_scale=1000,
             radius=30000,
             get_fill_color=[255, 140, 0, 200],
@@ -140,6 +151,7 @@ def mostrar_mapa_coro():
 
     else:
         st.warning("No hay datos para mostrar en el mapa con la selección actual.")
+
 
 
 #######################
