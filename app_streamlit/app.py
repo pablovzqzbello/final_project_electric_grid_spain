@@ -1,5 +1,4 @@
 import streamlit as st
-import plotly.express as px
 import pandas as pd
 from datetime import timedelta, datetime
 from functions.sql_function import extract_data
@@ -8,8 +7,9 @@ from functions.vocabulary import obtener_vocabulario
 from streamlit_lottie import st_lottie
 import json
 import pydeck as pdk
-import plotly.graph_objects as go
 import time
+from functions.visual_eda import eda_boxplots, eda_relations, eda_demanda_ano_2020_z, eda_demanda_ano_2020_t, eda_anos_atipicos, eda_anos_atipicos_dbscan
+from functions.evolution_functions import crecimiento_anual_demanda, crecimiento_anual_generacion, crecimiento_anual_emisiones, crecimiento_anual_importaciones, crecimiento_anual_exportaciones, crecimiento_anual_balance
 import plotly.express as px
 
 # Configuración de la página
@@ -320,6 +320,8 @@ def main():
             En los últimos años (aproximadamente desde **2023**), parece haber una leve **disminución** en la demanda promedio mensual, lo cual podría indicar un cambio en el **consumo de energía**, posiblemente debido a **iniciativas de eficiencia energética**, cambios en el **comportamiento de consumo**, un aumento de los **precios de la energía** o una **desaceleración económica**.
         """)
 
+        crecimiento_anual_demanda(df_demanda)
+
         # Filtros en el Sidebar para la comparación de años de Pablo
 
         st.sidebar.subheader("Comparación de Años")
@@ -431,9 +433,13 @@ def main():
                        labels={'fecha': 'Fecha', 'value': 'Valores (MW)'},
                        title='Balance energético')
 
+
+
         # Mostrar la gráfica
         st.plotly_chart(fig_demanda_generacion)
         st.plotly_chart(fig_saldo)
+
+        crecimiento_anual_balance(df_demanda, df_generation)
 
         # Gráfico de área apilado para balance energético
         fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_MW', color='energia',
@@ -503,6 +509,9 @@ def main():
                                    title="Transacciones Energéticas por País en MW", barmode='group')
         st.plotly_chart(fig_transacciones)
 
+        crecimiento_anual_importaciones(df_exchanges)
+        crecimiento_anual_exportaciones(df_exchanges)
+
         # Sección Generación Energética
         st.subheader("Generación energética")
 
@@ -560,6 +569,8 @@ def main():
             Aunque el **carbón**, con un **10.5%**, aún forma parte de la producción, se encuentra en clara disminución. Esta distribución muestra la **transición hacia un modelo energético más sostenible**, con un incremento notable en **fuentes renovables** y una **reducción gradual de los combustibles fósiles**.
         """)
 
+        crecimiento_anual_generacion(df_generation)
+
         # Seccion de CO2
 
         st.subheader("Emisiones de CO2")
@@ -604,12 +615,20 @@ def main():
             Esto subraya la necesidad de seguir impulsando la **eficiencia energética** y la **transición hacia energías renovables**, para reducir aún más las emisiones de CO2 y avanzar hacia un **modelo energético verdaderamente sostenible**.
         """)
 
-        # Relaciones de variables
+        crecimiento_anual_emisiones(df_co2)
 
-        st.subheader('Exploratory Data Analysis (EDA). Relación de variables')
+        # EDA, relación variables, detector de años atípicos
 
-        # Scatter
-        # Heatmap
+        st.header('Exploratory Data Analysis (EDA). Relación de variables')
+        st.subheader('Valores atípicos')
+        eda_boxplots(df_demanda, df_generation, df_co2)
+        st.subheader('Relación de variables')
+        eda_relations(df_demanda, df_generation, df_co2)
+        st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
+        eda_demanda_ano_2020_z(df_demanda)
+        eda_demanda_ano_2020_t(df_demanda)
+        eda_anos_atipicos(df_demanda)
+        eda_anos_atipicos_dbscan(df_demanda)
 
         # Glosario
         st.header('Vocabulario energético')

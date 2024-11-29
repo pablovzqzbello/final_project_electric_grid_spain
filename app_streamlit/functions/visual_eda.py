@@ -18,8 +18,8 @@ def eda_boxplots(df_demanda, df_generation, df_co2):
     fig_box_generation=px.box(df_generation, x='valor_generacion_MW', title='Valores generación energética')
     fig_box_co2=px.box(df_co2, x='valor', title='Valores emisiones de CO2')
 
-    st.plolty_chart(fig_box_demanda)
-    st.plolty_chart(fig_box_generation)
+    st.plotly_chart(fig_box_demanda)
+    st.plotly_chart(fig_box_generation)
     st.plotly_chart(fig_box_co2)
 
 def eda_relations(df_demanda, df_generation, df_co2):
@@ -39,7 +39,7 @@ def eda_relations(df_demanda, df_generation, df_co2):
     fig_demanda_co2=px.scatter(df_relations, x='valor_demanda_MW', y='valor')
     fig_generacion_co2=px.scatter(df_relations, x='valor_generacion_MW', y='valor')
 
-    st.plolty_chart(fig_demanda_generacion)
+    st.plotly_chart(fig_demanda_generacion)
     st.plotly_chart(fig_demanda_co2)
     st.plotly_chart(fig_generacion_co2)
 
