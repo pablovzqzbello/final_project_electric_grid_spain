@@ -41,14 +41,14 @@ def calcular_crecimiento_demanda(df_demanda):
     return crecimiento_porcentual
 
 
-def calculo_crecimiento_co2(df_emisiones_co2):
-    df_emisiones_co2 = df_emisiones_co2[~(df_emisiones_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
-    df_emisiones_co2 = df_emisiones_co2.groupby('fecha', as_index=False)['valor'].sum()
+def calculo_crecimiento_co2(df_co2):
+    df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
+    df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
 
-    df_emisiones_co2['fecha'] = pd.to_datetime(df_emisiones_co2['fecha'])
-    df_emisiones_co2['year'] = df_emisiones_co2['fecha'].dt.year
+    df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
+    df_co2['year'] = df_co2['fecha'].dt.year
 
-    emisiones_maxima_anual = df_emisiones_co2.groupby('year')['valor'].max().reset_index()
+    emisiones_maxima_anual = df_co2.groupby('year')['valor'].max().reset_index()
 
     # Seleccionar los últimos 5 años
     ultimos_5_anos = emisiones_maxima_anual.tail(5)
