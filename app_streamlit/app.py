@@ -604,7 +604,12 @@ def main():
             Esto subraya la necesidad de seguir impulsando la **eficiencia energética** y la **transición hacia energías renovables**, para reducir aún más las emisiones de CO2 y avanzar hacia un **modelo energético verdaderamente sostenible**.
         """)
 
-        #Filtro personalizado lateral
+        # Relaciones de variables
+
+        st.subheader('Exploratory Data Analysis (EDA). Relación de variables')
+
+        # Scatter
+        # Heatmap
 
         # Glosario
         st.header('Vocabulario energético')
@@ -629,9 +634,7 @@ def main():
             st.write("Seleccione la inicial de la palabra que desee consultar.")
 
 
-        #Relaciones de variables
-        #Scatter
-        #Heatmap
+
 
     elif choice == "¡Costes promedios!":
 

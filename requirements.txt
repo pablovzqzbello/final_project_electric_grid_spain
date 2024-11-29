@@ -65,3 +65,4 @@ pyunicodedata
 keras
 tensorflow
 prophet
+pydeck
