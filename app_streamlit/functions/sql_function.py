@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[6]:
 
 import nbimporter
 from dotenv import load_dotenv
@@ -15,8 +11,6 @@ from functions.extraction_data import *
 import unicodedata
 import pandas as pd
 
-# In[21]:
-
 load_dotenv()
 
 config = {
@@ -26,8 +20,6 @@ config = {
         'database': os.getenv('DB_NAME')
     }
 
-
-# In[15]:
 
 
 def create_db():
@@ -42,7 +34,6 @@ def create_db():
         print(f"Error: {e}")
 
 
-# In[19]:
 
 def crear_tablas():
     try:
@@ -110,8 +101,6 @@ def crear_tablas():
             connection.close()
             print("Conexión a la base de datos cerrada.")
 
-
-# In[26]:
 
 def insert_data(df_balance, df_generation, df_exchanges, df_emisiones_co2, df_demanda):
     
