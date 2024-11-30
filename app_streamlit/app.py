@@ -207,11 +207,11 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal', "Vista general", "Vista específica", '¡Costes promedios!', 'About Us']
+    choices = ['Página Principal', "Graficación", "Predicciones", '¡Costes promedios!', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
-    if choice == "Vista general":
+    if choice == "Graficación":
 
         # Mostrar la imagen de Redeia con un tamaño controlado
         image_path = 'auxiliary/redeia_marca1_2.png'
@@ -729,7 +729,7 @@ def main():
                 st.divider()  # Línea divisoria entre electrodomésticos
 
 
-    elif choice == "Vista específica":
+    elif choice == "Predicciones":
 
         st.title("Predicciones de Demanda Energética")
 
@@ -789,7 +789,7 @@ def main():
 
 
 
-    elif choice == "About Us":
+    elif choice == "Sobre Nosotros":
 
         st.title("🌟 Sobre Nosotros 🌟")
 
