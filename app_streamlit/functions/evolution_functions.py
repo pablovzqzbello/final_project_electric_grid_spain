@@ -14,7 +14,7 @@ def crecimiento_anual_demanda(df_demanda):
     # Calcular el crecimiento porcentual
     demanda_anual['%_crecimiento'] = demanda_anual['total_demanda_anual'].pct_change() * 100
 
-    fig = px.bar(demanda_anual, x='year', y='%_crecimiento', title='Crecimiento porcentual de Demanda por Año',
+    fig = px.bar(demanda_anual, x='year', y='%_crecimiento', title='Crecimiento (%) de demanda por Año',
                  labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
 
     st.plotly_chart(fig)
@@ -72,7 +72,7 @@ def crecimiento_anual_importaciones(df_exchanges):
     importaciones_anuales['%_crecimiento'] = importaciones_anuales['total_importaciones_anual'].pct_change() * 100
 
     fig = px.bar(importaciones_anuales, x='year', y='%_crecimiento',
-                     title='Crecimiento porcentual de Importaciones por Año',
+                     title='Crecimiento (%) de importaciones por año',
                      labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
 
     st.plotly_chart(fig)
@@ -88,7 +88,7 @@ def crecimiento_anual_exportaciones(df_exchanges):
 
     exportaciones_anuales['%_crecimiento'] = exportaciones_anuales['total_exportaciones_anual'].pct_change() * 100
 
-    fig=px.bar(exportaciones_anuales, x='year', y='%_crecimiento',title='Crecimiento porcentual de Exportaciones por Año', labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
+    fig=px.bar(exportaciones_anuales, x='year', y='%_crecimiento',title='Crecimiento (%) de exportaciones por año', labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
 
     st.plotly_chart(fig)
 
@@ -112,7 +112,7 @@ def crecimiento_anual_balance(df_demanda, df_generation):
 
     saldo_anual['%_crecimiento'] = saldo_anual['total_saldo_balance_anual'].pct_change() * 100
 
-    fig=px.bar(saldo_anual, x='year', y='%_crecimiento',title='Crecimiento porcentual del Balance anual', labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
+    fig=px.bar(saldo_anual, x='year', y='%_crecimiento',title='Crecimiento (%) del saldo energético por año', labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
 
     st.plotly_chart(fig)
 

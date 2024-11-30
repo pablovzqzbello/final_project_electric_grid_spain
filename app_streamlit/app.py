@@ -104,7 +104,7 @@ def mostrar_mapa_coro():
         st.plotly_chart(fig_2d, use_container_width=True)
 
         # ---- Mapa 3D ----
-        st.subheader("¡Lo mismo pero en 3D!")
+        st.subheader("Mapa en 3D")
 
         # Agregar coordenadas para cada país
         country_coords = {
@@ -207,11 +207,11 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal',"Base de Datos", "Graficación", "Predicciones", '¡Costes promedios!', 'Sobre Nosotros']
+    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones", '¡Costes promedios!', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
-    if choice == "Graficación":
+    if choice == "Análisis y visualizaciones":
 
         # Llamada general de datos
 
@@ -268,7 +268,7 @@ def main():
             filtered_df_demanda = date_filter(df_demanda, period_demanda)
 
         # Gráfico de línea de Demanda
-        fig1 = px.line(filtered_df_demanda, x='fecha', y='valor_demanda_MW', title="Demanda Energética en MW")
+        fig1 = px.line(filtered_df_demanda, x='fecha', y='valor_demanda_MW', title="Evolución demanda energética (2011-2024)", labels={'fecha': 'Fecha', 'valor_demanda_MW': 'Demanda (MW)'})
         st.plotly_chart(fig1)
 
         st.markdown("""
@@ -287,7 +287,7 @@ def main():
         filtered_df_demanda['mes'] = filtered_df_demanda['fecha'].dt.to_period('M').dt.to_timestamp()
         demanda_mensual = filtered_df_demanda.groupby('mes')['valor_demanda_MW'].mean().reset_index()
         fig_demanda_mensual = px.bar(demanda_mensual, x='mes', y='valor_demanda_MW',
-                                     title="Demanda Promedio Mensual en MW")
+                                     title="Demanda promedio mensual de energía en MW (2011-2024)", labels={'mes': 'Mes', 'valor_demanda_MW': 'Demanda (MW)'})
         st.plotly_chart(fig_demanda_mensual)
         st.markdown("""
             **Demanda Promedio Mensual de Energía en MW (2011-2024)**
@@ -302,6 +302,10 @@ def main():
         """)
 
         crecimiento_anual_demanda(df_demanda)
+
+        st.markdown("""Este gráfico representa la variación anual, en términos porcentuales, de la demanda energética en comparación con el año anterior. 
+        Se evidencia un descenso significativo en ciertos períodos, resultado de la implementación de políticas de eficiencia energética 
+        que han reducido el consumo global.""")
 
         # Filtros en el Sidebar para la comparación de años de Pablo
 
@@ -322,7 +326,7 @@ def main():
             # Crear la gráfica de comparación con la fecha ajustada
             fig_comparador = px.line(
                 df_demanda_comparador, x='fecha_ajustada', y='valor_demanda_MW', color='year',
-                title=f"Comparador de Demanda en MW, años {', '.join(map(str, selected_years))}")
+                title=f"Comparador de demanda (MW), años {', '.join(map(str, selected_years))}")
 
             # Calcular métricas para líneas de referencia
             metricas = df_demanda_comparador.groupby('year')['valor_demanda_MW'].agg(['mean', 'median', 'min', 'max'])
@@ -368,7 +372,7 @@ def main():
 
         # Visualización de Balance Energético
         fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_MW', color='energia',
-                       title="Balance Generación Energías Renovables en MW")
+                       title="Balance de generación de Energías Renovables (MW)")
         st.plotly_chart(fig2)
 
         st.markdown("""
@@ -407,20 +411,32 @@ def main():
                       labels={'fecha': 'Fecha', 'value': 'Valores (MW)', 'variable': 'Categoría'},
                       title='Balance entre demanda y generación')
 
+
+
         #Visualización del saldo restante entre generación y demanda
         fig_saldo = px.line(df_saldo_balance,
                        x='fecha',
                        y='balance',
                        labels={'fecha': 'Fecha', 'value': 'Valores (MW)'},
-                       title='Balance energético')
+                       title='Saldo energético. Déficit y superávit energético')
 
 
 
         # Mostrar la gráfica
         st.plotly_chart(fig_demanda_generacion)
+        st.markdown("""La gráfica refleja el delicado equilibrio entre la demanda y la generación energética. 
+                A partir de 2022, la generación supera consistentemente a la demanda, 
+                consolidando el papel de Redeia S.A. como un actor clave en el mercado de exportaciones energéticas.""")
         st.plotly_chart(fig_saldo)
 
         crecimiento_anual_balance(df_demanda, df_generation)
+
+        st.markdown("""Lo observado en representaciones anteriores se detalla aquí a través del saldo energético histórico. 
+        Estas visualizaciones identifica períodos deficitarios, caracterizados por una mayor importación de energía, principalmente desde Francia, su socio comercial más relevante. 
+        Destacan especialmente los déficits entre 2016 y 2020, agudizados por la crisis de la COVID-19 y el desplome de la demanda industrial. Sin embargo, en 2021 se produjo una recuperación notable, 
+        superando las expectativas y revirtiendo la tendencia negativa previa.""")
+
+        st.markdown("""""")
 
         # Gráfico de área apilado para balance energético
         fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_MW', color='energia',
@@ -441,6 +457,8 @@ def main():
 
         # Sección Transacciones Energéticas
         st.subheader("Transacciones energéticas")
+        st.markdown("""En esta sección se incluyen dos representaciones cartográficas, una en 2D y otra en 3D. 
+                Estas permiten explorar las importaciones y exportaciones, ofreciendo información detallada sobre los socios comerciales de Redeia y su dinámica energética.""")
         mostrar_mapa_coro()
         # Filtros en el Sidebar para Transacciones
         with st.sidebar.expander("Filtros para Transacciones Energéticas"):
@@ -455,7 +473,8 @@ def main():
         # Gráfico de evolución de transacciones energéticas general
         fig_evolucion_transacciones=px.histogram(filtered_df_exchanges[~(filtered_df_exchanges['tipo_transaccion']=='saldo')],
                                                  x='fecha', y='valor_MW', color='tipo_transaccion',
-                                                 title="Evolución General de Transacciones Energéticas en MW")
+                                                 title="Evolución general de transacciones energéticas (MW)",
+                                                 labels={'fecha': 'Fecha', 'value': 'Valores (MW)', 'variable': 'Categoría'})
         st.plotly_chart(fig_evolucion_transacciones)
         st.markdown("""
             La **evolución de las transacciones comerciales** entre **Redeia S.A.** y sus socios internacionales muestra una notable **reducción** en la dependencia de las **importaciones** hacia el año **2022**. 
@@ -474,7 +493,8 @@ def main():
         fig_evolucion_transacciones_pais = px.histogram(
             filtered_df_exchanges[~(filtered_df_exchanges['tipo_transaccion'] == 'saldo')],
             x='fecha', y='valor_MW', color='pais',
-            title="Evolución por país de Transacciones Energéticas en MW")
+            title="Evolución por país de transacciones energéticas (MW)",
+            labels={'fecha': 'Fecha', 'value': 'Valores (MW)', 'variable': 'Categoría'})
         st.plotly_chart(fig_evolucion_transacciones_pais)
         st.markdown("""
             Esta gráfica muestra la **evolución histórica** de las **importaciones y exportaciones de energía** de España, desglosada por **países clave** (**Francia**, **Portugal**, **Marruecos** y **Andorra**). 
@@ -487,7 +507,7 @@ def main():
         # Gráfico de flujo de transacciones energéticas por país
         transacciones_pais = filtered_df_exchanges.groupby(['pais', 'tipo_transaccion'])['valor_MW'].sum().reset_index()
         fig_transacciones = px.bar(transacciones_pais, x='pais', y='valor_MW', color='tipo_transaccion',
-                                   title="Transacciones Energéticas por País en MW", barmode='group')
+                                   title="Transacciones Energéticas por socio comercial (MW)", barmode='group')
         st.plotly_chart(fig_transacciones)
 
         crecimiento_anual_importaciones(df_exchanges)
