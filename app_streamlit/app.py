@@ -39,14 +39,23 @@ def mostrar_mapa_coro():
     st.title("Intercambio de Energía de Redeia S.A. con Otros Países")
 
     # Cargar los datos
-    df_exchanges = load_exchanges_data()
-    st.write("Datos Cargados:", df_exchanges)
+    df_exchanges = load_exchanges_data()  # Reemplaza con tu función real
+    st.write("Datos originales cargados:", df_exchanges)
+
+    # Limpieza de datos
+    df_exchanges['tipo_transaccion'] = df_exchanges['tipo_transaccion'].str.strip().str.capitalize()
+
+    # Mostrar tipos únicos de transacción
+    st.write("Tipos únicos de transacción:", df_exchanges['tipo_transaccion'].unique())
 
     # Selector para el tipo de transacción
     tipo_transaccion = st.selectbox("Seleccionar tipo de transacción", options=["Importación", "Exportación"])
 
     # Filtrar los datos según el tipo de transacción
     filtered_df = df_exchanges[df_exchanges['tipo_transaccion'] == tipo_transaccion]
+    st.write(f"Datos filtrados para {tipo_transaccion}:", filtered_df)
+
+    # Mapear nombres de países
     country_mapping = {
         'Francia': 'France',
         'Portugal': 'Portugal',
@@ -108,11 +117,13 @@ def mostrar_mapa_coro():
         # Añadir coordenadas al dataframe
         filtered_df['coordinates'] = filtered_df['pais'].map(country_coords)
 
+        filtered_df['valor_MW_abs'] = filtered_df['valor_MW'].abs()
+
         layer = pdk.Layer(
             "ColumnLayer",
             data=filtered_df,
             get_position="coordinates",
-            get_elevation="valor_MW",
+            get_elevation="valor_MW_abs",  # Usar los valores absolutos
             elevation_scale=1000,
             radius=30000,
             get_fill_color=[255, 140, 0, 200],
@@ -140,6 +151,7 @@ def mostrar_mapa_coro():
 
     else:
         st.warning("No hay datos para mostrar en el mapa con la selección actual.")
+
 
 
 #######################
@@ -195,43 +207,11 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal', "Base de Datos", "Vista general", "Vista específica", '¡Costes promedios!', 'About Us']
+    choices = ['Página Principal',"Base de Datos", "Graficación", "Predicciones", '¡Costes promedios!', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
-    if choice == "Vista general":
-
-        # Mostrar la imagen de Redeia con un tamaño controlado
-        image_path = 'auxiliary/redeia_marca1_2.png'
-        st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
-
-        # Encabezados y descripción
-        st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
-
-        st.header("¿Qué es Redeia, S.A.?")
-        st.markdown(
-            "Redeia Corporación, S.A. es un grupo empresarial multinacional de origen español fundado el 29 de enero de "
-            "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico. "
-            "Cuenta con una financiación público-privada, en la que el Gobierno de España cubre el 20% de las inversiones, "
-            "mientras que el 80% lo cubre capital privado.")
-
-        st.header("¿De dónde se obtiene la información?")
-        st.markdown(
-            "La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
-            "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar "
-            "libremente los datos que Redeia genera a tiempo real. "
-            "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)")
-
-        st.header("Objetivos")
-        st.markdown(
-            "Con los datos obtenidos se pretende realizar un análisis integral de la corporación enfocándose en la "
-            "estructura de negocio de esta empresa desde cuatro pilares fundamentales:"
-            "\n- Generación de energía"
-            "\n- Balance estructural energético"
-            "\n- Demanda energética del mercado español"
-            "\n- Transacciones Internacionales"
-            "\n\nComo punto clave, este estudio se centra en la sostenibilidad, con especial atención al precio y al "
-            "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía.")
+    if choice == "Graficación":
 
         # Llamada general de datos
 
@@ -809,7 +789,7 @@ def main():
                 st.divider()  # Línea divisoria entre electrodomésticos
 
 
-    elif choice == "Vista específica":
+    elif choice == "Predicciones":
 
         st.title("Predicciones de Demanda Energética")
 
@@ -869,7 +849,7 @@ def main():
 
 
 
-    elif choice == "About Us":
+    elif choice == "Sobre Nosotros":
 
         st.title("🌟 Sobre Nosotros 🌟")
 
@@ -942,6 +922,122 @@ def main():
 
         # Función para cargar animaciones Lottie
 
+        def tecnologias_utilizadas():
+            st.markdown('---')
+            st.subheader("⚙️ **Tecnologías Utilizadas**")
+            st.markdown('---')
+            # Tecnologías generales
+            tecnologias_generales = [
+                {"nombre": "Python",
+                 "descripcion": "Lenguaje de programación principal utilizado en el desarrollo de esta aplicación.",
+                 "enlace": "https://www.python.org/doc/"},
+                {"nombre": "Streamlit",
+                 "descripcion": "Framework interactivo para crear dashboards y aplicaciones web.",
+                 "enlace": "https://docs.streamlit.io/"},
+                {"nombre": "HTML y CSS",
+                 "descripcion": "Lenguajes base para estilizar y estructurar las visualizaciones.",
+                 "enlace": "https://developer.mozilla.org/en-US/docs/Web"},
+                {"nombre": "JupyterLab", "descripcion": "Entorno interactivo para análisis y prototipado de datos.",
+                 "enlace": "https://jupyterlab.readthedocs.io/"},
+                {"nombre": "MySQL",
+                 "descripcion": "Sistema de gestión de bases de datos relacionales utilizado para almacenar datos.",
+                 "enlace": "https://dev.mysql.com/doc/"},
+            ]
+
+            # Librerías específicas
+            librerias = [
+                {"nombre": "Pandas", "descripcion": "Librería para manipulación y análisis de datos estructurados.",
+                 "enlace": "https://pandas.pydata.org/docs/"},
+                {"nombre": "NumPy", "descripcion": "Librería para cálculos numéricos y manejo de matrices.",
+                 "enlace": "https://numpy.org/doc/"},
+                {"nombre": "Plotly", "descripcion": "Visualización interactiva avanzada para gráficos dinámicos.",
+                 "enlace": "https://plotly.com/python/"},
+                {"nombre": "PyDeck", "descripcion": "Librería para renderizar mapas 3D interactivos.",
+                 "enlace": "https://deckgl.readthedocs.io/"},
+                {"nombre": "Prophet", "descripcion": "Modelo de predicción de series temporales.",
+                 "enlace": "https://facebook.github.io/prophet/docs/quick_start.html"},
+                {"nombre": "SQLAlchemy",
+                 "descripcion": "Toolkit para trabajar con bases de datos SQL de forma eficiente.",
+                 "enlace": "https://docs.sqlalchemy.org/"},
+                {"nombre": "Streamlit-Lottie", "descripcion": "Soporte para incluir animaciones Lottie en Streamlit.",
+                 "enlace": "https://github.com/andfanilo/streamlit-lottie"},
+                {"nombre": "JSON",
+                 "descripcion": "Formato para trabajar con datos estructurados como animaciones o configuraciones.",
+                 "enlace": "https://www.json.org/json-en.html"},
+            ]
+
+            # CSS para estilizar
+            st.markdown("""
+                <style>
+                .tech-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                    justify-content: space-between;
+                }
+                .tech-card {
+                    background: linear-gradient(145deg, #ffffff, #f2f2f2);
+                    border-radius: 10px;
+                    padding: 15px;
+                    width: 48%;
+                    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1), -3px -3px 10px rgba(255, 255, 255, 0.7);
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .tech-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.8);
+                }
+                .tech-card h4 {
+                    margin: 0;
+                    color: #333;
+                }
+                .tech-card p {
+                    margin: 5px 0 0;
+                    color: #666;
+                    font-size: 14px;
+                }
+                .tech-card a {
+                    text-decoration: none;
+                    color: #007bff;
+                    font-weight: bold;
+                }
+                .tech-card a:hover {
+                    text-decoration: underline;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+
+            # Dividir en dos columnas
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown("### 🔧 Tecnologías Generales")
+                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
+                for tech in tecnologias_generales:
+                    st.markdown(f"""
+                        <div class="tech-card">
+                            <h4>{tech['nombre']}</h4>
+                            <p>{tech['descripcion']}</p>
+                            <a href="{tech['enlace']}" target="_blank">📖 Documentación</a>
+                        </div>
+                    """, unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+
+            with col2:
+                st.markdown("### 📚 Librerías Específicas")
+                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
+                for lib in librerias:
+                    st.markdown(f"""
+                        <div class="tech-card">
+                            <h4>{lib['nombre']}</h4>
+                            <p>{lib['descripcion']}</p>
+                            <a href="{lib['enlace']}" target="_blank">📖 Documentación</a>
+                        </div>
+                    """, unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+
+            st.markdown('---')
+
         def load_lottie_file(filepath):
             try:
                 with open(filepath, "r") as file:
@@ -960,6 +1056,7 @@ def main():
         # Título principal
 
         st.title("🔋 **¡Bienvenido a Redeia S.L. APP!**")
+        st.markdown('---')
 
         # Placeholder para el texto dinámico
 
@@ -1206,8 +1303,9 @@ def main():
         st.info("💡 **Dato clave:** La energía eólica representa el 19.9% del mix energético español en 2024.")
 
     # Recomendaciones interactivas
-
+        st.markdown('---')
         st.subheader("🧠 **Recomendaciones Personalizadas**")
+        st.markdown('---')
 
         st.write("Selecciona tus prioridades para obtener sugerencias adaptadas:")
 
@@ -1290,23 +1388,39 @@ def main():
 
     # Información adicional sobre Redeia
 
-        st.header("📖 **Sobre Redeia S.A.**")
+                # Mostrar la imagen de Redeia con un tamaño controlado
+            image_path = 'auxiliary/redeia_marca1_2.png'
+            st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
 
-        st.markdown("""
+                # Encabezados y descripción
+            st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
 
+            st.header("¿Qué es Redeia, S.A.?")
+            st.markdown(
+                    "Redeia Corporación, S.A. es un grupo empresarial multinacional de origen español fundado el 29 de enero de "
+                    "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico. "
+                    "Cuenta con una financiación público-privada, en la que el Gobierno de España cubre el 20% de las inversiones, "
+                    "mientras que el 80% lo cubre capital privado.")
 
-            Redeia Corporación, S.A. es líder en innovación y sostenibilidad energética.  
+            st.header("¿De dónde se obtiene la información?")
+            st.markdown(
+                    "La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
+                    "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar "
+                    "libremente los datos que Redeia genera a tiempo real. "
+                    "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)")
 
+            st.header("Objetivos")
+            st.markdown(
+                    "Con los datos obtenidos se pretende realizar un análisis integral de la corporación enfocándose en la "
+                    "estructura de negocio de esta empresa desde cuatro pilares fundamentales:"
+                    "\n- Generación de energía"
+                    "\n- Balance estructural energético"
+                    "\n- Demanda energética del mercado español"
+                    "\n- Transacciones Internacionales"
+                    "\n\nComo punto clave, este estudio se centra en la sostenibilidad, con especial atención al precio y al "
+                    "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía.")
 
-            Como operador del sistema eléctrico español, impulsa la transición hacia un modelo limpio y eficiente.
-
-
-            ---
-
-
-        """)
-
-        st.image("auxiliary/redeia_marca1_2.png", width=150)
+        tecnologias_utilizadas()
 
     # Animación final y despedida
         def load_lottie_file(filepath):
