@@ -1,18 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[404]:
-
-
 import os
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 import requests
-
-
-# In[473]:
 
 
 def last_update():
@@ -31,9 +22,6 @@ def last_update():
             return last_update_date
     except SQLAlchemyError as e:
         print(f"Error de conexión: {e}")
-
-
-# In[475]:
 
 
 def extract_balance(start_day, end_day, time_trunc='day'):
@@ -77,9 +65,6 @@ def extract_balance(start_day, end_day, time_trunc='day'):
     return df_balance
 
 
-# In[477]:
-
-
 def extract_demand(start_day, end_day, category='demanda', widget='evolucion', time_trunc='day'):
     all_data = []
 
@@ -120,9 +105,6 @@ def extract_demand(start_day, end_day, category='demanda', widget='evolucion', t
     df_demanda['fecha'] = df_demanda['fecha'].str.split('T').str[0]
     df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'], errors="coerce").dt.date
     return df_demanda
-
-
-# In[479]:
 
 
 def extract_exchange(start_day, end_day, time_trunc='day', widget='todas-fronteras-fisicos'):
@@ -172,9 +154,6 @@ def extract_exchange(start_day, end_day, time_trunc='day', widget='todas-fronter
     
     
     return df_exchanges
-
-
-# In[481]:
 
 
 def extract_generation(start_day, end_day, time_trunc='day'):
@@ -229,9 +208,6 @@ def extract_generation(start_day, end_day, time_trunc='day'):
     df_generation['fecha'] = df_generation['fecha'].str.split('T').str[0]
     df_generation['fecha'] = pd.to_datetime(df_generation['fecha'], errors="coerce").dt.date
     return df_generation
-
-
-# In[483]:
 
 
 def emisiones_co2(start_day, end_day, time_trunc='day'):

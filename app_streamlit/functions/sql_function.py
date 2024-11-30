@@ -132,9 +132,6 @@ def insert_data(df_balance, df_generation, df_exchanges, df_emisiones_co2, df_de
         print(f"Error al insertar datos: {e}")
 
 
-# In[30]:
-
-
 def extract_data(query):
     load_dotenv()
     user = os.getenv('DB_USER')
