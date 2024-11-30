@@ -195,7 +195,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal', "Vista general", "Vista específica", '¡Costes promedios!', 'About Us']
+    choices = ['Página Principal', "Base de Datos", "Vista general", "Vista específica", '¡Costes promedios!', 'About Us']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -650,8 +650,6 @@ def main():
                     st.write(resultados)
         else:
             st.write("Seleccione la inicial de la palabra que desee consultar.")
-
-
 
 
     elif choice == "¡Costes promedios!":
