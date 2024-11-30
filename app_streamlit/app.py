@@ -1086,7 +1086,7 @@ def main():
 
         # Título principal
 
-        st.title("🔋 **¡Bienvenido a Redeia S.L. APP!**")
+        st.title("🔋 **¡Bienvenido a Redeia S.A. APP!**")
         st.markdown('---')
 
         # Placeholder para el texto dinámico
