@@ -659,7 +659,7 @@ def main():
         st.markdown("""
                     A la hora de almacenar los datos extraídos de la API de Redeia, la opción más lógica era decantarse por una base de datos relacional. Hemos empleado **MySQL Workbench** para este propósito, generando una base de datos sencilla pero efectiva que supliese nuestras necesidades.
                     
-                    Vamos a echar un vistazo a continuación a la organización de la BDD mediante un diagrama explicativo: 
+                    Vamos a echar un vistazo a continuación a la organización de los datos mediante un diagrama explicativo de la arquitectura de nuestra BDD: 
                     """)
         # Vamos a dividir la página en dos columnas para visualizar por un lado la imagen y por otro la expliación
         col1, col2 = st.columns([1, 2])
@@ -669,11 +669,18 @@ def main():
             st.image(image_path, caption='Diagrama de la BDD.', width=700)  # Tamaño ajustado de la imagen
         with col2:
             st.write("""
+                    
+                     
                     Gracias al diagrama podemos observar tanto la cantidad de tablas como sus atributos y la dependencia entre ellas.
-                    Son un total de cinco tablas, con diferentes atributos (columnas) cada una. Podemos observar que hay una dependencia clara entre
-                    la tabla **demanda_energia** y el resto, siendo la clave primaria de esta tabla un elemento que se compartirá 
+                    Son un total de cinco tablas, con diferentes atributos (columnas) cada una. 
+                    
+                    Vemos que hay una dependencia clara entre la tabla **demanda_energia** y el resto, siendo la clave primaria de esta tabla un elemento que se compartirá 
                     con el resto de tablas, lo que se conoce como clave foránea. En otras palabras, la columna **fecha** de esta tabla
                     sirve de hilo conductor y unificador con el resto de tablas.
+                     
+                    Veamos en detalle la disposición de cada tabla y sus columnas para profundizar en el origen de los datos que nos servirán para las estadísticas y gráficos posteriores. 
+                     
+                    
                      """)
         
     elif choice == "¡Costes promedios!":
