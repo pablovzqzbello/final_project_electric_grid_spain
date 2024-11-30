@@ -791,9 +791,75 @@ def main():
 
     elif choice == "Predicciones":
 
-        st.title("Predicciones de Demanda Energética")
+        st.title("🔮 Predicciones de Demanda Energética")
 
-        model_choice = st.radio("Selecciona el modelo de predicción", ["Demanda (RNN)", "Demanda (LSTM)", "Demanda (GRU)", "Demanda (Prophet)"])
+        model_choice = st.radio("Selecciona el modelo de predicción:", ["Demanda (RNN)", "Demanda (LSTM)", "Demanda (GRU)", "Demanda (Prophet)"])
+
+        if model_choice == "Demanda (RNN)":
+            
+            st.markdown(
+                """
+                <div style="background-color:#F5F5F5; padding:15px; border-radius:10px; border-left: 6px solid #76d7c4;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);">
+                    <h3 style="color:#FFA500; margin-bottom: 10px;">Modelo: RNN</h3>
+                    <p style="color: #333; font-size: 16px; margin: 0;">
+                        La Red Neuronal Recurrente (RNN) es un tipo de red neuronal diseñada para manejar datos secuenciales, como series temporales. Como su nombre indica, tienen
+                        conexiones recurrentes, lo que permite "recordar" información de pasos anteriores. Suelen ser adecuadas para capturar dependencias a corto plazo,
+                        aunque no son tan eficientes en relaciones de largo plazo. Esta red neuronal es el modelo más sencillo de los que presentamos y, pese a su sencillez, devuelve
+                        predicciones coherentes.
+                    </p>
+                </div>
+                """, unsafe_allow_html=True
+                )
+
+        elif model_choice == "Demanda (LSTM)":
+                
+            st.markdown(
+                """
+                <div style="background-color:#F5F5F5; padding:15px; border-radius:10px; border-left: 6px solid #76d7c4;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);">
+                    <h3 style="color:#FFA500; margin-bottom: 10px;">Modelo: LSTM</h3>
+                    <p style="color: #333; font-size: 16px; margin: 0;">
+                        La Long Short-Term Memory (LSTM) es una variante de las RNN cuyo diseño está enfocado a superar el problema presente en el modelo anterior, es decir, pretende
+                        ser más eficaz en cuanto al aprendizaje de relaciones de largo plazo entre los valores. Emplea una estructura ordenada mediante celdas con puertas de entrada,
+                        de salida y "olvido", lo que permite retener la información relevante durante periodos más largos. Es por tanto ideal para capturar dependencias
+                        de largo plazo entre datos secuenciales, como nuestras series temporales complejas para predecir la demanda energética. Sus resultados están destinados a 
+                        ser fiables, en mayor medida que el modelo anterior.
+                    </p>
+                </div>
+                """, unsafe_allow_html=True
+                )
+
+        elif model_choice == "Demanda (GRU)":
+            
+                            
+            st.markdown(
+                """
+                <div style="background-color:#F5F5F5; padding:15px; border-radius:10px; border-left: 6px solid #76d7c4;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);">
+                    <h3 style="color:#FFA500; margin-bottom: 10px;">Modelo: GRU</h3>
+                    <p style="color: #333; font-size: 16px; margin: 0;">
+                        La Grated Recurrent Unit (GRU) vuelve a ser una variante de las RNN y es similar a la LSTM ya mencionada, aunque es más simple. Combina funciones de varias puertas en
+                        una sola unidad para reducir la complejidad computacional. Tiene, por tanto, menos parámetros que las LSTM, así que es más eficiente, manteniendo un rendimiento
+                        nada desdeñable. Suele ser adecuado para casos con recursos computacionales limitados.  
+                    </p>
+                </div>
+                """, unsafe_allow_html=True
+                )
+
+        elif model_choice == "Demanda (Prophet)":
+            
+                            
+            st.markdown(
+                """
+                <div style="background-color:#F5F5F5; padding:15px; border-radius:10px; border-left: 6px solid #76d7c4;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);">
+                    <h3 style="color:#FFA500; margin-bottom: 10px;">Modelo: Prophet</h3>
+                    <p style="color: #333; font-size: 16px; margin: 0;">
+                        El mdelo Prophet ha sido desarrollado por Facebook para la predicción de series temporales, siendo especialmente útil cuando hay datos con tendencias, estacionalidad y eventos atípicos,
+                        todos estos parámetros presentes en los datos que manejamos en nuestra base de datos referente a la demanda energética. Esto lo hace un buen candidato para realizar predicciones
+                        debido al contexto. Como modelo, es sencillo de usar y parametrizar, casi sin necesitar conocimientos avanzados en estadística o en machine learning. Debido a que analizamos
+                        series temporales con patrones medianamente claros y generalmente repetitivos, este modelo tienen una eficiencia competitiva. 
+                    </p>
+                </div>
+                """, unsafe_allow_html=True
+                )          
 
         if st.button("Realizar Predicción"):
 
