@@ -655,9 +655,19 @@ def main():
     elif choice == "Base de Datos":
 
         st.title("💽 Dentro de la Base de Datos")
+
+        st.markdown("""
+                    A la hora de almacenar los datos extraídos de la API de Redeia, la opción más lógica era decantarse por una base de datos relacional. 
+
+                    Hemos empleado **MySQL Workbench** para este propósito, generando una base de datos sencilla pero efectiva que supliese nuestras necesidades.
+                    
+                    Vamos a echar un vistazo a continuación a la organización de la BDD mediante un diagrama explicativo: 
+
+                    """)
+
          # Mostrar la imagen de Redeia con un tamaño controlado
         image_path = 'auxiliary/diagramaBDD.png'
-        st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
+        st.image(image_path, caption='Diagrama de la BDD.', width=700)  # Tamaño ajustado de la imagen
         
     elif choice == "¡Costes promedios!":
 
