@@ -16,7 +16,7 @@ def eda_boxplots(df_demanda, df_generation, df_co2):
 
     fig_box_demanda=px.box(df_demanda, x='valor_demanda_MW', title='Valores demanda energética', labels={'valor_demanda_MW': 'Demanda (MW)'})
     fig_box_generation=px.box(df_generation, x='valor_generacion_MW', title='Valores generación energética', labels={'valor_generacion_MW': 'Generacion (MW)'})
-    fig_box_co2=px.box(df_co2, x='valor', title='Valores emisiones de CO2'labels={'valor': 'Valores (T/CO2)'})
+    fig_box_co2=px.box(df_co2, x='valor', title='Valores emisiones de CO2', labels={'valor': 'Valores (T/CO2)'})
 
     st.plotly_chart(fig_box_demanda)
     st.plotly_chart(fig_box_generation)
@@ -35,9 +35,9 @@ def eda_relations(df_demanda, df_generation, df_co2):
     df_relations = pd.merge(df_demanda, df_generation, on='fecha', how='inner')
     df_relations = pd.merge(df_relations, df_co2, on='fecha', how='inner')
 
-    fig_demanda_generacion=px.scatter(df_relations, x='valor_demanda_MW', y='valor_generacion_MW')
-    fig_demanda_co2=px.scatter(df_relations, x='valor_demanda_MW', y='valor')
-    fig_generacion_co2=px.scatter(df_relations, x='valor_generacion_MW', y='valor')
+    fig_demanda_generacion=px.scatter(df_relations, x='valor_demanda_MW', y='valor_generacion_MW', labels={'valor_demanda_MW':'Demanda(MW)', 'valor_generacion_MW': 'Generacion(MW)'})
+    fig_demanda_co2=px.scatter(df_relations, x='valor_demanda_MW', y='valor', labels={'valor_demanda_MW':'Demanda(MW)', 'valor': 'Valores(T/CO2)'})
+    fig_generacion_co2=px.scatter(df_relations, x='valor_generacion_MW', y='valor', labels={'valor_generacion_MW':'Generacion(MW)', 'valor': 'Valores(T/CO2)'})
 
     st.plotly_chart(fig_demanda_generacion)
     st.plotly_chart(fig_demanda_co2)

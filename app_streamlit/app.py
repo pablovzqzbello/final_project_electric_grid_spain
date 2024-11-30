@@ -436,11 +436,10 @@ def main():
         Destacan especialmente los déficits entre 2016 y 2020, agudizados por la crisis de la COVID-19 y el desplome de la demanda industrial. Sin embargo, en 2021 se produjo una recuperación notable, 
         superando las expectativas y revirtiendo la tendencia negativa previa.""")
 
-        st.markdown("""""")
 
         # Gráfico de área apilado para balance energético
-        fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_MW', color='energia',
-                                      title="Balance Energético por Tipo de Energía en MW")
+        fig_balance_energia = px.area(filtered_df_balance[~(filtered_df_balance['energia']=='Generación renovable')], x='fecha', y='valor_balance_MW', color='energia', labels={'fecha':'Fecha', 'valor_balance_MW': 'Valores(MW)'},
+                                      title="Balance energético por tipo de energía (MW)")
         st.plotly_chart(fig_balance_energia)
 
         st.markdown("""
@@ -507,7 +506,7 @@ def main():
         # Gráfico de flujo de transacciones energéticas por país
         transacciones_pais = filtered_df_exchanges.groupby(['pais', 'tipo_transaccion'])['valor_MW'].sum().reset_index()
         fig_transacciones = px.bar(transacciones_pais, x='pais', y='valor_MW', color='tipo_transaccion',
-                                   title="Transacciones Energéticas por socio comercial (MW)", barmode='group')
+                                   title="Transacciones Energéticas por socio comercial (MW)", barmode='group', labels={'pais':'Pais', 'valor_MW': 'Valores(MW)'})
         st.plotly_chart(fig_transacciones)
 
         crecimiento_anual_importaciones(df_exchanges)
@@ -598,7 +597,7 @@ def main():
 
         #Gráfico de la evolución de las emisiones de co2
 
-        fig_co2_evolucion=px.line(filtered_df_co2_grouped, x='fecha', y='valor', title="Evolución de las emisiones CO2")
+        fig_co2_evolucion=px.line(filtered_df_co2_grouped, x='fecha', y='valor', title="Evolución de las emisiones CO2", labels={'fecha':'Fecha', 'valor': 'Valores(T/CO2)'})
         st.plotly_chart(fig_co2_evolucion)
         st.markdown("""
             La **evolución de las emisiones de CO2** desde 2010 hasta 2024 muestra una tendencia marcada por fluctuaciones que reflejan la volatilidad inherente a los datos y la **estacionalidad de las emisiones**, más frecuentes en **invierno** y **verano** debido al mayor **consumo** y **demanda estacional**. 
@@ -612,7 +611,7 @@ def main():
 
         #Gráfico por generación de las emisiones de co2
 
-        fig_co2_energia=px.histogram(filtered_df_co2, x='fecha', y='valor', color='energia', title="Emisiones de CO2 según su generación")
+        fig_co2_energia=px.histogram(filtered_df_co2, x='fecha', y='valor', color='energia', title="Emisiones de CO2 según su generación", labels={'fecha':'Fecha', 'valor': 'Valores(T/CO2)'})
         st.plotly_chart(fig_co2_energia)
         st.markdown("""
             La **evolución de las emisiones de CO2**, desglosadas por **tipo de energía**, muestra una **tendencia a la baja**, especialmente a partir de **2019**, gracias a la **reducción en el uso del carbón**. Este cambio refleja una **transición clara hacia fuentes de energía más limpias y sostenibles**, alineadas con los esfuerzos por mitigar el impacto ambiental. 
@@ -630,6 +629,7 @@ def main():
         # EDA, relación variables, detector de años atípicos
 
         st.header('Exploratory Data Analysis (EDA). Relación de variables')
+        st.markdown("""Esta sección pretende mostrar la integridad de los datos analizados, iniciando este proceso por la identificación de valores atípicos y la visualización de las relaciones presentes entre los datos""")
         st.subheader('Valores atípicos')
         eda_boxplots(df_demanda, df_generation, df_co2)
         st.subheader('Relación de variables')
@@ -637,7 +637,7 @@ def main():
         """)
         eda_relations(df_demanda, df_generation, df_co2)
         st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
-        eda_anos_atipicos(df_demanda)
+        st.markdown("""A través de un modelo de medición y detecció, este gráfico nos permite saber cuando un año tiene una demanda atípica entre 2011 y 2023. No se añadió por el momento 2024 al tratarse de una año no finalizado""")
         eda_anos_atipicos_dbscan(df_demanda)
 
         # Glosario
