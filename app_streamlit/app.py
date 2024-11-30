@@ -862,6 +862,121 @@ def main():
 
         # Función para cargar animaciones Lottie
 
+        def tecnologias_utilizadas():
+            st.subheader("⚙️ **Tecnologías Utilizadas**")
+
+            # Tecnologías generales
+            tecnologias_generales = [
+                {"nombre": "Python",
+                 "descripcion": "Lenguaje de programación principal utilizado en el desarrollo de esta aplicación.",
+                 "enlace": "https://www.python.org/doc/"},
+                {"nombre": "Streamlit",
+                 "descripcion": "Framework interactivo para crear dashboards y aplicaciones web.",
+                 "enlace": "https://docs.streamlit.io/"},
+                {"nombre": "HTML y CSS",
+                 "descripcion": "Lenguajes base para estilizar y estructurar las visualizaciones.",
+                 "enlace": "https://developer.mozilla.org/en-US/docs/Web"},
+                {"nombre": "JupyterLab", "descripcion": "Entorno interactivo para análisis y prototipado de datos.",
+                 "enlace": "https://jupyterlab.readthedocs.io/"},
+                {"nombre": "MySQL",
+                 "descripcion": "Sistema de gestión de bases de datos relacionales utilizado para almacenar datos.",
+                 "enlace": "https://dev.mysql.com/doc/"},
+            ]
+
+            # Librerías específicas
+            librerias = [
+                {"nombre": "Pandas", "descripcion": "Librería para manipulación y análisis de datos estructurados.",
+                 "enlace": "https://pandas.pydata.org/docs/"},
+                {"nombre": "NumPy", "descripcion": "Librería para cálculos numéricos y manejo de matrices.",
+                 "enlace": "https://numpy.org/doc/"},
+                {"nombre": "Plotly", "descripcion": "Visualización interactiva avanzada para gráficos dinámicos.",
+                 "enlace": "https://plotly.com/python/"},
+                {"nombre": "PyDeck", "descripcion": "Librería para renderizar mapas 3D interactivos.",
+                 "enlace": "https://deckgl.readthedocs.io/"},
+                {"nombre": "Prophet", "descripcion": "Modelo de predicción de series temporales.",
+                 "enlace": "https://facebook.github.io/prophet/docs/quick_start.html"},
+                {"nombre": "SQLAlchemy",
+                 "descripcion": "Toolkit para trabajar con bases de datos SQL de forma eficiente.",
+                 "enlace": "https://docs.sqlalchemy.org/"},
+                {"nombre": "Streamlit-Lottie", "descripcion": "Soporte para incluir animaciones Lottie en Streamlit.",
+                 "enlace": "https://github.com/andfanilo/streamlit-lottie"},
+                {"nombre": "JSON",
+                 "descripcion": "Formato para trabajar con datos estructurados como animaciones o configuraciones.",
+                 "enlace": "https://www.json.org/json-en.html"},
+            ]
+
+            # CSS para estilizar
+            st.markdown("""
+                <style>
+                .tech-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                    justify-content: space-between;
+                }
+                .tech-card {
+                    background: linear-gradient(145deg, #ffffff, #f2f2f2);
+                    border-radius: 10px;
+                    padding: 15px;
+                    width: 48%;
+                    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1), -3px -3px 10px rgba(255, 255, 255, 0.7);
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .tech-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.8);
+                }
+                .tech-card h4 {
+                    margin: 0;
+                    color: #333;
+                }
+                .tech-card p {
+                    margin: 5px 0 0;
+                    color: #666;
+                    font-size: 14px;
+                }
+                .tech-card a {
+                    text-decoration: none;
+                    color: #007bff;
+                    font-weight: bold;
+                }
+                .tech-card a:hover {
+                    text-decoration: underline;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+
+            # Dividir en dos columnas
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown("### 🔧 Tecnologías Generales")
+                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
+                for tech in tecnologias_generales:
+                    st.markdown(f"""
+                        <div class="tech-card">
+                            <h4>{tech['nombre']}</h4>
+                            <p>{tech['descripcion']}</p>
+                            <a href="{tech['enlace']}" target="_blank">📖 Documentación</a>
+                        </div>
+                    """, unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+
+            with col2:
+                st.markdown("### 📚 Librerías Específicas")
+                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
+                for lib in librerias:
+                    st.markdown(f"""
+                        <div class="tech-card">
+                            <h4>{lib['nombre']}</h4>
+                            <p>{lib['descripcion']}</p>
+                            <a href="{lib['enlace']}" target="_blank">📖 Documentación</a>
+                        </div>
+                    """, unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+
+            st.markdown('---')
+
         def load_lottie_file(filepath):
             try:
                 with open(filepath, "r") as file:
@@ -1227,6 +1342,8 @@ def main():
         """)
 
         st.image("auxiliary/redeia_marca1_2.png", width=150)
+
+        tecnologias_utilizadas()
 
     # Animación final y despedida
         def load_lottie_file(filepath):
