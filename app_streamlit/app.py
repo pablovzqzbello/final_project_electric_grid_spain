@@ -657,7 +657,8 @@ def main():
         st.title("💽 Dentro de la Base de Datos")
 
         st.markdown("""
-                    A la hora de almacenar los datos extraídos de la API de Redeia, la opción más lógica era decantarse por una base de datos relacional. Hemos empleado **MySQL Workbench** para este propósito, generando una base de datos sencilla pero efectiva que supliese nuestras necesidades.
+                    A la hora de almacenar los datos extraídos de la API de Redeia, la opción más lógica era decantarse por una base de datos relacional.
+                    Hemos empleado **MySQL Workbench** para este propósito, generando una base de datos sencilla pero efectiva que supliese nuestras necesidades.
                     
                     Vamos a echar un vistazo a continuación a la organización de los datos mediante un diagrama explicativo de la arquitectura de nuestra BDD. 
                     """)
@@ -688,54 +689,59 @@ def main():
             with st.expander("🔌 **demanda_energia**"):
                 st.write("""
                          Es la tabla que contiene el objetivo del proyecto: predicir la demanda futura en base a los datos históricos hasta la actualidad.
+                         
                          Columnas:
-                         - *fecha*: Punto temporal histórico del que proceden los datos. Es la clave primaria de esta tabla, dado que nos interesa la demanda
+                         - ***fecha***: Punto temporal histórico del que proceden los datos. Es la clave primaria de esta tabla, dado que nos interesa la demanda
                          en fechas concretas. Dado que solicitaremos los datos siempre en relación a la fecha, esta columna será el punto de unión entre
                          tablas y, por tanto, la clave foránea del resto de tablas. 
-                         - *valor_demanda_MW*: Cantidad numérica que refleja los megavatios solicitados para esa fecha.
-                         - *fecha_extraccion*: Momento en el que se extraen los datos desde la API de Redeia.
+                         - ***valor_demanda_MW***: Cantidad numérica que refleja los megavatios solicitados para esa fecha.
+                         - ***fecha_extraccion***: Momento en el que se extraen los datos desde la API de Redeia.
                          """)
         
             with st.expander("💭 **emisiones_co2**"):
                 st.write("""
                          Esta tabla expresa cantidad de CO2 emitido a la atmósfera a consecuencia de la producción energética a través de distintos medios.
                          Nos permite ver, por ejemplo, la energía más contaminante.
+                         
                          Columnas:
-                         - *fecha*: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
-                         - *valor_emisiones*: Valor numérico que refleja las toneladas de CO2 emitidas en la producción de electricidad.
-                         - *energia*: Indica la procedencia de la emisión, por ejemplo, quema de carbón para la producción energética. Esta columna, junto con *fecha*, componen la clave primaria de la tabla.
-                         - *fecha_extraccion*: Momento en el que se extraen los datos desde la API de Redeia. 
+                         - ***fecha***: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
+                         - ***valor_emisiones***: Valor numérico que refleja las toneladas de CO2 emitidas en la producción de electricidad.
+                         - ***energia***: Indica la procedencia de la emisión, por ejemplo, quema de carbón para la producción energética. Esta columna, junto con *fecha*, componen la clave primaria de la tabla.
+                         - ***fecha_extraccion***: Momento en el que se extraen los datos desde la API de Redeia. 
                          """)
 
             with st.expander("🔋 **generacion_energia**"):
                 st.write("""
                          Esta tabla comprende la totalidad de la generación energética, detallando tipología y sostenibilidad.
+                         
                          Columnas:
-                         - *fecha*: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
-                         - *valor_generacion_MW*: Nos indica los megavatios producidos en la fecha estipulada (valor no totalizado).
-                         - *energia*: Procedencia de los megavatios, por ejemplo, energía nuclear, hidráulica, etc.. Contiene un valor llamado "Generación total" que reflejará en *valor_generacion_MW* la totalidad de megavatios producidos en el día especificado.
-                         - *tipo_tecnologia*: Contiene solo tres valores, que indican si la producción es de tipo renovable, no renovable o si indica la producción total (combinada). Los valores de esta columna, junto con *fecha* y *energia* componen la clave primaria de la tabla.
-                         - *fecha_extraccion*: Momento en el que se extraen los datos desde la API de Redeia.
+                         - ***fecha***: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
+                         - ***valor_generacion_MW***: Nos indica los megavatios producidos en la fecha estipulada (valor no totalizado).
+                         - ***energia***: Procedencia de los megavatios, por ejemplo, energía nuclear, hidráulica, etc.. Contiene un valor llamado "Generación total" que reflejará en *valor_generacion_MW* la totalidad de megavatios producidos en el día especificado.
+                         - ***tipo_tecnologia***: Contiene solo tres valores, que indican si la producción es de tipo renovable, no renovable o si indica la producción total (combinada). Los valores de esta columna, junto con *fecha* y *energia* componen la clave primaria de la tabla.
+                         - ***fecha_extraccion***: Momento en el que se extraen los datos desde la API de Redeia.
                          """)
 
             with st.expander("🌱 **balance_energia**"):
                 st.write("""
                          Mientras que *generacion_energia* aúna tanto energías renovables como no renovables, esta tabla se centra de manera exclusiva en el desglose de las energías renovables.
+                         
                          Columnas:
-                         - *fecha*: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
-                         - *valor_balance_MW*: Megavatios producidos en la fecha estipulada (valor no totalizado).
-                         - *energia*: Procedencia de los megavatios, dependiendo de *fecha* y *energia* tendremos un *valor_balance_MW*, es por ello que la combinación de las dos primeras compone la clave primaria de la tabla.
-                         - *fecha_extraccion*: Momento en el que se extraen los datos desde la API de Redeia.
+                         - ***fecha***: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
+                         - ***valor_balance_MW***: Megavatios producidos en la fecha estipulada (valor no totalizado).
+                         - ***energia***: Procedencia de los megavatios, dependiendo de *fecha* y *energia* tendremos un *valor_balance_MW*, es por ello que la combinación de las dos primeras compone la clave primaria de la tabla.
+                         - ***fecha_extraccion***: Momento en el que se extraen los datos desde la API de Redeia.
                          """)
 
             with st.expander("🌍 **transacciones_energia**"):
                 st.write("""
                          Esta tabla contiene las expresiones comerciales en el ámbito energético entre España y un número limitado de países.
+                         
                          Columnas:
-                         - *fecha*: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
-                         - *pais*: Solo contiene cuatro valores posibles, que son "Francia", "Portugal", "Marruecos" y "Andorra, que son los países con los que principalmente se comercia.
-                         - *tipo_transaccion*: Solo admite tres valores posibles que se autodefinen, "Exportación", "Importación" y "Saldo", que es el valor resultante de la resta entre los dos primeros elementos mencionados. La combinación entre *pais*, *tipo_transaccion* y *fecha* da pie a la clave primaria de la tabla.
-                         - *fecha_extraccion*: Momento en el que se extraen los datos desde la API de Redeia.
+                         - ***fecha***: Punto temporal histórico del que proceden los datos, tomado desde **demanda_energia**.
+                         - ***pais***: Solo contiene cuatro valores posibles, que son "Francia", "Portugal", "Marruecos" y "Andorra", que son los países con los que principalmente se comercia.
+                         - ***tipo_transaccion***: Solo admite tres valores posibles que se autodefinen, "Exportación", "Importación" y "Saldo", que es el valor resultante de la resta entre los dos primeros elementos mencionados. La combinación entre *pais*, *tipo_transaccion* y *fecha* da pie a la clave primaria de la tabla.
+                         - ***fecha_extraccion***: Momento en el que se extraen los datos desde la API de Redeia.
                          """)            
                   
 
