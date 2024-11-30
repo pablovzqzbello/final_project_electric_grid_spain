@@ -1200,7 +1200,7 @@ def main():
                 <div class="card">
                     <h3>💡 Modelos Predictivos</h3>
                     <p>
-                        - <span class="highlight">Proyecciones Avanzadas</span>: Anticipa escenarios futuros de <span class="highlight-blue">demanda</span>, <span class="highlight-green">generación</span> y emisiones utilizando modelos como <span class="highlight">RNN, LSTM, GRU</span> y <span class="highlight">Prophet</span>.<br>
+                        - <span class="highlight">Proyecciones Avanzadas</span>: Anticipa escenarios futuros de <span class="highlight-blue">demanda</span>, utilizando modelos como <span class="highlight">RNN, LSTM, GRU</span> y <span class="highlight">Prophet</span>.<br>
                         - <span class="highlight">Toma de Decisiones Informada</span>: Usa los resultados predictivos para comprender cómo podrían evolucionar las dinámicas energéticas.
                     </p>
                 </div>
