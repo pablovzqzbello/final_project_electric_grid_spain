@@ -662,12 +662,15 @@ def main():
                     Vamos a echar un vistazo a continuación a la organización de los datos mediante un diagrama explicativo de la arquitectura de nuestra BDD. 
                     """)
         # Vamos a dividir la página en dos columnas para visualizar por un lado la imagen y por otro la expliación
-        col1, col2 = st.columns([1, 2])
+        col1, col_spacer, col2 = st.columns([2, 0.5, 3])
 
-        with col1:
+        with col2:
             image_path = 'auxiliary/diagramaBDD.png'
             st.image(image_path, caption='Diagrama de la BDD.', width=700)  # Tamaño ajustado de la imagen
-        with col2:
+        with col_spacer:
+            st.write("")
+
+        with col1:
             st.write("""
                     
                      
@@ -682,11 +685,35 @@ def main():
                      
                     
                      """)
-            with st.expander("🔎demanda_energia"):
-                st.button("accionar")
+            with st.expander("🔌 **demanda_energia**"):
+                st.write("""
+                         Columnas:
+                         - *fecha*: Punto temporal histórico del que proceden los datos.
+                         - *valor_demanda_MW*: Cantidad numérica que refleja los megavatios solicitados para esa fecha.
+                         - *fecha_extraccion*: Momento en el que extraen los datos desde la API de Redeia.
+                         """)
         
-            with st.expander("emisiones_co2"):
-                st.checkbox("accionar")  
+            with st.expander("💭 **emisiones_co2**"):
+                st.write("""
+                         Columnas:
+                         
+                         """)
+
+            with st.expander("🔋 **generacion_energia**"):
+                st.write("""
+                         
+                         """)
+
+            with st.expander("🌱 **balance_energia**"):
+                st.write("""
+                         
+                         """)
+
+            with st.expander("🌍 **transacciones_energia**"):
+                st.write("""
+                         
+                         """)            
+                  
 
         
     elif choice == "¡Costes promedios!":
