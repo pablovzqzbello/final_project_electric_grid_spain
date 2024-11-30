@@ -35,7 +35,7 @@ def crecimiento_anual_generacion(df_generation):
     # Calcular el crecimiento porcentual
     generacion_anual['%_crecimiento'] = generacion_anual['total_generacion_anual'].pct_change() * 100
 
-    fig = px.bar(generacion_anual, x='year', y='%_crecimiento', title='Crecimiento porcentual de Generación por Año',
+    fig = px.bar(generacion_anual, x='year', y='%_crecimiento', title='Crecimiento (%) de generación por año',
                  labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
 
     st.plotly_chart(fig)
@@ -55,7 +55,7 @@ def crecimiento_anual_emisiones(df_co2):
     # Calcular el crecimiento porcentual
     emisiones_anual['%_crecimiento'] = emisiones_anual['total_emisiones_anual'].pct_change() * 100
 
-    fig = px.bar(emisiones_anual, x='year', y='%_crecimiento', title='Crecimiento porcentual de Emisiones por Año',
+    fig = px.bar(emisiones_anual, x='year', y='%_crecimiento', title='Crecimiento (%) de emisiones por año',
                  labels={'%_crecimiento': 'Crecimiento (%)', 'year': 'Año'})
 
     st.plotly_chart(fig)

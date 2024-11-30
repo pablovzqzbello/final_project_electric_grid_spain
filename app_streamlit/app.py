@@ -511,7 +511,13 @@ def main():
         st.plotly_chart(fig_transacciones)
 
         crecimiento_anual_importaciones(df_exchanges)
+        st.markdown("""Complementando las visualizaciones previas, esta gráfica ilustra la tasa de crecimiento o decrecimiento de las importaciones energéticas, un indicador que, aunque secundario, resulta clave para entender los períodos de déficit energético. Las importaciones reflejan la dependencia del sistema energético nacional respecto a fuentes externas, permitiendo identificar patrones relacionados con picos de demanda no cubiertos por la generación interna.
+        En períodos deficitarios, un aumento en las importaciones suele correlacionarse directamente con limitaciones en la capacidad de generación nacional o con la necesidad de garantizar el suministro durante eventos excepcionales, como olas de frío, crisis económicas o interrupciones en fuentes renovables. Por ello, este indicador funciona como una herramienta diagnóstica para detectar los momentos en los que España ha requerido apoyo energético externo -especialmente de Francia- y analizar las dinámicas comerciales con sus principales proveedores.
+        """)
         crecimiento_anual_exportaciones(df_exchanges)
+
+        st.markdown("""En el ámbito de las exportaciones, se observa una transformación significativa en el rol de Redeia como operadora energética nacional. La compañía ha pasado de ser una entidad importadora, dependiente de los recursos energéticos de socios externos, a consolidarse como una empresa exportadora. Este cambio ha sido impulsado por la transición hacia fuentes de energía más limpias y el incremento en la capacidad de producción nacional. Este proceso ha permitido a España avanzar hacia una mayor autonomía energética, dejando atrás su condición de país dependiente en este sector estratégico. Su mercado como se muestra en visualizaciones previas se ha destinado al abastecimiento de los países de su entorno, Andorra, Portugal y Marruecos.
+        """)
 
         # Sección Generación Energética
         st.subheader("Generación energética")
@@ -618,12 +624,17 @@ def main():
 
         crecimiento_anual_emisiones(df_co2)
 
+        st.markdown("""La disminución de las emisiones de CO2 es una tendencia evidente, especialmente a partir de 2018. Este cambio refleja la transición hacia fuentes de energía limpias y la progresiva eliminación del carbón como fuente principal. Sin embargo, el año 2022 presenta un comportamiento atípico en comparación con los años anteriores, probablemente debido al aumento en la generación energética mediante el ciclo combinado. 
+        """)
+
         # EDA, relación variables, detector de años atípicos
 
         st.header('Exploratory Data Analysis (EDA). Relación de variables')
         st.subheader('Valores atípicos')
         eda_boxplots(df_demanda, df_generation, df_co2)
         st.subheader('Relación de variables')
+        st.markdown("""En las visualizaciones presentadas a continuación se ilustra la relación entre las variables analizadas. Estas gráficas evidencian la estrecha correlación entre el consumo energético y la generación, así como sus respectivas conexiones con las emisiones de CO2. Si bien la relación entre consumo y generación es prácticamente perfecta, las emisiones muestran mayor variabilidad. Esto se debe a que, aunque un mayor consumo y generación suelen asociarse con un incremento en las emisiones, la presencia de fuentes de energía limpias implica que los valores más altos no necesariamente están vinculados a un aumento proporcional de emisiones.
+        """)
         eda_relations(df_demanda, df_generation, df_co2)
         st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
         eda_anos_atipicos(df_demanda)

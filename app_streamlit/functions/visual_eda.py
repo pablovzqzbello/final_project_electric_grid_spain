@@ -14,9 +14,9 @@ def eda_boxplots(df_demanda, df_generation, df_co2):
     df_co2 = df_co2[~(df_co2['energia'].isin(['tCO2 eq./MWh', 'Total tCO2 eq.']))]
     df_co2 = df_co2.groupby('fecha', as_index=False)['valor'].sum()
 
-    fig_box_demanda=px.box(df_demanda, x='valor_demanda_MW', title='Valores demanda energética')
-    fig_box_generation=px.box(df_generation, x='valor_generacion_MW', title='Valores generación energética')
-    fig_box_co2=px.box(df_co2, x='valor', title='Valores emisiones de CO2')
+    fig_box_demanda=px.box(df_demanda, x='valor_demanda_MW', title='Valores demanda energética', labels={'valor_demanda_MW': 'Demanda (MW)'})
+    fig_box_generation=px.box(df_generation, x='valor_generacion_MW', title='Valores generación energética', labels={'valor_generacion_MW': 'Generacion (MW)'})
+    fig_box_co2=px.box(df_co2, x='valor', title='Valores emisiones de CO2'labels={'valor': 'Valores (T/CO2)'})
 
     st.plotly_chart(fig_box_demanda)
     st.plotly_chart(fig_box_generation)
