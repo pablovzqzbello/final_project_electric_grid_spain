@@ -90,9 +90,6 @@ def extract_balance(start_year=2011, end_year=2025, time_trunc='day'):
     return df_balance
 
 
-# In[38]:
-
-
 def extract_exchange(start_year=2011, end_year=2025, time_trunc='day', widget='todas-fronteras-fisicos'):
     all_lines = []
 
@@ -195,9 +192,6 @@ def extract_generation(start_year=2011, end_year=2025, time_trunc='day'):
     df_generation['fecha'] = df_generation['fecha'].str.split('T').str[0]
     df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
     return df_generation
-
-
-# In[27]:
 
 
 #funcion para CO2
