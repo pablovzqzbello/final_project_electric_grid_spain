@@ -213,38 +213,6 @@ def main():
 
     if choice == "Graficación":
 
-        # Mostrar la imagen de Redeia con un tamaño controlado
-        image_path = 'auxiliary/redeia_marca1_2.png'
-        st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
-
-        # Encabezados y descripción
-        st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
-
-        st.header("¿Qué es Redeia, S.A.?")
-        st.markdown(
-            "Redeia Corporación, S.A. es un grupo empresarial multinacional de origen español fundado el 29 de enero de "
-            "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico. "
-            "Cuenta con una financiación público-privada, en la que el Gobierno de España cubre el 20% de las inversiones, "
-            "mientras que el 80% lo cubre capital privado.")
-
-        st.header("¿De dónde se obtiene la información?")
-        st.markdown(
-            "La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
-            "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar "
-            "libremente los datos que Redeia genera a tiempo real. "
-            "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)")
-
-        st.header("Objetivos")
-        st.markdown(
-            "Con los datos obtenidos se pretende realizar un análisis integral de la corporación enfocándose en la "
-            "estructura de negocio de esta empresa desde cuatro pilares fundamentales:"
-            "\n- Generación de energía"
-            "\n- Balance estructural energético"
-            "\n- Demanda energética del mercado español"
-            "\n- Transacciones Internacionales"
-            "\n\nComo punto clave, este estudio se centra en la sostenibilidad, con especial atención al precio y al "
-            "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía.")
-
         # Llamada general de datos
 
         df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
@@ -863,8 +831,9 @@ def main():
         # Función para cargar animaciones Lottie
 
         def tecnologias_utilizadas():
+            st.markdown('---')
             st.subheader("⚙️ **Tecnologías Utilizadas**")
-
+            st.markdown('---')
             # Tecnologías generales
             tecnologias_generales = [
                 {"nombre": "Python",
@@ -995,6 +964,7 @@ def main():
         # Título principal
 
         st.title("🔋 **¡Bienvenido a Redeia S.L. APP!**")
+        st.markdown('---')
 
         # Placeholder para el texto dinámico
 
@@ -1241,8 +1211,9 @@ def main():
         st.info("💡 **Dato clave:** La energía eólica representa el 19.9% del mix energético español en 2024.")
 
     # Recomendaciones interactivas
-
+        st.markdown('---')
         st.subheader("🧠 **Recomendaciones Personalizadas**")
+        st.markdown('---')
 
         st.write("Selecciona tus prioridades para obtener sugerencias adaptadas:")
 
@@ -1325,23 +1296,37 @@ def main():
 
     # Información adicional sobre Redeia
 
-        st.header("📖 **Sobre Redeia S.A.**")
+                # Mostrar la imagen de Redeia con un tamaño controlado
+            image_path = 'auxiliary/redeia_marca1_2.png'
+            st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
 
-        st.markdown("""
+                # Encabezados y descripción
+            st.title("Red Eléctrica de España. Análisis de mercado, sostenibilidad y rendimiento")
 
+            st.header("¿Qué es Redeia, S.A.?")
+            st.markdown(
+                    "Redeia Corporación, S.A. es un grupo empresarial multinacional de origen español fundado el 29 de enero de "
+                    "1985 que actúa en el mercado energético internacional como operador de sistema eléctrico. "
+                    "Cuenta con una financiación público-privada, en la que el Gobierno de España cubre el 20% de las inversiones, "
+                    "mientras que el 80% lo cubre capital privado.")
 
-            Redeia Corporación, S.A. es líder en innovación y sostenibilidad energética.  
+            st.header("¿De dónde se obtiene la información?")
+            st.markdown(
+                    "La política de total transparencia de la corporación, sellada y garantizada por organismos públicos, se "
+                    "manifiesta a través de la creación de un API donde los consumidores y diversos usuarios pueden consultar "
+                    "libremente los datos que Redeia genera a tiempo real. "
+                    "[Para más consultas, visite el API de datos de Redeia.](https://www.ree.es/es/datos/apidatos)")
 
-
-            Como operador del sistema eléctrico español, impulsa la transición hacia un modelo limpio y eficiente.
-
-
-            ---
-
-
-        """)
-
-        st.image("auxiliary/redeia_marca1_2.png", width=150)
+            st.header("Objetivos")
+            st.markdown(
+                    "Con los datos obtenidos se pretende realizar un análisis integral de la corporación enfocándose en la "
+                    "estructura de negocio de esta empresa desde cuatro pilares fundamentales:"
+                    "\n- Generación de energía"
+                    "\n- Balance estructural energético"
+                    "\n- Demanda energética del mercado español"
+                    "\n- Transacciones Internacionales"
+                    "\n\nComo punto clave, este estudio se centra en la sostenibilidad, con especial atención al precio y al "
+                    "impacto de la huella de carbono en función del crecimiento de la demanda y la generación de energía.")
 
         tecnologias_utilizadas()
 
