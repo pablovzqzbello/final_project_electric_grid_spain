@@ -207,7 +207,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones", '¡Costes promedios!', 'Sobre Nosotros']
+    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones", "EDA.Detección años atípicos",'¡Costes promedios!', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -906,7 +906,8 @@ def main():
                 "linkedin": "https://www.linkedin.com/in/pablovazquezbello/",
                 "github": "https://github.com/pablovzqzbello",
                 "image": "auxiliary/img.png",
-                "description": "Experto en ingeniería de datos y diseño de arquitecturas escalables para proyectos de energía renovable."
+                "description": "PhD. e investigador con amplia experiencia en proyectos nacionales e internacionales de I+D+i. Especialista en métodos y técnicas estadísticas, ingeniería de datos, modelos predictivos y diseño de arquitecturas de análisis multivariantes escalables a diversos ámbitos: energía, sociedad, economía y sostenibilidad. Busca soluciones basadas en datos para los restos del mañana." 
+"
             },
             {
                 "name": "Néstor Cantón Ordoñez",
@@ -946,7 +947,6 @@ def main():
             ---  
             💡 Nuestro equipo trabaja con el compromiso de impulsar la sostenibilidad, desarrollar soluciones innovadoras y mejorar el futuro energético de España y el mundo.
             """)
-
 
 
     elif choice == "Página Principal":
