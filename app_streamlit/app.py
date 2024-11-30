@@ -1209,9 +1209,9 @@ def main():
                     <h3>📊 Indicadores Clave</h3>
                     <p>
                         Consulta métricas dinámicas y detalladas, como:<br>
-                        - <span class="highlight-blue">**Generación Total de Energía (GW)**</span><br>
-                        - <span class="highlight-green">**Máxima Demanda Registrada (MW)**</span><br>
-                        - <span class="highlight">**Reducción Total de Emisiones de CO2 (tCO2)**</span>
+                        - <span class="highlight-blue">Generación Total de Energía (GW)</span><br>
+                        - <span class="highlight-green">Máxima Demanda Registrada (MW)</span><br>
+                        - <span class="highlight">Reducción Total de Emisiones de CO2 (tCO2)</span>
                     </p>
                 </div>
                 <div class="card">
