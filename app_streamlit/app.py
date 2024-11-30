@@ -660,7 +660,6 @@ def main():
                     A la hora de almacenar los datos extraídos de la API de Redeia, la opción más lógica era decantarse por una base de datos relacional.
                     Hemos empleado **MySQL Workbench** para este propósito, generando una base de datos sencilla pero efectiva que supliese nuestras necesidades.
                     
-                    Vamos a echar un vistazo a continuación a la organización de los datos mediante un diagrama explicativo de la arquitectura de nuestra BDD. 
                     """)
         # Vamos a dividir la página en dos columnas para visualizar por un lado la imagen y por otro la expliación
         col1, col_spacer, col2 = st.columns([2, 0.5, 3])
@@ -675,10 +674,11 @@ def main():
             st.write("""
                     
                      
-                    Aquí podemos observar tanto la cantidad de tablas como sus atributos y la dependencia entre ellas.
-                    Son un total de cinco tablas, con diferentes atributos (columnas) cada una. 
                     
-                    Vemos que hay una dependencia clara entre la tabla **demanda_energia** y el resto, siendo la clave primaria de ésta un elemento que se compartirá 
+                    Echemos un vistazo a la organización de los datos mediante este diagrama explicativo de la arquitectura de nuestra BDD, donde podremos observar que las cinco tablas
+                    que aúnan la información tienen diversos atributos (columnas).
+                    
+                    Hay una dependencia clara entre la tabla **demanda_energia** y el resto, siendo la clave primaria de ésta un elemento que se compartirá 
                     con las demás, lo que se conoce como clave foránea. En otras palabras, la columna **fecha** de esta tabla
                     sirve de hilo conductor y unificador con el resto de tablas.
                      
