@@ -656,7 +656,7 @@ def main():
 
         st.title("💽 Dentro de la Base de Datos")
          # Mostrar la imagen de Redeia con un tamaño controlado
-        image_path = 'auxiliary/redeia_marca1_2.png'
+        image_path = 'auxiliary/diagramaBDD.png'
         st.image(image_path, caption='Redeia S.A', width=400)  # Tamaño ajustado de la imagen
         
     elif choice == "¡Costes promedios!":
