@@ -429,19 +429,20 @@ def model_prophet(df):
 
 
     for period in [7, 14, 30]:
-        last_n_days = df_prophet.iloc[-period:]
+            last_n_days = df_prophet.iloc[-period:]
 
-        # Próximos N días predichos
-        next_n_days = forecast.iloc[len(df_prophet):len(df_prophet) + period]
+            # Próximos N días predichos
+            next_n_days = forecast.iloc[len(df_prophet):len(df_prophet) + period]
 
-        # Crear gráfico
-        fig8 = go.Figure()
-        fig8.add_trace(go.Scatter(x=last_n_days['ds'], y=last_n_days['y'], mode='lines+markers', name='Últimos Días (Reales)', line=dict(color='blue')))
-        fig8.add_trace(go.Scatter(x=next_n_days['ds'], y=next_n_days['yhat'], mode='lines+markers', name='Próximos Días (Predicción)', line=dict(color='red')))
+            # Crear gráfico
+            fig8 = go.Figure()
+            fig8.add_trace(go.Scatter(x=last_n_days['ds'], y=last_n_days['y'], mode='lines+markers', name='Últimos Días '
+                                                                                                        'Reales)', line=dict(color='blue')))
+            fig8.add_trace(go.Scatter(x=next_n_days['ds'], y=next_n_days['yhat'], mode='lines+markers', name='Próximos Días (Predicción)', line=dict(color='red')))
 
-        title = f"Comparación Últimos {period} Días vs Próximos {period} Días"
-        fig8.update_layout(title=title, xaxis_title="Fecha", yaxis_title="Demanda (MW)")
-        st.plotly_chart(fig8)
+            title = f"Comparación Últimos {period} Días vs Próximos {period} Días"
+            fig8.update_layout(title=title, xaxis_title="Fecha", yaxis_title="Demanda (MW)")
+            st.plotly_chart(fig8)
 
 def visual_loss_rnn(history_filename='models/history_rnn.json'):
 

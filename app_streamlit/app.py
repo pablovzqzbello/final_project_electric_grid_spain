@@ -849,7 +849,7 @@ def main():
                             
             st.markdown(
                 """
-                <div style="background-color:#F5F5F5; padding:15px; border-radius:10px; border-left: 6px solid #76d7c4;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);">
+               <div style="background-color:#F5F5F5; padding:15px; border-radius:10px; border-left: 6px solid #76d7c4;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);">
                     <h3 style="color:#FFA500; margin-bottom: 10px;">Modelo: Prophet</h3>
                     <p style="color: #333; font-size: 16px; margin: 0;">
                         El mdelo Prophet ha sido desarrollado por Facebook para la predicción de series temporales, siendo especialmente útil cuando hay datos con tendencias, estacionalidad y eventos atípicos,
