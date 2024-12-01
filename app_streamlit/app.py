@@ -1168,7 +1168,7 @@ def main():
 
             "💡 Descubre proyecciones avanzadas con modelos predictivos de última generación...",
 
-            "⚡ ¡Toma decisiones energéticas informadas con Redeia S.L. APP!"
+            "⚡ ¡Toma decisiones energéticas informadas con Redeia S.A. APP!"
 
         ]
 
