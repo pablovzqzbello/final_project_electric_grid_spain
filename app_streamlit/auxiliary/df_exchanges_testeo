@@ -1,4 +1,4 @@
-pais,tipo_transaccion,valor_GW,fecha,fecha_extraccion
+pais,tipo_transaccion,valor_MW,fecha,fecha_extraccion
 Francia,Exportación,-3344.187,2011-01-01,2024-11-09 15:43:27
 Francia,Exportación,-7900.88,2011-01-02,2024-11-09 15:43:27
 Francia,Exportación,-13808.85,2011-01-03,2024-11-09 15:43:27
