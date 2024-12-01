@@ -152,4 +152,3 @@ def extract_data(query):
 
 
 
-
