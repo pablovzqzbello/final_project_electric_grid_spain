@@ -921,13 +921,14 @@ def main():
                 visual_loss_lstm()
 
             elif model_choice == "Demanda (Prophet)":
-
+                
                 df_demanda = load_data("SELECT * FROM demanda_energia")
                 df_generation = load_data("SELECT * FROM generacion_energia")
                 df_exchanges = load_data("SELECT * FROM transacciones_energia")
                 df = preprocess_data(df_demanda, df_exchanges, df_generation)
 
                 model_prophet(df)
+                
 
             else:
 
