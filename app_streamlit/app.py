@@ -207,7 +207,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones", "EDA.Detección años atípicos",'¡Costes promedios!', 'Sobre Nosotros']
+    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones",'¡Costes promedios!', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -1169,7 +1169,7 @@ def main():
 
             "💡 Descubre proyecciones avanzadas con modelos predictivos de última generación...",
 
-            "⚡ ¡Toma decisiones energéticas informadas con Redeia S.L. APP!"
+            "⚡ ¡Toma decisiones energéticas informadas con Redeia S.A. APP!"
 
         ]
 

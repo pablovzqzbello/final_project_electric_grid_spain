@@ -414,18 +414,18 @@ def model_prophet(df):
     st.plotly_chart(fig5)
 
     # Gráfico 6: Distribución de errores (Densidad)
-    fig6 = px.density_contour(df_errors, x='ds', y='error', title="Distribución de Errores", labels={'ds': 'Fecha', 'error': 'Error Absoluto'})
-    st.plotly_chart(fig6)
+    #fig6 = px.density_contour(df_errors, x='ds', y='error', title="Distribución de Errores", labels={'ds': 'Fecha', 'error': 'Error Absoluto'})
+    #st.plotly_chart(fig6)
 
     # Gráfico 7: Acumulación de Predicciones y Reales
-    df_cumulative = df_errors.copy()
-    df_cumulative['real_cumsum'] = df_cumulative['y'].cumsum()
-    df_cumulative['pred_cumsum'] = df_cumulative['yhat'].cumsum()
-    fig7 = go.Figure()
-    fig7.add_trace(go.Scatter(x=df_cumulative['ds'], y=df_cumulative['real_cumsum'], mode='lines', name='Acumulado Real'))
-    fig7.add_trace(go.Scatter(x=df_cumulative['ds'], y=df_cumulative['pred_cumsum'], mode='lines', name='Acumulado Predicción'))
-    fig7.update_layout(title="Demanda Acumulada: Reales vs Predicciones", xaxis_title="Fecha", yaxis_title="Demanda Acumulada (MW)")
-    st.plotly_chart(fig7)
+    #df_cumulative = df_errors.copy()
+    #df_cumulative['real_cumsum'] = df_cumulative['y'].cumsum()
+    #df_cumulative['pred_cumsum'] = df_cumulative['yhat'].cumsum()
+    #fig7 = go.Figure()
+    #fig7.add_trace(go.Scatter(x=df_cumulative['ds'], y=df_cumulative['real_cumsum'], mode='lines', name='Acumulado Real'))
+    #fig7.add_trace(go.Scatter(x=df_cumulative['ds'], y=df_cumulative['pred_cumsum'], mode='lines', name='Acumulado Predicción'))
+    #fig7.update_layout(title="Demanda Acumulada: Reales vs Predicciones", xaxis_title="Fecha", yaxis_title="Demanda Acumulada (MW)")
+    #st.plotly_chart(fig7)
 
 
     for period in [7, 14, 30]:
