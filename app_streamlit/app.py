@@ -1314,19 +1314,19 @@ def main():
 
         with col1:
 
-            st.metric("⚡ Generación Total (MW)", f"{generacion_total}", f"{calcular_crecimiento_5_anos(df_generation)}")
+            st.metric("⚡ Generación Total (MW)", f"{round(generacion_total, 2)}", f"{calcular_crecimiento_5_anos(df_generation)}")
 
             st.caption("Progreso basado en los últimos 5 años.")
 
         with col2:
 
-            st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", f"{calcular_crecimiento_demanda(df_demanda)}")
+            st.metric("📈 Máxima Demanda Registrada (MW)", f"{round(maxima_demanda,2)}", f"{calcular_crecimiento_demanda(df_demanda)}")
 
             st.caption("Histórico actualizado a 2024.")
 
         with col3:
 
-            st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", f"{calculo_crecimiento_co2(df_co2)}")
+            st.metric("🌱 Emisiones Totales (tCO2)", f"{round(emisiones_totales,2)}", f"{calculo_crecimiento_co2(df_co2)}")
 
             st.caption("Reducción anual promedio desde 2020.")
 

@@ -12,7 +12,7 @@ def calcular_crecimiento_5_anos(df_generation):
     valor_reciente = ultimos_5_anios.iloc[-1]['valor_generacion_MW']
     crecimiento_porcentual = ((valor_reciente - valor_inicial) / valor_inicial) * 100
 
-    return crecimiento_porcentual
+    return round(crecimiento_porcentual, 2)
 
 
 def calcular_crecimiento_demanda(df_demanda):
@@ -31,7 +31,7 @@ def calcular_crecimiento_demanda(df_demanda):
     valor_reciente = ultimos_5_anos.iloc[-1]['valor_demanda_MW']
     crecimiento_porcentual = ((valor_reciente - valor_inicial) / valor_inicial) * 100
 
-    return crecimiento_porcentual
+    return round(crecimiento_porcentual,2)
 
 
 def calculo_crecimiento_co2(df_co2):
@@ -46,4 +46,4 @@ def calculo_crecimiento_co2(df_co2):
     valor_reciente = ultimos_5_anos.iloc[-1]['valor']
     crecimiento_porcentual = ((valor_reciente - valor_inicial) / valor_inicial) * 100
 
-    return crecimiento_porcentual
+    return round(crecimiento_porcentual,2)
