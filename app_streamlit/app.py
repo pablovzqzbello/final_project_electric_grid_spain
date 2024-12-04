@@ -207,7 +207,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones",'¡Costes promedios!', 'Sobre Nosotros']
+    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones",'Calculadora de costes de consumo', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -757,7 +757,7 @@ def main():
                   
 
         
-    elif choice == "¡Costes promedios!":
+    elif choice == "Calculadora de costes de consumo":
 
         st.title("💡 Calculadora de Costos de Electrodomésticos")
         def load_lottie_file(filepath):
@@ -1225,9 +1225,9 @@ def main():
                     <h3>📊 Indicadores Clave</h3>
                     <p>
                         Consulta métricas dinámicas y detalladas, como:<br>
-                        - <span class="highlight-blue">Generación Total de Energía (GW)</span><br>
+                        - <span class="highlight-blue">Generación Total de Energía (MW)</span><br>
                         - <span class="highlight-green">Máxima Demanda Registrada (MW)</span><br>
-                        - <span class="highlight">Reducción Total de Emisiones de CO2 (tCO2)</span>
+                        - <span class="highlight">Reducción Total de Emisiones de CO2 (T/CO2)</span>
                     </p>
                 </div>
                 <div class="card">
@@ -1326,7 +1326,7 @@ def main():
 
         with col3:
 
-            st.metric("🌱 Emisiones Totales (tCO2)", f"{round(emisiones_totales,2)}", f"{calculo_crecimiento_co2(df_co2)}")
+            st.metric("🌱 Emisiones Totales (T/CO2)", f"{round(emisiones_totales,2)}", f"{calculo_crecimiento_co2(df_co2)}")
 
             st.caption("Reducción anual promedio desde 2020.")
 
