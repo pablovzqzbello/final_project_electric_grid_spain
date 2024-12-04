@@ -1018,119 +1018,70 @@ def main():
 
         # Función para cargar animaciones Lottie
 
-        def tecnologias_utilizadas():
+        def tecnologias_utilizadas(estilo_minimalista=False):
             st.markdown('---')
             st.subheader("⚙️ **Tecnologías Utilizadas**")
             st.markdown('---')
-            # Tecnologías generales
-            tecnologias_generales = [
-                {"nombre": "Python",
-                 "descripcion": "Lenguaje de programación principal utilizado en el desarrollo de esta aplicación.",
+
+            # Listado de tecnologías generales y específicas
+            tecnologias = [
+                {"nombre": "Python", "descripcion": "Lenguaje de programación principal.",
                  "enlace": "https://www.python.org/doc/"},
-                {"nombre": "Streamlit",
-                 "descripcion": "Framework interactivo para crear dashboards y aplicaciones web.",
+                {"nombre": "Streamlit", "descripcion": "Framework interactivo para dashboards.",
                  "enlace": "https://docs.streamlit.io/"},
-                {"nombre": "HTML y CSS",
-                 "descripcion": "Lenguajes base para estilizar y estructurar las visualizaciones.",
+                {"nombre": "HTML y CSS", "descripcion": "Base para estilizar visualizaciones.",
                  "enlace": "https://developer.mozilla.org/en-US/docs/Web"},
-                {"nombre": "JupyterLab", "descripcion": "Entorno interactivo para análisis y prototipado de datos.",
-                 "enlace": "https://jupyterlab.readthedocs.io/"},
-                {"nombre": "MySQL",
-                 "descripcion": "Sistema de gestión de bases de datos relacionales utilizado para almacenar datos.",
+                {"nombre": "MySQL", "descripcion": "Sistema de gestión de bases de datos.",
                  "enlace": "https://dev.mysql.com/doc/"},
-            ]
-
-            # Librerías específicas
-            librerias = [
-                {"nombre": "Pandas", "descripcion": "Librería para manipulación y análisis de datos estructurados.",
+                {"nombre": "Visual Studio Code", "descripcion": "Editor de código fuente.",
+                 "enlace": "https://code.visualstudio.com/"},
+                {"nombre": "PyCharm Community", "descripcion": "IDE para Python.",
+                 "enlace": "https://www.jetbrains.com/pycharm/download/"},
+                {"nombre": "Pandas", "descripcion": "Manipulación de datos estructurados.",
                  "enlace": "https://pandas.pydata.org/docs/"},
-                {"nombre": "NumPy", "descripcion": "Librería para cálculos numéricos y manejo de matrices.",
-                 "enlace": "https://numpy.org/doc/"},
-                {"nombre": "Plotly", "descripcion": "Visualización interactiva avanzada para gráficos dinámicos.",
+                {"nombre": "NumPy", "descripcion": "Cálculos numéricos avanzados.", "enlace": "https://numpy.org/doc/"},
+                {"nombre": "Plotly", "descripcion": "Visualización interactiva.",
                  "enlace": "https://plotly.com/python/"},
-                {"nombre": "PyDeck", "descripcion": "Librería para renderizar mapas 3D interactivos.",
+                {"nombre": "PyDeck", "descripcion": "Mapas 3D interactivos.",
                  "enlace": "https://deckgl.readthedocs.io/"},
-                {"nombre": "Prophet", "descripcion": "Modelo de predicción de series temporales.",
-                 "enlace": "https://facebook.github.io/prophet/docs/quick_start.html"},
-                {"nombre": "SQLAlchemy",
-                 "descripcion": "Toolkit para trabajar con bases de datos SQL de forma eficiente.",
+                {"nombre": "SQLAlchemy", "descripcion": "Toolkit para bases de datos SQL.",
                  "enlace": "https://docs.sqlalchemy.org/"},
-                {"nombre": "Streamlit-Lottie", "descripcion": "Soporte para incluir animaciones Lottie en Streamlit.",
+                {"nombre": "Streamlit-Lottie", "descripcion": "Animaciones Lottie.",
                  "enlace": "https://github.com/andfanilo/streamlit-lottie"},
-                {"nombre": "JSON",
-                 "descripcion": "Formato para trabajar con datos estructurados como animaciones o configuraciones.",
-                 "enlace": "https://www.json.org/json-en.html"},
+                {"nombre": "TensorFlow", "descripcion": "Framework de machine learning.",
+                 "enlace": "https://www.tensorflow.org/"},
+                {"nombre": "Keras", "descripcion": "API de alto nivel para redes neuronales.",
+                 "enlace": "https://keras.io/"},
+                {"nombre": "Requests", "descripcion": "Peticiones HTTP sencillas.",
+                 "enlace": "https://docs.python-requests.org/"},
+                {"nombre": "Scikit-learn", "descripcion": "Machine Learning.",
+                 "enlace": "https://scikit-learn.org/stable/documentation.html"},
             ]
 
-            # CSS para estilizar
-            st.markdown("""
-                <style>
-                .tech-container {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 15px;
-                    justify-content: space-between;
-                }
-                .tech-card {
-                    background: linear-gradient(145deg, #ffffff, #f2f2f2);
-                    border-radius: 10px;
-                    padding: 15px;
-                    width: 48%;
-                    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1), -3px -3px 10px rgba(255, 255, 255, 0.7);
-                    transition: transform 0.2s ease, box-shadow 0.2s ease;
-                }
-                .tech-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.8);
-                }
-                .tech-card h4 {
-                    margin: 0;
-                    color: #333;
-                }
-                .tech-card p {
-                    margin: 5px 0 0;
-                    color: #666;
-                    font-size: 14px;
-                }
-                .tech-card a {
-                    text-decoration: none;
-                    color: #007bff;
-                    font-weight: bold;
-                }
-                .tech-card a:hover {
-                    text-decoration: underline;
-                }
-                </style>
-            """, unsafe_allow_html=True)
-
-            # Dividir en dos columnas
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.markdown("### 🔧 Tecnologías Generales")
-                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
-                for tech in tecnologias_generales:
+            if estilo_minimalista:
+                st.markdown('<style>.tech-list {list-style: none; padding: 0;}</style>', unsafe_allow_html=True)
+                st.markdown('<ul class="tech-list">', unsafe_allow_html=True)
+                for tech in tecnologias:
                     st.markdown(f"""
-                        <div class="tech-card">
-                            <h4>{tech['nombre']}</h4>
+                        <li>
+                            <strong>{tech['nombre']}</strong>: {tech['descripcion']} 
+                            [📖 Documentación]({tech['enlace']})
+                        </li>
+                    """, unsafe_allow_html=True)
+                st.markdown('</ul>', unsafe_allow_html=True)
+            else:
+                col1, col2, col3 = st.columns(3)
+                columnas = [col1, col2, col3]
+
+                for i, tech in enumerate(tecnologias):
+                    with columnas[i % 3]:
+                        st.markdown(f"""
+                        <div style="background-color:#f9f9f9; padding:10px; margin-bottom:10px; border-radius:5px;">
+                            <h5>{tech['nombre']}</h5>
                             <p>{tech['descripcion']}</p>
                             <a href="{tech['enlace']}" target="_blank">📖 Documentación</a>
                         </div>
-                    """, unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-
-            with col2:
-                st.markdown("### 📚 Librerías Específicas")
-                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
-                for lib in librerias:
-                    st.markdown(f"""
-                        <div class="tech-card">
-                            <h4>{lib['nombre']}</h4>
-                            <p>{lib['descripcion']}</p>
-                            <a href="{lib['enlace']}" target="_blank">📖 Documentación</a>
-                        </div>
-                    """, unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+                        """, unsafe_allow_html=True)
 
             st.markdown('---')
 
@@ -1540,8 +1491,6 @@ def main():
         """)
 
         st.info('¡No te olvides de explorar todo esto en el menú lateral!')
-
-        st.snow()
 
 if __name__ == "__main__":
     main()
