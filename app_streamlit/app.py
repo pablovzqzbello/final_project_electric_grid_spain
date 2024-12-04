@@ -325,7 +325,7 @@ def main():
 
             # Crear la gráfica de comparación con la fecha ajustada
             fig_comparador = px.line(
-                df_demanda_comparador, x='fecha_ajustada', y='valor_demanda_MW', color='year',
+                df_demanda_comparador, x='fecha_ajustada', y='valor_demanda_MW', color='year', labels={'fecha_ajustada':'Fecha', 'valor_demanda_MW':'Demanda(MW)'},
                 title=f"Comparador de demanda (MW), años {', '.join(map(str, selected_years))}")
 
             # Calcular métricas para líneas de referencia
@@ -371,14 +371,14 @@ def main():
         filtered_df_balance = date_filter(filtered_df_balance, period_demanda)
 
         # Visualización de Balance Energético
-        fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_MW', color='energia',
+        fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_MW', color='energia', labels={'fecha':'Fecha', 'valor_balance_MW':'Balance(MW)'},
                        title="Balance de generación de Energías Renovables (MW)")
         st.plotly_chart(fig2)
 
         st.markdown("""
-            **Balance de Generación de Energías Renovables en GW (2011-2024)**
+            **Balance de Generación de Energías Renovables en MW (2011-2024)**
 
-            La gráfica muestra el **balance de generación de energías renovables** en GW a lo largo del tiempo, desde aproximadamente 2011 hasta 2024.
+            La gráfica muestra el **balance de generación de energías renovables** en MW a lo largo del tiempo, desde aproximadamente 2011 hasta 2024.
 
             A lo largo del período, se observan fuertes **fluctuaciones** en la generación de energía renovable, lo cual es característico de este tipo de fuentes debido a su dependencia de **condiciones naturales** como el **viento**, la **luz solar** y la **lluvia** para la energía **hidroeléctrica**. La generación no es constante y muestra **picos** y **caídas** de forma regular.
 
