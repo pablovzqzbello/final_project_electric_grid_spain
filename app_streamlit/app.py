@@ -307,7 +307,7 @@ def main():
         Se evidencia un descenso significativo en ciertos períodos, resultado de la implementación de políticas de eficiencia energética 
         que han reducido el consumo global.""")
 
-        # Filtros en el Sidebar para la comparación de años de Pablo
+        # Filtros en el Sidebar para la comparación de años
 
         st.sidebar.subheader("Comparación de Años")
         available_years = df_demanda['year'].unique()
