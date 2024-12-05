@@ -410,6 +410,7 @@ def main():
                       y=['valor_demanda_MW', 'valor_generacion_MW'],
                       labels={'fecha': 'Fecha', 'value': 'Valores (MW)', 'variable': 'Categoría'},
                       title='Balance entre demanda y generación')
+        
 
 
 
@@ -417,7 +418,7 @@ def main():
         fig_saldo = px.line(df_saldo_balance,
                        x='fecha',
                        y='balance',
-                       labels={'fecha': 'Fecha', 'value': 'Valores (MW)'},
+                       labels={'fecha': 'Fecha', 'balance': 'Valores (MW)'},
                        title='Saldo energético. Déficit y superávit energético')
 
 
@@ -474,6 +475,7 @@ def main():
                                                  x='fecha', y='valor_MW', color='tipo_transaccion',
                                                  title="Evolución general de transacciones energéticas (MW)",
                                                  labels={'fecha': 'Fecha', 'value': 'Valores (MW)', 'variable': 'Categoría'})
+        fig_evolucion_transacciones.update_layout(yaxis_title="Valor (MW)")
         st.plotly_chart(fig_evolucion_transacciones)
         st.markdown("""
             La **evolución de las transacciones comerciales** entre **Redeia S.A.** y sus socios internacionales muestra una notable **reducción** en la dependencia de las **importaciones** hacia el año **2022**. 
@@ -494,6 +496,7 @@ def main():
             x='fecha', y='valor_MW', color='pais',
             title="Evolución por país de transacciones energéticas (MW)",
             labels={'fecha': 'Fecha', 'value': 'Valores (MW)', 'variable': 'Categoría'})
+        fig_evolucion_transacciones_pais.update_layout(yaxis_title="Valor (MW)")
         st.plotly_chart(fig_evolucion_transacciones_pais)
         st.markdown("""
             Esta gráfica muestra la **evolución histórica** de las **importaciones y exportaciones de energía** de España, desglosada por **países clave** (**Francia**, **Portugal**, **Marruecos** y **Andorra**). 
@@ -539,12 +542,14 @@ def main():
 
         # Gráfico de líneas para generación de energía
         fig_generacion_energia = px.area(filtered_df_generation, x='fecha', y='valor_generacion_MW', color='energia',
-                                         title="Estructura de generación energética en MW")
+                                         title="Estructura de generación energética en MW", labels={"fecha": "Fecha", "valor_generacion_MW": "Valor Generación MW"})
+        fig_generacion_energia.update_layout(yaxis_title="Valor Generación MW")
         st.plotly_chart(fig_generacion_energia)
 
         # Visualización de Generación Energética
         fig4 = px.histogram(filtered_df_generation, x='fecha', y='valor_generacion_MW', color='energia',
-                            title="Generación en MW")
+                            title="Generación en MW", labels={"fecha": "Fecha", "valor_generacion_MW": "Valor Generación MW"})
+        fig4.update_layout(yaxis_title="Valor Generación MW")
         st.plotly_chart(fig4)
         st.markdown("""
             Este gráfico ilustra la **evolución de la generación de energía** en **Redeia S.A.**, mostrando tanto **fuentes renovables** como **no renovables** entre 2012 y 2024. 
@@ -612,6 +617,7 @@ def main():
         #Gráfico por generación de las emisiones de co2
 
         fig_co2_energia=px.histogram(filtered_df_co2, x='fecha', y='valor', color='energia', title="Emisiones de CO2 según su generación", labels={'fecha':'Fecha', 'valor': 'Valores(T/CO2)'})
+        fig_co2_energia.update_layout(yaxis_title="Valores (T/CO2)")
         st.plotly_chart(fig_co2_energia)
         st.markdown("""
             La **evolución de las emisiones de CO2**, desglosadas por **tipo de energía**, muestra una **tendencia a la baja**, especialmente a partir de **2019**, gracias a la **reducción en el uso del carbón**. Este cambio refleja una **transición clara hacia fuentes de energía más limpias y sostenibles**, alineadas con los esfuerzos por mitigar el impacto ambiental. 
