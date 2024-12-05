@@ -207,7 +207,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones",'¡Costes promedios!', 'Sobre Nosotros']
+    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "EDA. Detector de años atípicos de demanda", "Predicciones",'Calculadora de costes de consumo', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -307,7 +307,7 @@ def main():
         Se evidencia un descenso significativo en ciertos períodos, resultado de la implementación de políticas de eficiencia energética 
         que han reducido el consumo global.""")
 
-        # Filtros en el Sidebar para la comparación de años de Pablo
+        # Filtros en el Sidebar para la comparación de años
 
         st.sidebar.subheader("Comparación de Años")
         available_years = df_demanda['year'].unique()
@@ -325,7 +325,7 @@ def main():
 
             # Crear la gráfica de comparación con la fecha ajustada
             fig_comparador = px.line(
-                df_demanda_comparador, x='fecha_ajustada', y='valor_demanda_MW', color='year',
+                df_demanda_comparador, x='fecha_ajustada', y='valor_demanda_MW', color='year', labels={'fecha_ajustada':'Fecha', 'valor_demanda_MW':'Demanda(MW)'},
                 title=f"Comparador de demanda (MW), años {', '.join(map(str, selected_years))}")
 
             # Calcular métricas para líneas de referencia
@@ -371,14 +371,14 @@ def main():
         filtered_df_balance = date_filter(filtered_df_balance, period_demanda)
 
         # Visualización de Balance Energético
-        fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_MW', color='energia',
+        fig2 = px.line(filtered_df_balance[filtered_df_balance['energia']=='Generación renovable'], x='fecha', y='valor_balance_MW', color='energia', labels={'fecha':'Fecha', 'valor_balance_MW':'Balance(MW)'},
                        title="Balance de generación de Energías Renovables (MW)")
         st.plotly_chart(fig2)
 
         st.markdown("""
-            **Balance de Generación de Energías Renovables en GW (2011-2024)**
+            **Balance de Generación de Energías Renovables en MW (2011-2024)**
 
-            La gráfica muestra el **balance de generación de energías renovables** en GW a lo largo del tiempo, desde aproximadamente 2011 hasta 2024.
+            La gráfica muestra el **balance de generación de energías renovables** en MW a lo largo del tiempo, desde aproximadamente 2011 hasta 2024.
 
             A lo largo del período, se observan fuertes **fluctuaciones** en la generación de energía renovable, lo cual es característico de este tipo de fuentes debido a su dependencia de **condiciones naturales** como el **viento**, la **luz solar** y la **lluvia** para la energía **hidroeléctrica**. La generación no es constante y muestra **picos** y **caídas** de forma regular.
 
@@ -626,20 +626,6 @@ def main():
         st.markdown("""La disminución de las emisiones de CO2 es una tendencia evidente, especialmente a partir de 2018. Este cambio refleja la transición hacia fuentes de energía limpias y la progresiva eliminación del carbón como fuente principal. Sin embargo, el año 2022 presenta un comportamiento atípico en comparación con los años anteriores, probablemente debido al aumento en la generación energética mediante el ciclo combinado. 
         """)
 
-        # EDA, relación variables, detector de años atípicos
-
-        st.header('Exploratory Data Analysis (EDA). Relación de variables')
-        st.markdown("""Esta sección pretende mostrar la integridad de los datos analizados, iniciando este proceso por la identificación de valores atípicos y la visualización de las relaciones presentes entre los datos""")
-        st.subheader('Valores atípicos')
-        eda_boxplots(df_demanda, df_generation, df_co2)
-        st.subheader('Relación de variables')
-        st.markdown("""En las visualizaciones presentadas a continuación se ilustra la relación entre las variables analizadas. Estas gráficas evidencian la estrecha correlación entre el consumo energético y la generación, así como sus respectivas conexiones con las emisiones de CO2. Si bien la relación entre consumo y generación es prácticamente perfecta, las emisiones muestran mayor variabilidad. Esto se debe a que, aunque un mayor consumo y generación suelen asociarse con un incremento en las emisiones, la presencia de fuentes de energía limpias implica que los valores más altos no necesariamente están vinculados a un aumento proporcional de emisiones.
-        """)
-        eda_relations(df_demanda, df_generation, df_co2)
-        st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
-        st.markdown("""A través de un modelo de medición y detecció, este gráfico nos permite saber cuando un año tiene una demanda atípica entre 2011 y 2023. No se añadió por el momento 2024 al tratarse de una año no finalizado""")
-        eda_anos_atipicos_dbscan(df_demanda)
-
         # Glosario
         st.header('Vocabulario energético')
 
@@ -757,7 +743,7 @@ def main():
                   
 
         
-    elif choice == "¡Costes promedios!":
+    elif choice == "Calculadora de costes de consumo":
 
         st.title("💡 Calculadora de Costos de Electrodomésticos")
         def load_lottie_file(filepath):
@@ -1014,124 +1000,99 @@ def main():
             💡 Nuestro equipo trabaja con el compromiso de impulsar la sostenibilidad, desarrollar soluciones innovadoras y mejorar el futuro energético de España y el mundo.
             """)
 
+    elif choice == "EDA. Detector de años atípicos de demanda":
+
+        df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
+        df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
+        df_demanda['year'] = df_demanda['fecha'].dt.year
+        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
+        df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+        df_generation['year'] = df_generation['fecha'].dt.year
+        df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
+        df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
+        df_co2['year'] = df_co2['fecha'].dt.year
+
+        st.header('Exploratory Data Analysis (EDA). Relación de variables')
+        st.markdown("""Esta sección pretende mostrar la integridad de los datos analizados, iniciando este proceso por la identificación de valores atípicos y la visualización de las relaciones presentes entre los datos""")
+        st.subheader('Valores atípicos')
+        eda_boxplots(df_demanda, df_generation, df_co2)
+        st.subheader('Relación de variables')
+        st.markdown("""En las visualizaciones presentadas a continuación se ilustra la relación entre las variables analizadas. Estas gráficas evidencian la estrecha correlación entre el consumo energético y la generación, así como sus respectivas conexiones con las emisiones de CO2. Si bien la relación entre consumo y generación es prácticamente perfecta, las emisiones muestran mayor variabilidad. Esto se debe a que, aunque un mayor consumo y generación suelen asociarse con un incremento en las emisiones, la presencia de fuentes de energía limpias implica que los valores más altos no necesariamente están vinculados a un aumento proporcional de emisiones.
+                """)
+        eda_relations(df_demanda, df_generation, df_co2)
+        st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
+        st.markdown(
+            """A través de un modelo de medición y detecció, este gráfico nos permite saber cuando un año tiene una demanda atípica entre 2011 y 2023. No se añadió por el momento 2024 al tratarse de una año no finalizado""")
+        eda_anos_atipicos_dbscan(df_demanda)
 
     elif choice == "Página Principal":
 
         # Función para cargar animaciones Lottie
 
-        def tecnologias_utilizadas():
+        def tecnologias_utilizadas(estilo_minimalista=False):
             st.markdown('---')
             st.subheader("⚙️ **Tecnologías Utilizadas**")
             st.markdown('---')
-            # Tecnologías generales
-            tecnologias_generales = [
-                {"nombre": "Python",
-                 "descripcion": "Lenguaje de programación principal utilizado en el desarrollo de esta aplicación.",
+
+            # Listado de tecnologías generales y específicas
+            tecnologias = [
+                {"nombre": "Python", "descripcion": "Lenguaje de programación principal.",
                  "enlace": "https://www.python.org/doc/"},
-                {"nombre": "Streamlit",
-                 "descripcion": "Framework interactivo para crear dashboards y aplicaciones web.",
+                {"nombre": "Streamlit", "descripcion": "Framework interactivo para dashboards.",
                  "enlace": "https://docs.streamlit.io/"},
-                {"nombre": "HTML y CSS",
-                 "descripcion": "Lenguajes base para estilizar y estructurar las visualizaciones.",
+                {"nombre": "HTML y CSS", "descripcion": "Base para estilizar visualizaciones.",
                  "enlace": "https://developer.mozilla.org/en-US/docs/Web"},
-                {"nombre": "JupyterLab", "descripcion": "Entorno interactivo para análisis y prototipado de datos.",
-                 "enlace": "https://jupyterlab.readthedocs.io/"},
-                {"nombre": "MySQL",
-                 "descripcion": "Sistema de gestión de bases de datos relacionales utilizado para almacenar datos.",
+                {"nombre": "MySQL", "descripcion": "Sistema de gestión de bases de datos.",
                  "enlace": "https://dev.mysql.com/doc/"},
-            ]
-
-            # Librerías específicas
-            librerias = [
-                {"nombre": "Pandas", "descripcion": "Librería para manipulación y análisis de datos estructurados.",
+                {"nombre": "Visual Studio Code", "descripcion": "Editor de código fuente.",
+                 "enlace": "https://code.visualstudio.com/"},
+                {"nombre": "PyCharm Community", "descripcion": "IDE para Python.",
+                 "enlace": "https://www.jetbrains.com/pycharm/download/"},
+                {"nombre": "Pandas", "descripcion": "Manipulación de datos estructurados.",
                  "enlace": "https://pandas.pydata.org/docs/"},
-                {"nombre": "NumPy", "descripcion": "Librería para cálculos numéricos y manejo de matrices.",
-                 "enlace": "https://numpy.org/doc/"},
-                {"nombre": "Plotly", "descripcion": "Visualización interactiva avanzada para gráficos dinámicos.",
+                {"nombre": "NumPy", "descripcion": "Cálculos numéricos avanzados.", "enlace": "https://numpy.org/doc/"},
+                {"nombre": "Plotly", "descripcion": "Visualización interactiva.",
                  "enlace": "https://plotly.com/python/"},
-                {"nombre": "PyDeck", "descripcion": "Librería para renderizar mapas 3D interactivos.",
+                {"nombre": "PyDeck", "descripcion": "Mapas 3D interactivos.",
                  "enlace": "https://deckgl.readthedocs.io/"},
-                {"nombre": "Prophet", "descripcion": "Modelo de predicción de series temporales.",
-                 "enlace": "https://facebook.github.io/prophet/docs/quick_start.html"},
-                {"nombre": "SQLAlchemy",
-                 "descripcion": "Toolkit para trabajar con bases de datos SQL de forma eficiente.",
+                {"nombre": "SQLAlchemy", "descripcion": "Toolkit para bases de datos SQL.",
                  "enlace": "https://docs.sqlalchemy.org/"},
-                {"nombre": "Streamlit-Lottie", "descripcion": "Soporte para incluir animaciones Lottie en Streamlit.",
+                {"nombre": "Streamlit-Lottie", "descripcion": "Animaciones Lottie.",
                  "enlace": "https://github.com/andfanilo/streamlit-lottie"},
-                {"nombre": "JSON",
-                 "descripcion": "Formato para trabajar con datos estructurados como animaciones o configuraciones.",
-                 "enlace": "https://www.json.org/json-en.html"},
+                {"nombre": "TensorFlow", "descripcion": "Framework de machine learning.",
+                 "enlace": "https://www.tensorflow.org/"},
+                {"nombre": "Keras", "descripcion": "API de alto nivel para redes neuronales.",
+                 "enlace": "https://keras.io/"},
+                {"nombre": "Requests", "descripcion": "Peticiones HTTP sencillas.",
+                 "enlace": "https://docs.python-requests.org/"},
+                {"nombre": "Scikit-learn", "descripcion": "Machine Learning.",
+                 "enlace": "https://scikit-learn.org/stable/documentation.html"},
             ]
 
-            # CSS para estilizar
-            st.markdown("""
-                <style>
-                .tech-container {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 15px;
-                    justify-content: space-between;
-                }
-                .tech-card {
-                    background: linear-gradient(145deg, #ffffff, #f2f2f2);
-                    border-radius: 10px;
-                    padding: 15px;
-                    width: 48%;
-                    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1), -3px -3px 10px rgba(255, 255, 255, 0.7);
-                    transition: transform 0.2s ease, box-shadow 0.2s ease;
-                }
-                .tech-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.8);
-                }
-                .tech-card h4 {
-                    margin: 0;
-                    color: #333;
-                }
-                .tech-card p {
-                    margin: 5px 0 0;
-                    color: #666;
-                    font-size: 14px;
-                }
-                .tech-card a {
-                    text-decoration: none;
-                    color: #007bff;
-                    font-weight: bold;
-                }
-                .tech-card a:hover {
-                    text-decoration: underline;
-                }
-                </style>
-            """, unsafe_allow_html=True)
-
-            # Dividir en dos columnas
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.markdown("### 🔧 Tecnologías Generales")
-                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
-                for tech in tecnologias_generales:
+            if estilo_minimalista:
+                st.markdown('<style>.tech-list {list-style: none; padding: 0;}</style>', unsafe_allow_html=True)
+                st.markdown('<ul class="tech-list">', unsafe_allow_html=True)
+                for tech in tecnologias:
                     st.markdown(f"""
-                        <div class="tech-card">
-                            <h4>{tech['nombre']}</h4>
+                        <li>
+                            <strong>{tech['nombre']}</strong>: {tech['descripcion']} 
+                            [📖 Documentación]({tech['enlace']})
+                        </li>
+                    """, unsafe_allow_html=True)
+                st.markdown('</ul>', unsafe_allow_html=True)
+            else:
+                col1, col2, col3 = st.columns(3)
+                columnas = [col1, col2, col3]
+
+                for i, tech in enumerate(tecnologias):
+                    with columnas[i % 3]:
+                        st.markdown(f"""
+                        <div style="background-color:#f9f9f9; padding:10px; margin-bottom:10px; border-radius:5px;">
+                            <h5>{tech['nombre']}</h5>
                             <p>{tech['descripcion']}</p>
                             <a href="{tech['enlace']}" target="_blank">📖 Documentación</a>
                         </div>
-                    """, unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-
-            with col2:
-                st.markdown("### 📚 Librerías Específicas")
-                st.markdown('<div class="tech-container">', unsafe_allow_html=True)
-                for lib in librerias:
-                    st.markdown(f"""
-                        <div class="tech-card">
-                            <h4>{lib['nombre']}</h4>
-                            <p>{lib['descripcion']}</p>
-                            <a href="{lib['enlace']}" target="_blank">📖 Documentación</a>
-                        </div>
-                    """, unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+                        """, unsafe_allow_html=True)
 
             st.markdown('---')
 
@@ -1275,9 +1236,9 @@ def main():
                     <h3>📊 Indicadores Clave</h3>
                     <p>
                         Consulta métricas dinámicas y detalladas, como:<br>
-                        - <span class="highlight-blue">Generación Total de Energía (GW)</span><br>
+                        - <span class="highlight-blue">Generación Total de Energía (MW)</span><br>
                         - <span class="highlight-green">Máxima Demanda Registrada (MW)</span><br>
-                        - <span class="highlight">Reducción Total de Emisiones de CO2 (tCO2)</span>
+                        - <span class="highlight">Reducción Total de Emisiones de CO2 (T/CO2)</span>
                     </p>
                 </div>
                 <div class="card">
@@ -1364,19 +1325,19 @@ def main():
 
         with col1:
 
-            st.metric("⚡ Generación Total (MW)", f"{generacion_total}", f"{calcular_crecimiento_5_anos(df_generation)}")
+            st.metric("⚡ Generación Total (MW)", f"{round(generacion_total, 2)}", f"{calcular_crecimiento_5_anos(df_generation)}")
 
             st.caption("Progreso basado en los últimos 5 años.")
 
         with col2:
 
-            st.metric("📈 Máxima Demanda Registrada (MW)", f"{maxima_demanda}", f"{calcular_crecimiento_demanda(df_demanda)}")
+            st.metric("📈 Máxima Demanda Registrada (MW)", f"{round(maxima_demanda,2)}", f"{calcular_crecimiento_demanda(df_demanda)}")
 
             st.caption("Histórico actualizado a 2024.")
 
         with col3:
 
-            st.metric("🌱 Emisiones Totales (tCO2)", f"{emisiones_totales}", f"{calculo_crecimiento_co2(df_co2)}")
+            st.metric("🌱 Emisiones Totales (T/CO2)", f"{round(emisiones_totales,2)}", f"{calculo_crecimiento_co2(df_co2)}")
 
             st.caption("Reducción anual promedio desde 2020.")
 
@@ -1541,8 +1502,6 @@ def main():
         """)
 
         st.info('¡No te olvides de explorar todo esto en el menú lateral!')
-
-        st.snow()
 
 if __name__ == "__main__":
     main()
