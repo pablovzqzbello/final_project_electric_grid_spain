@@ -451,7 +451,7 @@ def visual_loss_rnn(history_filename='models/history_rnn.json'):
 
         df_rnn = pd.DataFrame(history_rnn)
 
-    return st.plotly_chart(px.line(df_rnn, y=['loss', 'val_loss'], title='Función de pérdida (MSE)'))
+    return st.plotly_chart(px.line(df_rnn, y=['loss', 'val_loss'], title='Función de pérdida (MSE)', labels={'value':'Error(MSE)', 'index':'Epochs'}))
 
 def visual_loss_lstm(history_filename='models/history_lstm.json'):
 
@@ -460,7 +460,7 @@ def visual_loss_lstm(history_filename='models/history_lstm.json'):
 
          df_lstm = pd.DataFrame(history_lstm)
 
-    return st.plotly_chart(px.line(df_lstm, y=['loss', 'val_loss'],title='Función de pérdida (MSE)'))
+    return st.plotly_chart(px.line(df_lstm, y=['loss', 'val_loss'],title='Función de pérdida (MSE)',labels={'value':'Error(MSE)', 'index':'Epochs'}))
 
 def visual_loss_gru(history_filename='models/history_gru.json'):
 
@@ -469,4 +469,4 @@ def visual_loss_gru(history_filename='models/history_gru.json'):
 
         df_gru = pd.DataFrame(history_gru)
 
-    return st.plotly_chart(px.line(df_gru, y=['loss', 'val_loss'], title='Función de pérdida (MSE)'))
+    return st.plotly_chart(px.line(df_gru, y=['loss', 'val_loss'], title='Función de pérdida (MSE)', labels={'value':'Error(MSE)', 'index':'Epochs'}))
