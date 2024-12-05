@@ -207,7 +207,7 @@ if st.sidebar.button("ℹ️ Mostrar Ayuda"):
 def main():
 
     # Menú de selección en el sidebar
-    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "Predicciones",'Calculadora de costes de consumo', 'Sobre Nosotros']
+    choices = ['Página Principal',"Base de Datos", "Análisis y visualizaciones", "EDA. Detector de años atípicos de demanda", "Predicciones",'Calculadora de costes de consumo', 'Sobre Nosotros']
 
     choice = st.sidebar.selectbox(label="Menú", options=choices, index=0)
 
@@ -626,20 +626,6 @@ def main():
         st.markdown("""La disminución de las emisiones de CO2 es una tendencia evidente, especialmente a partir de 2018. Este cambio refleja la transición hacia fuentes de energía limpias y la progresiva eliminación del carbón como fuente principal. Sin embargo, el año 2022 presenta un comportamiento atípico en comparación con los años anteriores, probablemente debido al aumento en la generación energética mediante el ciclo combinado. 
         """)
 
-        # EDA, relación variables, detector de años atípicos
-
-        st.header('Exploratory Data Analysis (EDA). Relación de variables')
-        st.markdown("""Esta sección pretende mostrar la integridad de los datos analizados, iniciando este proceso por la identificación de valores atípicos y la visualización de las relaciones presentes entre los datos""")
-        st.subheader('Valores atípicos')
-        eda_boxplots(df_demanda, df_generation, df_co2)
-        st.subheader('Relación de variables')
-        st.markdown("""En las visualizaciones presentadas a continuación se ilustra la relación entre las variables analizadas. Estas gráficas evidencian la estrecha correlación entre el consumo energético y la generación, así como sus respectivas conexiones con las emisiones de CO2. Si bien la relación entre consumo y generación es prácticamente perfecta, las emisiones muestran mayor variabilidad. Esto se debe a que, aunque un mayor consumo y generación suelen asociarse con un incremento en las emisiones, la presencia de fuentes de energía limpias implica que los valores más altos no necesariamente están vinculados a un aumento proporcional de emisiones.
-        """)
-        eda_relations(df_demanda, df_generation, df_co2)
-        st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
-        st.markdown("""A través de un modelo de medición y detecció, este gráfico nos permite saber cuando un año tiene una demanda atípica entre 2011 y 2023. No se añadió por el momento 2024 al tratarse de una año no finalizado""")
-        eda_anos_atipicos_dbscan(df_demanda)
-
         # Glosario
         st.header('Vocabulario energético')
 
@@ -1013,6 +999,30 @@ def main():
             💡 Nuestro equipo trabaja con el compromiso de impulsar la sostenibilidad, desarrollar soluciones innovadoras y mejorar el futuro energético de España y el mundo.
             """)
 
+    elif choice == "EDA. Detector de años atípicos de demanda":
+
+        df_demanda = load_data("SELECT fecha, valor_demanda_MW FROM demanda_energia")
+        df_demanda['fecha'] = pd.to_datetime(df_demanda['fecha'])
+        df_demanda['year'] = df_demanda['fecha'].dt.year
+        df_generation = load_data("SELECT fecha, valor_generacion_MW, energia, tipo_tecnología FROM generacion_energia")
+        df_generation['fecha'] = pd.to_datetime(df_generation['fecha'])
+        df_generation['year'] = df_generation['fecha'].dt.year
+        df_co2 = load_data("SELECT fecha, valor, energia FROM emisiones_co2")
+        df_co2['fecha'] = pd.to_datetime(df_co2['fecha'])
+        df_co2['year'] = df_co2['fecha'].dt.year
+
+        st.header('Exploratory Data Analysis (EDA). Relación de variables')
+        st.markdown("""Esta sección pretende mostrar la integridad de los datos analizados, iniciando este proceso por la identificación de valores atípicos y la visualización de las relaciones presentes entre los datos""")
+        st.subheader('Valores atípicos')
+        eda_boxplots(df_demanda, df_generation, df_co2)
+        st.subheader('Relación de variables')
+        st.markdown("""En las visualizaciones presentadas a continuación se ilustra la relación entre las variables analizadas. Estas gráficas evidencian la estrecha correlación entre el consumo energético y la generación, así como sus respectivas conexiones con las emisiones de CO2. Si bien la relación entre consumo y generación es prácticamente perfecta, las emisiones muestran mayor variabilidad. Esto se debe a que, aunque un mayor consumo y generación suelen asociarse con un incremento en las emisiones, la presencia de fuentes de energía limpias implica que los valores más altos no necesariamente están vinculados a un aumento proporcional de emisiones.
+                """)
+        eda_relations(df_demanda, df_generation, df_co2)
+        st.subheader('Detección de valores atípicos de la demanda. Detector de años atípicos')
+        st.markdown(
+            """A través de un modelo de medición y detecció, este gráfico nos permite saber cuando un año tiene una demanda atípica entre 2011 y 2023. No se añadió por el momento 2024 al tratarse de una año no finalizado""")
+        eda_anos_atipicos_dbscan(df_demanda)
 
     elif choice == "Página Principal":
 
